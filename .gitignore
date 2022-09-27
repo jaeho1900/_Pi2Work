@@ -1,0 +1,6 @@
+## 폴더 무시
+__pycache__/
+.ipynb_checkpoints
+apiscraper-master/
+trainingdata/
+wikiSpider/
