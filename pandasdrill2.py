@@ -227,7 +227,31 @@ _dflist
 # 변경하고자 하는 열의 이름을 딕셔너리 키와 값으로 전달
 _df
 _df.dtypes
-_df = _df.astype({'A':int32, 'B':float32})  # error 판다스에는 int32자료형이 없음, int32는 넘파이 자료형임
-_df = _df.astype({'A':np.int32, 'B':np.float32})
+_df = _df.astype({'A':int32, 'B':float32, 'C':str})        # error 판다스에는 int32자료형이 없음
+_df = _df.astype({'A':np.int32, 'B':np.float32, 'C':str})  # 넘파이 자료형 적용
+_df = _df.astype({'A':int, 'B':float, 'C':str})            # 파이썬 자료형 적용
 _df.dtypes
 _df
+
+# 특정 열의 자료형 변경
+_df['E'] = _df['E'].astype('float64')
+
+# >>> 다차원 배열의 색인
+ar = np.arange(1,26).reshape(5,5)
+ar
+# 정수 인덱스 색인 : 하나의 스칼라값 반환
+ar[0]        # array([1, 2, 3, 4, 5])
+ar[0, -1]    # 5
+
+# 팬시 색인: 배열(리스트)을 색인에 사용, 기존(다차원) 배열의 형태를 유지하며 반환
+ar[[0]]      # array([[1, 2, 3, 4, 5]]) : 팬시 색인
+ar[[0, -1]]  # array([[ 1,  2,  3,  4,  5], [21, 22, 23, 24, 25]])
+
+# 문제. ar 배열에서 13,14,18,19 를 색인하시오
+temp = ar[[2,3]]
+ar1 = temp[:, 2:4]
+ar1
+
+# 넘파이 ix_함수를 이용한 색인
+ar
+ar[np.ix_(, )]
