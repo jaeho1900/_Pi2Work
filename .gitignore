@@ -1,0 +1,9 @@
+## 폴더 무시
+__pycache__/
+.ipynb_checkpoints
+ADP_ver01/
+apiscraper-master/
+PostgreSQL/
+trainingdata/
+wikiSpider/
+z_re_study/
