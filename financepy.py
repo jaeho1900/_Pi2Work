@@ -1,17 +1,8 @@
-"""
-# #  함수 업그레이드 변경 
-import pandas_datareader, import pandas_datareader.data as pdr --> import yfinance as yf
-pdr.get_data_yahoo('종목코드') --> yf.download('종목코드')  # 야후종목
-import yfinance as yf
-samsung = yf.download('005930.KS')
-"""
-
 from urllib import parse
 from ast import literal_eval
 import requests
 import pandas as pd
 import numpy as np
-import matplotlib
 
 def get_sise(code, start_time, end_time, time_from='day') :
     get_param = {
@@ -35,12 +26,59 @@ df.index = pd.to_datetime(df.index)
 df
 
 # =======================
+# 검색방법
 close = df['종가']
 close['2020']
 close['2021-08']
 close['2020':'2021']
+
+# 그래프1
 close['2020':'2021'].plot(figsize=(15,7), color='red').grid()
 
+# 그래프2
 import plotly.express as px
 vol = df.거래량
-px.line(x=vol.index, y=vol)
+px.line(x=vol.index, y=vol,
+        template='plotly_dark',
+        labels={'x':'날짜', 'y':'거래량'})
+
+# 이중축 그래프
+subset = df[['종가','거래량']]
+subset.plot(figsize=(15,7))
+
+subset['거래량'].plot(color='b', figsize=(15,7))
+subset['종가'].plot(color='r',secondary_y=True)
+
+import matplotlib.pyplot as plt
+t = subset.index
+y_left = subset.거래량
+y_right = subset.종가
+
+fig, ax1 = plt.subplots(figsize=(13,6))
+
+ax1.plot(t, y_left, color='b')
+ax1.set_ylabel('volume', color='b')
+ax1.grid()
+
+ax2 = ax1.twinx()
+ax2.plot(t, y_right, color='r')
+ax2.set_ylabel('close', color='r')
+
+plt.show()
+
+fig  # 그래프가 저장되어 있어서 호출하면 그래프를 반환
+
+# plotly 활용
+import plotly.graph_objects as go
+from plotly.subplots import make_subplots
+
+subset = df[['종가','거래량']]
+data_vol = go.Scatter(x=subset.index, y=subset['거래량'], name='Volume')
+data_close = go.Scatter(x=subset.index, y=subset['종가'], name='Close')
+
+fig = make_subplots(specs=[[{"secondary_y":True}]])
+fig.add_trace(data_vol, secondary_y=False)
+fig.add_trace(data_close, secondary_y=True)
+fig.show()
+
+
