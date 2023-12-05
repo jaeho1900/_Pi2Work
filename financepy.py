@@ -25,13 +25,13 @@ df = df.set_index(['날짜'])
 df.index = pd.to_datetime(df.index)
 df
 
-# =======================
-# 검색방법
+# 데이터 검색 방법=====
 close = df['종가']
 close['2020']
 close['2021-08']
 close['2020':'2021']
 
+# 그래프 그리기=====
 # 그래프1
 close['2020':'2021'].plot(figsize=(15,7), color='red').grid()
 
@@ -86,21 +86,59 @@ fig.update_yaxes(title_text='거래량', secondary_y=False)
 fig.update_yaxes(title_text='주가', secondary_y=True)
 fig.show()
 
-# ===================
+# # 배당금 데이터=====
 import yfinance as yf
-
 div = yf.Ticker('0').dividends  # 0 은 '리얼티인컴'이라는 회사임
 div
-div.plot(figsize=(12,6))  # 주식분할 미반영
+div.plot(figsize=(12,6))  # 주식분할(1주->2주) 미반영(배당금은 50%로 줄어든것으로 보임, 총배당금은 동일)
 
+data.index = data.index.strftime('%Y-%m-%d')  # 타임라인 인덱스 형태 변경
 div['2018':].plot(kind='bar', figsize=(15,7))
 
+# plotly로 그리기
+import plotly.express as px
+code = 'AAPL'
+start = '2015'
+end = '2020'
+aapl = yf.Ticker(code).dividends[start:end]
+x_line = aapl.index
+y_line = aapl
+fig = px.bar(x=x_line, y=y_line)
+fig.update_layout(bargap=0.5)  # 바간격
+fig.update_layout(width=1100, height=500)
+fig.update_layout(template='plotly_dark')
+fig.update_layout(title='애플주당배당금')
+fig.update_yaxes(title_text='배당금')
+fig.update_xaxes(title_text='날짜')
+
+# # 대시보드=====
+# 1.대시보드에 담고 싶은 데이터 종류들을 리스트에 입력한다
+# 2.종목데이터를 딕셔너리에 순서대로 담는다
+# 3.딕셔너리에 종목을 추가한다
+# 4.대시보드(데이터프레임) 만든다
+# 사용데이터는 ARCC(아레스캐피탈)이다
+
+import pandas as pd
+dash_list = ['종목코드','업종','보유주식수','국가']
+dash_dic = {'삼성전자':['005930.KS','IT','100','한국']}
+dash_dic['테슬라'] = ['TSLA','자동차','2','미국']
+dash = pd.DataFrame(data=dash_dic, index=dash_list)
+dash
+dash.T
+
+dash.loc['종목코드']
+dash.iloc[0]
 
 
-
-
-
-# 타임라인 인덱스 형태 변경
-
-data.index = data.index.strftime('%Y-%m-%d')
-
+# 사례연습
+import pandas as pd
+dash_list = ['종목명','현재주가','전일주가','일일변동율(%)']
+code = 'ARCC'
+arcc = yfinance.Ticker(code)['Close']
+current_price = arcc.iloc[-1]
+previous_price = arcc.iloc[-2]
+oneday_change = (current_price - previous_price)/previous_price * 100
+dash_data = {'ARCC':['아레스캐피탈',current_price,previous_price,oneday_change]}
+dash = pd.DataFrame(data=dash_data, index=dash_list)
+dash
+dash.T
