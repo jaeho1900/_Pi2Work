@@ -130,15 +130,40 @@ dash.loc['종목코드']
 dash.iloc[0]
 
 
-# 사례연습
+# 사례 연습
 import pandas as pd
-dash_list = ['종목명','현재주가','전일주가','일일변동율(%)']
+import yfinance
+dash_list = ['종목명','현재주가','전일주가','일일변동율(%)']  # 인덱스는 리스트 활용
 code = 'ARCC'
 arcc = yfinance.Ticker(code)['Close']
 current_price = arcc.iloc[-1]
 previous_price = arcc.iloc[-2]
 oneday_change = (current_price - previous_price)/previous_price * 100
-dash_data = {'ARCC':['아레스캐피탈',current_price,previous_price,oneday_change]}
+dash_data = {'ARCC':['아레스캐피탈',current_price,previous_price,oneday_change]}  # 데이터는 딕셔너리 활용
 dash = pd.DataFrame(data=dash_data, index=dash_list)
 dash
 dash.T
+
+# 최고가, 최저가 연습
+import pandas as pd
+idx = ['회사이름','현재주가']
+dict = {'MSFT':['마이크로소프트', 5000]}
+df = pd.DataFrame(data=dict, index=idx)
+dash = df.T
+dash
+
+ticker = 'MSFT'
+ms_close = yfinance.Ticker(ticker).Close
+ms_close
+
+# 52주 최고 최저 추출: Rolling 함수
+# 직전 252일치 중 최고값 계산, min_periods=1 옵션은 처음 2일은 1일치라고 계산해서 NaN 을 채움
+# 주말, 휴일 등 실제 운영일로 계산하면 52주는 252일로 계산됨(또는 5*52=260 쓰기도 함)
+high_52 = ms_close.rolling(252, min_periods=1).max()
+now_52max = high_52.iloc[-1]  # 최근 일자의 52최고가
+now_52max
+
+
+
+
+
