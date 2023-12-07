@@ -1,3 +1,18 @@
+# Yahoo Finance API 사용
+import yfinance as yf
+
+# yfinance로 주가 데이터 받아오기
+# 티커를 요청하면 Open, High, Low, Close, Adj Close, Volume값을 리턴
+data = yf.download(['AAPL','MU'],start = '2019-01-01')
+data['Close']
+
+# yfinance로 주가 외 데이터 받아오기(재무제표를 받아오기 위해선 yahoofinance 패키지를 사용)
+# 주가 데이터를 받아올 때와 달리 변수 선언이 필요
+aapl = yf.Ticker('AAPL')
+aapl.dividends  # 배당내역
+aapl.splits  # 주식분할
+aapl.recommendations  # 애널리스트 평가
+
 from urllib import parse
 from ast import literal_eval
 import requests
@@ -66,7 +81,7 @@ ax2.set_ylabel('close', color='r')
 
 plt.show()
 
-fig  # 그래프가 저장되어 있어서 호출하면 그래프를 반환
+# 그래프가 저장되어 있어서 호출하면 그래프를 반환
 
 # plotly 활용
 import plotly.graph_objects as go
