@@ -1,8 +1,3 @@
 ## 폴더 무시
-__pycache__/
-.ipynb_checkpoints/
-ADP_ver01/
-apiscraper-master/
-Drill/
-trainingdata/
-wikiSpider/
+# ADP_ver01/
+# Drill/
