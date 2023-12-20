@@ -1,140 +1,69 @@
-# ###############
-# 실습으로 배우는 Python 데이터분석1
-# ###############
+# =====================
+# 데이터 분석
+# =====================
 
-# # 매개변수가 없는 사용자 함수
-def my_only_func():
-    print('first function')
+# --------------------
+# 사용자 정의 함수
+# --------------------
 
-
-my_only_func()
-
-
-# # 매개변수가 있는 사용자 함수
-def my_func(x, y):
-    print(x**y)
-
-
-my_func(4, 4)
-
-print(pow(4, 4))    # 참고. 제곱근 내장함수
-
-
-# # 리턴값이 있는 함수
-def my_func_rtn(x, y):
-    return x - y
-
-
-my_func_rtn(10, 3)
-
-# # 리턴값을 받아서 다른 함수의 파라미터 값으로 넘기기
-result = my_func_rtn(5, 3)
-my_func(result, 3)
-
-
-# # 함수에 리스트 매개변수를 받아서 for문 돌리기
-def show_list_element(ani):
-    for i in ani:
-        print(i)
-
-
-animals = ['사자', '늑대', '호랑이']
-show_list_element(animals)
-
-
-# # 2~9까지의 정수 하나를 입력받아서 해당 정수의 구구단을 출력
-def gugudan(x):
-    for y in range(1, 10):
-        print(x, 'x', y, '=', x * y)
-
-
-gugudan(8)
-
-
-# # 짝수 구구단을 가로로 한단씩 출력하시오
+# # 매개변수가 없는 사용자 정의 함수
 def pair_gugudan():
     for x in range(2, 10, 2):
         for y in range(1, 10):
             print(x, 'x', y, '=', x * y, end='\t')
         print(end='\n')
 
-
 pair_gugudan()
 
+# # 매개변수가 있는 사용자 정의 함수
+def show_list_element(ani):
+    for i in ani:
+        print(i)
 
-# #########
-# 데이터분석 내장 함수 사용법
-# #########
+animals = ['사자', '늑대', '호랑이']
+show_list_element(animals)
 
-# 1. all() : 반복 능한(iterable) 자료형 인자로 입력받을 수 있음, True/False 반환
-# True
-all([])
-all([1])
-all([1, 2, 3, 4])
-all([-1, -2, -3, -4])
+# # 리턴값이 있는 사용자 정의 함수
+def my_func_rtn(x, y):
+    return x - y
 
-# False : 0이 포함되면 False 인식
-all([0])
-all([1, 2, 3, 4, 0])
+result = my_func_rtn(5, 3)
+my_func(result, 3)
 
-# 2. any() : 요소 중 하나라도 참이면 True, 모든 요소가 거짓이면 False 반환
-# True
-any([1])
-any([1, 2, 3, 4])
-any([-1, -2, -3, -4])
-any([1, 2, 3, 4, 0])
 
-# False
-any([])
-any([0])
-any([''])
-any([0, ''])
+# --------------------
+# 내장 함수
+# --------------------
 
-# 3. ord(소수) : 문자의 아스키 코드값을 출력
-ord('a')
-ord('A')
-
-# 4. chr() :아스키 코드값을 해당 문자로 출력
-chr(97)
-chr(65)
-
-# 5. dir : 해당 객체가 가지고 있는 변수와 함수를 출력 *************
-a = [1, 2, 3]
-dir(a)
+# >>> dir(): 해당 객체가 가지고 있는 변수와 함수를 반환
+# 객체의 속한 변수와 함수는 .을 찍어서 호출하여 사용함
 dir([1, 2, 3])
-a.clear()        # 객체의 속한 변수와 함수는 .을 찍어서 호출하여 사용함
 
-# 6. enumerate() : 순서있는 자료형(리스트, 튜플, 문자열 등)을 인자로 넘겨주면 인덱스값과 값을 함께 출력, 보통 반복문에서 쓰임
+dir([1, 2, 3]).clear()        
+
+# >>> enumerate(): 순서있는 자료형(리스트, 튜플, 문자열 등)을 인자로 주면 인덱스와 값을 함께 반환
 lst = ['lion', 'tiger', 'bear', 'hippo']
+
 for i, lstName in enumerate(lst):
     print(i, lstName)
 
-# 7. eval() : 입력받은 문자열을 통해서 함수나 클래스를 동적으로 실행
-eval('3' + '4')  # 34
-eval('3+4')      # 7
+# >>> eval(): 입력받은 문자열을 통해서 함수나 클래스를 동적으로 실행
+eval('3 + 4')  # 7
 
-# 8. hex() : 정수를 16진수(0 1 2 3 4 5 6 7 8 9 a b c d e f)로 변환
-hex(0)
-hex(10)
-hex(15)
-hex(16)
-
-# 9. id() : 객체의 고유주소값
-obj = 100
-obj2 = obj
-id(obj)
-id(obj2)
+# >>> id(): 객체의 고유 주소값 반환
 id(100)
 
-
-# 10. filter(함수값, iterable_type) : 참인 반환값만 모아서 리스트로 반환
+# >>> filter(): 결과가 참인 값만 리스트를 생성하여 반환
 def odd(x):
     return x % 2 != 0
 
-
 lst = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
-filter(odd, lst)        # 결과를 새로운 리스트로 생성
+
 list(filter(odd, lst))
+
+
+
+
 
 # 11. input() : 프롬프트에서 사용자 입력을 받음
 a = input()
