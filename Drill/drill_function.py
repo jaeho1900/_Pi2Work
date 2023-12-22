@@ -98,14 +98,14 @@ _test2()
 # 람다식
 # --------------------
 
-# 사례1
+# >>> iterable 자료형에 적용
 lst = [1, 2, 3, 4, 5, 6, 7, 8, 9]
 
 list(filter(lambda x: x % 2, lst))  # filter(): 참인 결과 값만 반환
 list(filter(lambda x: x % 2 != 0, lst))
 list(filter(lambda x: x % 2 == 0, lst))
 
-# 사례2
+# >>> 함수의 인자에 적용
 def my_strip(x):
     return x.strip()
 
@@ -132,6 +132,11 @@ lst = ['lion', 'tiger', 'bear', 'hippo']
 for i, lstName in enumerate(lst):
     print(i, lstName)
 
+# >>> map(): iterable 객체 요소를 하나씩 지정 함수로 보냄, 결과값은 담을 그릇(리스트나 튜플) 필요
+x = [1, 2, 3, 4, 5]
+list(map(float, x))
+tuple(map(lambda x: x**3, x))
+
 # >>> filter(): 참인 결과 값만 리스트로 반환
 def odd(x):
     return x % 2 != 0
@@ -157,179 +162,126 @@ isinstance(x, list)
 
 
 # --------------------
-# list, tuple 메서드
+# iterable 메서드
 # --------------------
 
-# List Comprehention
-lstTest = ['lion', 'tiger', 'hippo']
-[i.upper() for i in lstTest]
+# >>> List Comprehention
+lst = ['lion', 'tiger', 'hippo']
+[i.upper() for i in lst]
 
-# append, extend, insert
-lst = []
+# >>> Add
+lst = [1, 2, 3]
+lst2 = ('lion', 'tiger', 'hippo')
 
-lst.append(1)
-lst.extend([1])  # iterable 자료형만 입력 가능
+lst + ['cow']
+lst + list(lst2)        # 튜플+리스트 병합은 리스트로 작업 후 튜플로 변환
+lst.extend(list(lst2))
 
+lst.append(4)       # [1, 2, 3, 4]
+lst.append([5, 6])  # [1, 2, 3, 4, [5, 6]]
 
+lst.extend(4)         # error: iterable 자료형만 입력 가능
+lst.extend([4])       # [1, 2, 3, 4]
+lst.extend([5, 6])    # [1, 2, 3, 4, 5, 6]
+lst.extend([[5, 6]])  # [1, 2, 3, 4, [5, 6]]
 
+lst.insert(0, [10, 20])    # 0번째(맨앞에) 추가, insert(위치인덱스, 값)
+lst.insert(-1, 100)        # 마지막-1번째 추가
+lst.insert(len(lst), 100)  # 마지막에 추가
 
-lstTest = ['lion', 'tiger', 'hippo']
-lstTest + ['cow']
-lstTest.append('cow')
+# >>> Delete
+lst = ['li', 'Co', 'Ni', 'Mn', 'Al', 'Mg']
 
-# extend: 리스트 매소드(튜플x)
-a = [1, 2, 3]
-b = ('a', 'b', 'c')
+lst.pop(-1)       # pop(index): 해당 인덱스의 값을 빼면서 뺀 값을 보여줌
+lst.pop()         # 인덱스가 없으면 마지막 원소에 적용
+lst.remove('Mn')  # Remove(value): index 불가!!
+del lst[-1]
+lst.clear()
 
-a + list(b)  # 튜플+리스트 병합은 리스트로 작업 후 튜플로 변환
-a.extend(list(b)); a
+# >>> Sort
+lst = 'I am a bright Man'.split()
 
-# insert(넣을위치인덱스, 넣을값)
-a.insert(2, 'kpop')   # 다른 메서드와 사용방법이 상이!!
-a.insert(-2, 'jpop')  # -인덱스의 경우 -인덱스 다음에 삽입!!
-
-# clear
-lststr = list('tiger')
-lststr.clear()
-
-# Remove(원소값) 메서드, 주의 인덱스값 아님!!
-print(a)
-a.remove('kpop')  # 인덱스 적용 불가
-
-# pop(index) 메서드: 리스트에서 인덱스의 값을 빼면서 뺀 값을 보여줌(확인시켜줌)
-print(a)
-a.pop(3)
-a.pop(-1)
-a.pop()  # 인덱스번호를 않쓰면 마지막원소에 적용
-del a[-1]
-
-# sort()
-lst = [4, 5, 1, 3, 2, 6]
-lst.sort()               # 오름차순
+sorted(lst)              # 원본보존 및 결과반환
+lst.sort()               # 원본변경(오름차순)
 lst.sort(reverse=True)   # 내림차순
-print(lst)
+lst.sort(key=len)        # 요소의 길이를 기준 정렬
+lst.sort(key=str.lower)  # 알파벳 기준 정렬
 
-strTest = "I am a python programmer"
-str1 = strTest.split()   # 문자열을 잘라서 리스트로 생성
-str1.sort(key=len)        # 요소의 길이를 기준 정렬
-str1.sort(key=str.lower)  # 알파벳 기준 정렬
+# >>> Reverse
+lst = [4, 5, 1, 3, 2, 6]
 
-# reverse(): 원본 순서 뒤집기, 내림차순 아님!!
-lst.reverse()
+reversed(lst)  # 원본보존 및 결과반환
+lst.reverse()  # 원본변경
 
-# count(): 목록의 특정 item 갯수 반환
+# >>> Count
 lst = [4, 5, 1, 3, 2, 6, 1, 3, 1, 7]
 lst.count(1)
-
-# map(): iterable 객체 요소를 하나씩 지정 함수로 보냄
-# map()의 결과값은 담아줄 그릇(리스트나 튜플 등)이 필요
-x = [1, 2, 3, 4, 5]
-list(map(float, x))
-tuple(map(lambda x: x**3, x))
 
 
 # --------------------
 # String
 # --------------------
 
-# 문장 안에서 ', " 사용( \ 백슬래시)
-"그는 나에게 말했다. \'거기 가지마!\'"
-"그는 나에게 말했다. \"거기 가지마!\""
+# >>> Print
+print("우리", "나라")                        # 띄어쓰기
+print("우리" + "나라")                       # 붙여쓰기
+print("우리" + "나라" + str(10000) + "세")   # + 에서는 자료형 맞춰야 함
+print("그는 \"J\"에게 말했다. \'가지마!\'")   # 문장 안에서 ', " 사용( \ 백슬래시)
 
-# 긴 문장(""" 3개)
-"""
-동해물과 백두산이 마르고 닿도록
-하느님이 보우하사 우리나라 만세
-"""
+print("23년 승률은 %d%% 입니다." % 100)      # 퍼센트 시는 2번 써 준다
+print("%5.3f" % 3.141592)                   # 소수점 찍기
+print("'%d년은 %s년 입니다." % (24, "갑진"))
 
-# 문자열 포맷
-"{money}원 짜리는 {cnt}개 입니다." .format(money=500, cnt=2)
-"'%d년은 %s년 입니다." % (24, "갑진")
-"23년 승률은 %d%% 입니다." % 100  # 퍼센트 표시는 2번 써 준다
-"%5.3f" % 3.141592               # 소수점 찍기
+print("{money}원 짜리는 {cnt}개 입니다." .format(money=500, cnt=2))
 
-# find(): 찾는 문자없으면 -1
+lst = [20, '시험', 21]
+strValue = lst[1]
+print(f'{lst[0]}회 {lst[1]} 만점자 총 {lst[2]}명')
+print(f"'{lst[0]}'회 {lst[1]} 만점자 총 '{lst[2]}'명")  # 홀따옴표 활용하기(외부를 쌍따옴표로 감싸기)
+print(f"나의 조국은 '{strValue}'입니다.")
+print(f"나의 조국은 '{strValue:<15}'입니다.")
+print(f"나의 조국은 '{strValue:>15}'입니다.")
+print(f"나의 조국은 '{strValue:^15}'입니다.")           # 가운데정렬의 중간이 맞지 않으면 왼쪽으로 치우침
+
+# >>> Find
 test = "Welcome to Korea"
-test.find("Z")              # -1
-test.find("K")              # 11
+
+test.find("Z")              #  찾는 문자없으면 -1
+test.index("Z")              # error
+
+test.find("K")              # 11 (이하 index 매서드 동일)
 test.find("K") - len(test)  # -5
 test.find("e")              # 앞에서 부터 첫번째 것
 test.rfind("e")             # 뒤어세 부터 첫번째 것
 
-# index(): 찾는 문자없으면 error
+# >>> Replace
 test = "Welcome to Korea"
-test.index("Z")              # error
-test.index("K")              # 11
-test.index("K") - len(test)  # -5
-test.index("e")              # 앞에서 부터 첫번째 것
-test.rindex("e")             # 뒤어세 부터 첫번째 것
 
-# lower(), upper(), capitalize()
-test = "Welcome to Korea"
-print(test.lower())
-print(test.upper())
-print(test.capitalize())  # 문장의 시작 단어만 대문자
+test.replace('K', 'C')
+test[:-5] + 'C' + test[-4:]
 
-# strip(), lstrip(), rstrip()
+# >>> strip(), lstrip(), rstrip()
 test = "   Welcome to Korea   "
 test.strip()
 test.lstrip()
 test.rstrip()
 
-# replace()
+# >>> lower(), upper(), capitalize()
 test = "Welcome to Korea"
-test.replace('K', 'C')
+print(test.lower())
+print(test.upper())
+print(test.capitalize())  # 문장의 시작 단어만 대문자
 
-test[:-5] + 'C' + test[-4:]
-
-# join(): 연결자
-test = "seoul"
-'*'.join(reversed(test))
-
-# reversed(): 원본보존 및 결과반환, reverse(): 원본변경
-a = [9, 2, 8, 5, 7]
-list(reversed(a))
-a.reverse(); a
-
-# sorted(): 원본보존 및 결과반환, sort(): 원본변경
-a = 'I am a ion Man'.split()  # 리스트로 결과 반환
-sorted(a)
-a.sort(); a  # 오름차순 (내림차순 옵션 reverse=True)
-
-# >>> print()
-print("우리", "나라")                       # 띄어쓰기
-print("우리" + "나라")                      # 붙여쓰기
-print("우리" + "나라" + str(10000) + "세")  # + 에서는 자료형 맞춰야 함
-print("이름은 %s, 나이는 %d입니다" %('Tom', 100))
-
-# >>> ' '.join(map(str, tup_list)): tup_list의 각 요소를 문자로 바꾸어 ''사이의 구분자로 연결된 하나의 문자열로 반환
-a = 20
-b = "시험"
-c = 21
-strSentence = a, '회 ', b, ' 만점자 총 ', c, '명'
+# >>> join(): 연결자
+strSentence = 20, '회 ', '시험', ' 만점자 총 ', 21, '명'
 type(strSentence)  # 튜플
 
-print(strSentence)
-print(str(strSentence))  # str()함수로 변형하면 ()까지 문자열로 표시됨
+print(str(strSentence))  # 이슈: str()함수로 변형하면 ()까지 표시됨
 
 print(''.join(map(str, strSentence)))
-print('/'.join(map(str, strSentence)))
+print('/'.join(reversed(list(map(str, strSentence)))))
 
-# >>> f-문자열
-lst = [20, '시험', 21]
-print(f'{lst[0]}회 {lst[1]} 만점자 총 {lst[2]}명')
-print(f"'{lst[0]}'회 {lst[1]} 만점자 총 '{lst[2]}'명")  # 홀따옴표 활용하기(외부를 쌍따옴표로 감싸기)
-
-# f문자열 자릿수 옵션
-strValue = 'KOREA'
-print(f"나의 조국은 '{strValue}'입니다.")
-print(f"나의 조국은 '{strValue:<15}'입니다.")
-print(f"나의 조국은 '{strValue:>15}'입니다.")
-print(f"나의 조국은 '{strValue:^15}'입니다.")  # 가운데정렬의 중간이 맞지 않으면 왼쪽으로 치우침
-
-
-
-# >>> 딕셔너리 키 정렬
+# >>> 워드클라우드: 딕셔너리 키 정렬
 str = """Lorem Ipsum is simply dummy text of the printing and typesetting industry.
  Lorem Ipsum has been the industry's standard dummy text ever since the 1500s,
  when an unknown printer took a galley of type and scrambled it to make a type
