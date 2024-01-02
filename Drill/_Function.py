@@ -95,29 +95,6 @@ _test2()
 
 
 # --------------------
-# 람다식
-# --------------------
-
-# >>> iterable 자료형에 적용
-lst = [1, 2, 3, 4, 5, 6, 7, 8, 9]
-
-list(filter(lambda x: x % 2, lst))  # filter(): 참인 결과 값만 반환
-list(filter(lambda x: x % 2 != 0, lst))
-list(filter(lambda x: x % 2 == 0, lst))
-
-# >>> 함수의 인자에 적용
-def my_strip(x):
-    return x.strip()
-
-a = ' UD001 - lion, UD002 - tiger , UD003 - hippo '
-b = a.split(',')
-
-c = list(map(my_strip, b))
-c.sort(key=lambda x: x[8])  # 9번째 글자 기준 오름차순 정렬
-print(c)
-
-
-# --------------------
 # 내장 함수
 # --------------------
 
@@ -159,6 +136,29 @@ id(100)
 x = list([1, 2, 3, 4, 5])
 type(x)
 isinstance(x, list)
+
+
+# --------------------
+# 람다식
+# --------------------
+
+# >>> iterable 자료형에 적용
+lst = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+
+list(filter(lambda x: x % 2, lst))  # filter(): 참인 결과 값만 반환
+list(filter(lambda x: x % 2 != 0, lst))
+list(filter(lambda x: x % 2 == 0, lst))
+
+# >>> 함수의 인자에 적용
+def my_strip(x):
+    return x.strip()
+
+a = ' UD001 - lion, UD002 - tiger , UD003 - hippo '
+b = a.split(',')
+
+c = list(map(my_strip, b))
+c.sort(key=lambda x: x[8])  # 9번째 글자 기준 오름차순 정렬
+print(c)
 
 
 # --------------------
@@ -308,9 +308,9 @@ for k, v in dict(lstcnts).items():  # 리스트를 딕셔너리로 변환하여 
     print(k, '\t', v)
 
 
-"""
-_Grammar.py
-"""
+
+
+
 
 # =========================
 # String
