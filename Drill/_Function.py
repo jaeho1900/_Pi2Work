@@ -223,63 +223,86 @@ lst.count(1)
 # --------------------
 
 # >>> Print
+
+# str concatenation: + ,
 print("우리", "나라")                        # 띄어쓰기
 print("우리" + "나라")                       # 붙여쓰기
 print("우리" + "나라" + str(10000) + "세")   # + 에서는 자료형 맞춰야 함
 print("그는 \"J\"에게 말했다. \'가지마!\'")   # 문장 안에서 ', " 사용( \ 백슬래시)
 
+# C 언어 % 타입: %s, %c, %d, %f, %%
 print("23년 승률은 %d%% 입니다." % 100)      # 퍼센트 시는 2번 써 준다
 print("%5.3f" % 3.141592)                   # 소수점 찍기
 print("'%d년은 %s년 입니다." % (24, "갑진"))
+print('%s의 투자비중은 %-15.2f%%입니다.' % (a[-6:-1], b))              # 좌정렬 및 자릿수 맞춤
+print('%s의 투자비중은 % 15.2f%%입니다.' % (a[-6:-1], b))              # 우정렬 및 자릿수 맞춤
+print('%s의 투자비중은 %015.2f%%입니다.' % (a[-6:-1], b), end='\n\n')  # 우정렬 및 0채움
 
-print("{money}원 짜리는 {cnt}개 입니다." .format(money=500, cnt=2))
+# format 타입: {지정변수:[빈공간채울문자][정렬방향<>][+양수부호][공간수][,][.소수자릿수]}
+print('value is {{ {} }}'.format('%d' % b))
+print('{}의 투자비중은 {}%입니다.'.format(a[7:12], '%15.2f' % b))
+print('{name}의 투자비중은 {money}%입니다.'.format(name=a[7:12], money='%15.2f' % b))
+print('{0}의 투자비중은 {1:<15.2f}%입니다.'.format('K씨', -1000.5))   # 좌정렬
+print('{}의 투자비중은 {:^15.2f}%입니다.'.format('K씨', -1000.5))     # 가운데정렬
+print('{}의 투자비중은 {:>15.2f}%입니다.'.format('K씨', -1000.5))     # 우정렬
+print('{}의 투자비중은 {:0>15.2f}%입니다.'.format('K씨', -1000.5))    # 공백채우기
+print('{}의 투자비중은 {:,.2f}%입니다.'.format('K씨', -1000.5))       # 천단위콤마표시
+print('{0:+15,} 과 {1:+15,} 사이'.format(50000, -50000))             # 양수부호
 
+# f-string 타입(python 3.6 이후)
 lst = [20, '시험', 21]
 strValue = lst[1]
+
 print(f'{lst[0]}회 {lst[1]} 만점자 총 {lst[2]}명')
 print(f"'{lst[0]}'회 {lst[1]} 만점자 총 '{lst[2]}'명")  # 홀따옴표 활용하기(외부를 쌍따옴표로 감싸기)
 print(f"나의 조국은 '{strValue}'입니다.")
 print(f"나의 조국은 '{strValue:<15}'입니다.")
 print(f"나의 조국은 '{strValue:>15}'입니다.")
 print(f"나의 조국은 '{strValue:^15}'입니다.")           # 가운데정렬의 중간이 맞지 않으면 왼쪽으로 치우침
+print(f'value is {{ {int(b)} }}')
+print(f'{a[7:12]}의 투자비중은 {b:<15,.2f}%입니다.')
+print(f'{a[7:12]}의 투자비중은 {b:^15,.2f}%입니다.')
+print(f'{a[7:12]}의 투자비중은 {b:>15,.2f}%입니다.')
 
-# >>> Find
+# >>> Count
 test = "Welcome to Korea"
 
+len(test)        # 문자열의길이, 리스트/튜플카운팅(NaN 포함)
+test.count('e')  # 특정문자갯수, 리스트/튜플카운팅(NaN 제외)
+
+# >>> 인덱스 위치값
 test.find("Z")              #  찾는 문자없으면 -1
 test.index("Z")              # error
 
 test.find("K")              # 11 (이하 index 매서드 동일)
 test.find("K") - len(test)  # -5
-test.find("e")              # 앞에서 부터 첫번째 것
-test.rfind("e")             # 뒤어세 부터 첫번째 것
+test.find("e")              # 왼쪽부터 첫번째 인덱스 위치값
+test.rfind("e")             # 오른쪽부터 첫번째 인덱스 위치값
+[i for i, x in enumerate(test) if x == 'e']  # 모든 원소의 인덱스 위치 반환
 
-# >>> Replace
-test = "Welcome to Korea"
-
-test.replace('K', 'C')
-test[:-5] + 'C' + test[-4:]
-
-# >>> strip(), lstrip(), rstrip()
+# >>> 공백 제거
 test = "   Welcome to Korea   "
 test.strip()
 test.lstrip()
 test.rstrip()
 
-# >>> lower(), upper(), capitalize()
+# >>> 대문자 양식
 test = "Welcome to Korea"
 print(test.lower())
 print(test.upper())
 print(test.capitalize())  # 문장의 시작 단어만 대문자
 
-# >>> join(): 연결자
-strSentence = 20, '회 ', '시험', ' 만점자 총 ', 21, '명'
-type(strSentence)  # 튜플
+# >>> 문자길이 양식
+test.ljust(50, '-')   # 총길이 50, 왼쪽정렬, 지정문자 채움
+test.rjust(50, ' ')   # 총길이 50, 오른쪽정렬, 공백 채움
 
-print(str(strSentence))  # 이슈: str()함수로 변형하면 ()까지 표시됨
-
-print(''.join(map(str, strSentence)))
-print('/'.join(reversed(list(map(str, strSentence)))))
+# >>> Replace, Split, Join
+a = 'asiana air com'
+b = a.replace(' ', '.')
+a[7:10] + '@' + a[-3:]
+c = b.split('.', maxsplit=1)
+d = '@'.join(c)
+print(d)
 
 # >>> 워드클라우드: 딕셔너리 키 정렬
 str = """Lorem Ipsum is simply dummy text of the printing and typesetting industry.
@@ -308,180 +331,14 @@ for k, v in dict(lstcnts).items():  # 리스트를 딕셔너리로 변환하여 
     print(k, '\t', v)
 
 
-
-
-
-
-# =========================
-# String
-# =========================
-
-s1, s2 = 'I need Tiger.', '   white, black, blue   '
-
-# # 갯수
-len(s1)        # 문자열의길이, 리스트/튜플카운팅(NaN 포함)
-s1.count('e')  # 특정문자갯수, 리스트/튜플카운팅(NaN 제외)
-
-# # 인덱스 위치
-s1.find('e')   # 왼쪽부터 첫번째 인덱스 위치 반환, 없으면 '-1' 반환
-s1.rfind('e')  # 오른쪽부터 첫번째 인덱스 위치 반환
-s1.index('e')  # 왼쪽부터 첫번째 인덱스 위치 반환, 없으면 'ValueError' 발생
-s1.rindex('e', 0, 5)
-[i for i, x in enumerate(s1) if x == 'e']  # 모든 원소의 인덱스 위치 반환
-
-# # 공백 제거
-s2.strip()
-s2.lstrip()
-s2.rstrip()
-
-# # 문자길이 양식
-s2.ljust(50, '-')   # 총길이 50, 왼쪽정렬, 지정문자 채움
-s2.rjust(50, ' ')   # 총길이 50, 오른쪽정렬, 공백 채움
-
-# # 대문자 양식
-s1.upper()       # 문자열의 모든 알파벳을 대문자로 바꾸기
-s1.title()       # 알파벳 외 모든 문자열의 첫글자를 대문자로 바꾸기
-s1.capitalize()  # 문장의 첫글자만 대문자로 바꾸기
-
-# # replace, split, join
-a = 'asiana air com'
-b = a.replace(' ', '.')
-c = b.split('.', maxsplit=1)
-d = '@'.join(c)
-print(d)
-
-# # print 방법 변화
-a = 'I need Tiger.'
-b = 1233.84592
-
-# str concatenation: + ,
-print(a[7:12] + '의 투자비중은' + str(round(b, 2)) + '%입니다.')
-print(a[7:12], '의 투자비중은', str(round(b, 2)), '%입니다.', sep='', end='\n\n')
-
-# C 언어 % 타입: %s, %c, %d, %f, %%
-print('value is { %d }' % b)
-print('%s의 투자비중은 %-15.2f%%입니다.' % (a[-6:-1], b))              # 좌정렬 및 자릿수 맞춤
-print('%s의 투자비중은 % 15.2f%%입니다.' % (a[-6:-1], b))              # 우정렬 및 자릿수 맞춤
-print('%s의 투자비중은 %015.2f%%입니다.' % (a[-6:-1], b), end='\n\n')  # 우정렬 및 0채움
-
-# format 타입: {지정변수:[빈공간채울문자][정렬방향<>][+양수부호][공간수][,][.소수자릿수]}
-print('value is {{ {} }}'.format('%d' % b))
-print('{}의 투자비중은 {}%입니다.'.format(a[7:12], '%15.2f' % b))
-print('{name}의 투자비중은 {money}%입니다.'.format(name=a[7:12], money='%15.2f' % b))
-print('{0}의 투자비중은 {1:<15.2f}%입니다.'.format('K씨', -1000.5))   # 좌정렬
-print('{}의 투자비중은 {:^15.2f}%입니다.'.format('K씨', -1000.5))     # 가운데정렬
-print('{}의 투자비중은 {:>15.2f}%입니다.'.format('K씨', -1000.5))     # 우정렬
-print('{}의 투자비중은 {:0>15.2f}%입니다.'.format('K씨', -1000.5))    # 공백채우기
-print('{}의 투자비중은 {:,.2f}%입니다.'.format('K씨', -1000.5))       # 천단위콤마표시
-print('{0:+15,} 과 {1:+15,} 사이'.format(50000, -50000))             # 양수부호
-
-# f-string 타입(python 3.6 이후)
-print(f'value is {{ {int(b)} }}')
-print(f'{a[7:12]}의 투자비중은 {b:<15,.2f}%입니다.')
-print(f'{a[7:12]}의 투자비중은 {b:^15,.2f}%입니다.')
-print(f'{a[7:12]}의 투자비중은 {b:>15,.2f}%입니다.')
-
-
-# =========================
-# List : list함수는 실행만으로 원본이 바뀜
-# =========================
-
-movie, movie1, movie2, movie3 = ['b', 'o', 'x']
-
-# # 갯수
-len(movie)
-movie.count('x')
-
-# # 인덱스 위치
-movie.index('x')  # 첫번째 인덱스 번호
-
-# # insert
-movie1.append(movie3)         # 마직막 위치에 원리스트(2단 list)로 삽입
-movie2.extend(movie3)         # 마지막 위치에 원리스트를 풀어서 병합
-movie3.insert(2, '위치:2')    # 원하는 인덱스 위치에 삽입
-
-# # replace
-movie3[0] = ['c', 'a', 'r']     # 원리스트(2단 list)로 삽입
-movie3[0:1] = ['c', 'a', 'r']   # 원리스트를 풀어서 병합
-
-# # delete
-movie.remove('x')        # 원소값으로 삭제
-movie[3:] = []           # 범위로 삭제
-movie.pop()              # 마지막 위치값을 삭제하면서 삭제된 값을 반환
-movie.pop(1)             # 해당 위치값을 삭제하면서 삭제된 값을 반환
-movie.clear()            # 전부 비우기
-
-# # 리스트를 문자열로 변환
-lst = ['태연', 100, '정현', 200, '성진']
-lst_string1 = ", ".join([str(a) for a in lst])
-lst_string2 = ", ".join(map(str, lst))
-print(lst_string1, lst_string2, sep="\n")
-
-# # 문자열을 리스트로 변환
-lst = '태연 | 진우 | 정현 | 하늘 | 성진'
-lst_split = lst.split("|")
-print(lst_split)
-
-# # 줄 단위로 구분된 문자열을 리스트로 변환
-lst = 'haha, \nhoho, \nhihi'
-lst.splitlines()
-
-# # 반복문을 활용한 리스트 생성
-[i * 5 for i in range(1, 10) if i % 2 == 0]
-[i * 5 if i % 2 == 0 else i for i in range(1, 10)]  # if-else문은 for문 앞에 위치**
-
-# # zip(): 리스트 또는 튜플을 묶어서 활용
-name = ['merona', 'gugucon']
-price = [500, 1500]
-
-to_list = list(zip(name, price))
-to_dict = {a: b for a, b in zip(name, price)}
-
-print(to_list, to_dict, sep="\n")
-print(['%s의 가격은 %d입니다.' % (a, b) for a, b in zip(name, price)])
-print(['%s의 가격은 %d입니다.' % (a, b) for a, b in to_list])
-print(['%s의 가격은 %d입니다.' % (a, b) for a, b in to_dict.items()])
-
-# # enumerate(): 리스트를 딕셔너리로 변환
-names = ['태연', '진우', '정현', '하늘', '성진']
-{'%d번' % (num): '%s' % (name) for num, name in enumerate(names, start=1)}
-{'%d번' % (p[0]): '%s' % (p[1]) for p in enumerate(names, start=1)}
-
-
-# =========================
-# Tuple 언팩킹
-# =========================
-
-# # 변수 앞에 *를 붙여주면 지정되지 않은 모든 데이터를 담는다
-scores = (1, 2, 3, 4, 5, 6)
-a, *b, c = scores  # 첫번째 데이터를 a, 마지막 데이터를 c로 바인딩하고 나머지를 *b에 바인딩
-print(type(b), b, tuple(b), sep='\n')
-
-
-def hap(num1, num2, num3, num4):
-    return num1 + num2 + num3 + num4
-
-
-scores = (1, 2, 3, 4)
-print(hap(*scores))   # hap(scores[0], scores[1], scores[2], scores[3])
-
-
-# # 함수에서 여러 값을 리턴하면 튜플로 패킹되어 튜플 객체가 리턴된다
-def foo():
-    return 1, 2, 3
-
-
-print(type(foo()), foo(), sep='\n')
-
-
-# =========================
+# --------------------
 # Dictionary : 순서와 index 는 무의미, []는 키값을 나타낼 뿐
-# =========================
+# --------------------
 
 aa = {1: 'one', 2: [1, 2, 3], '인사': '방가'}
 bb = {'korea': 'seoul', 'japan': 'tokyo'}
 
-# # access
+# >>> access
 list(aa.keys())
 list(aa.values())
 
@@ -489,16 +346,16 @@ aa['인사']               # 키값이없으면 KeyError, 프로세스 중단
 aa.get('인사')           # 키값이없으면 무반응, 다음 프로세스 진행
 aa.get('gender', 'man')  # 키값이없을때 지정값 반환
 
-# # update: 이어 붙이기
+# >>> update: 이어 붙이기
 aa[1] = 'bye'
 aa[6] = 'six'
 aa.update(bb)
 
-# # delete
+# >>> delete
 del aa['인사']
 aa.clear()
 
-# # 딕셔너리의 생성
+# >>> 딕셔너리의 생성
 name = ['merona', 'gugucon', 'bibibig']
 price = [500, 1000, 600]
 {"메로나": 500, "구구콘": 1000}          # 일반 방법
@@ -508,9 +365,9 @@ dict(zip(name, price))                   # dict() + zip() 메소드
 {k: v for k, v in zip(name, price) if v < 1000}
 
 
-# =========================
+# --------------------
 # 조건문, 반복문
-# =========================
+# --------------------
 
 # # if문: if:_[elif:]_[else:]
 
@@ -847,52 +704,78 @@ class InsufficientFundsAsk(MyError):
         return "잔고가 부족합니다."
 
 
-# -----------------------------
-# re()
-# -----------------------------
+# =====================
+# re
+# =====================
 
-# # 1. re 모듈의 메소드 ----------
+# --------------------
+# 정규표현식
+# --------------------
 
-# 종류       기능              성공반환값      실패반환값
-# match      첫글자부터 검색    매칭 1개        None
-# search     문자열 전체 검색   매칭 1개        None
-# findall    문자열 전체 검색   문자열 리스트   빈 리스트
-# finditer   문자열 전체 검색   매칭 순환값     None
-# fullmatch  완벽 일치          매칭 1개       None
-# sub        패턴 대체
-# compile    정규식 반복 사용
-
-# # 2. match object의 메소드 ----------
-
-# 종류   기능                           예시
-# group  매칭된 문자열을 반환           people  # groups(): 소괄호()가 존재하는 패턴에서만 활용
-# start  매칭된 문자열의 시작 위치      5
-# end    매칭된 문자열의 끝 위치        11
-# span   매칭된 문자열의(시작, 끝)튜플  (5, 11)
-
-# # 3. 정규표현식 ----------
-
-# # Character classes
-# .	        any character except newline
-# \w\d\s	any word(알파벳,숫자,언더스코어), digit, whitespace(공백,\t,\n,\r,\f,\v)
-# \W\D\S	not any word, digit, whitespace
-# abc       문자열('abc')를 찾음
-# [abc]	    any of a, b, c
-# [^abc]	not any of a, b, c
-# [0-9]                character between 0 & 9
-# [a-zA-Z]             알파벳
+# abc                  문자열('abc')를 찾음
+# [abc]                a 또는 b 또는 c
+# [^ab]                부정, [^a^b], [^(ab)]와 같음
+# [a-zA-Z]             (-)기호로 짝을 맞춰 범위를 지정
 # [ㄱ-ㅎ|ㅏ-ㅣ|가-힣]   한글
+# [0-9]                숫자
+# ^                    시작
+# $                    끝
+# .                    문자(공백문자, 기호 포함) 1개
+# * 	               0 or more
+# +	                   1 or more
+# ?	                   0 or 1
+# {숫자}               숫자 만큼
+# {숫자,}              숫자 이상
+# {숫자1,숫자2}        숫자1 이상, 숫자2 이하 (숫자1,숫자2 모두 붙여쓰기에 주의!!)
+# a+?    	           match as few as possible(1 if 1 or more)
+# a{2,}?	           match as few as possible(2 if 2 or more)
+# ab|cd	               match ab or cd (순서 중요!!)
 
-# # Anchors
-# ^abc$	    start / end of the string
-# \b\B	    word, not-word boundary
-# \b(?!\bto\b)\w+\b  ' to '단어 제외('too'는 포함)
+# \d 숫자 1개                        \D
+# \w 알파벳+한글+숫자+_               \W
+# \s 공백+탭                         \S
+# \b 단어경계(\w 와 \W 사이의 경계)   \B 철자경계(\w와 \w 사이)
 
-# # Escaped characters
-# \.\*\\	escaped special characters
-# \t\v\n\r	tab, vertical tab, linefeed, carriage return
+# >>> \ 사용법!!
+# '\문자열' 은 --> 짝수로만 인식
+"\superman"        # \2개
+"\\superman"       # \2개
+"\\\superman"      # \4개
+"\\\\\superman"    # \6개
 
-# # Groups & Lookaround
+# r'\문자열' 은 --> 2배수로 인식
+r"\superman"        # \2개
+r"\\superman"       # \4개
+r"\\\superman"      # \6개
+
+# 파이썬 엔진은 --> '\문자열', r'\문자열'에서 산정된 '\' 개수를 --> 50% 만 인식
+print("\superman")    # \1개 -> \2개 -> \1개
+print("\\superman")   # \2개 -> \2개 -> \1개
+print(r"\\superman")  # \2개 -> \4개 -> \2개 (직관적임)
+
+
+# --------------------
+# 사용법
+# --------------------
+
+import re
+
+# >>> re 모듈의 메소드
+# 종류          검색범위                         성공반환값     실패반환값
+# re.match      문장 처음부분만                   객체 1개       None
+# re.search     문장 처음부터 일치하는 첫번째 것   객체 1개       None
+# re.findall    문장 처음부터 일치하는 모든 것     리스트         빈 리스트
+# re.finditer   문장 처음부터 일치하는 모든 것     순환객체       None
+# re.fullmatch  문장 일치                        객체 1개       None
+# re.compile    정규식 반복 사용
+# re.sub        패턴 대체
+
+# >>> 옵션
+# re.I 대소문자 불문
+# re.S 메타문자(.)에서 개행문자(\n) 포함
+# re.M 메타문자(^$)를 전체문장이 아닌 각 라인에 적용
+
+# >>> Groups & Lookaround
 # (abc)	    capture group
 # \1	    backreference to group #1(그룹1 표현식에서 캡쳐한 결과물을 복사)
 # (?:abc)	non-capturing group(캡쳐그룹 해제)
@@ -901,38 +784,76 @@ class InsufficientFundsAsk(MyError):
 # (?<=abc)	positive lookbehind, 조건 뒤의 문자가 조건을 만족하는 경우 그것만 선택
 # (?<!abc)	negative lookbehind, 조건 뒤의 문자가 조건을 만족하는 경우 그것만 제외하고 선택
 
-# # Quantifiers & Alternation
-# a* 	      0 or more
-# a+	      1 or more
-# a?	      0 or 1
-# a{5}        exactly five
-# a{2,}       two or more
-# a{1,3}	  between one & three
-# a+?    	  match as few as possible(1 if 1 or more)
-# a{2,}?	  match as few as possible(2 if 2 or more)
-# ab|cd	      match ab or cd
+# 패턴 컴파일에서 옵션 지정
+text = '''홍길동 010-1234-5671
+이순신 010-3333-9632
+김유신 010.9999.5417
+강감찬 010 111  2222'''
+pattern = re.compile(r'\w+\s+\d{3}[-_. ]+\d{3,4}[-_.\s]+\d{4}', re.M)
+rst_match = re.findall(pattern, text)
+print('\n'.join(rst_match))
 
-# # 4. 예제 ----------
+# 매칭함수(pattern, text, 옵션)에서 옵션 지정
+re.findall('k.', 'k5r k k\n Ks', re.I)
+re.findall('k.', 'k5r k k\n Ks', re.S)
+re.findall('k.', 'k5r k k\n Ks', re.M)
+result = re.finditer('010', text)
+for iter in result:
+    print(iter)
 
-# # re 모듈의 메소드 예제
-import re
-str = 'love people around you, love your work, love yourself'
+re.findall('(?i)k.', 'k5r k k\n Ks')  # 패턴에 (?옵션)을 직접 입력(인라인 방식)
+re.findall('(?s)k.', 'k5r k k\n Ks')
+re.findall('(?m)k.', 'k5r k k\n Ks')
 
-# match: 문자열의 첫글자부터 검색 -> 처음 1개의 match 객체만 반환
-result = re.match('you', str)
-print(result)
+# >>> 그룹핑 및 치환
+text = '홍길동 010-1234-5671'
 
-# search: 문자열의 전체를 검색 -> 처음 1개의 match 객체만 반환
-result = re.search('you', str)
-print(result)
+# 컴파일의 sub() 그룹핑
+pattern = re.compile(r'^(\w+)\s+(\d{3}).(\d{3,4}).+(\d{4})$', re.M)
+print(pattern.sub(r'\g<1> : \g<2> - \g<3> - ****', text))
+print(pattern.sub(r'\1 : \2 - \3 - ****', text))
+print(pattern.sub('\\1 : \\2 - \\3 - ****', text))
 
-# findall: 문자열의 전체를 검색 -> 전부 찾아서 리스트로 반환
-result = re.findall('love', str)
-print(result)
+# 매칭객체의 group() 그룹핑
+rst_match = re.search(pattern, text)
+print(rst_match.group(0))  # group(0) : 매칭된 전체 문자열 결과값
+print(rst_match.group(1))  # group(1) : 매칭된 1번째 그룹의 문자열 결과값
+print(rst_match.group(4))  # group(4) : 매칭된 4번째 그룹의 문자열 결과값
 
-# # 한글만 추출하는 방법
-import re
+print(rst_match.start())      # start(): 매칭된 문자열의 시작 위치 반환
+print(rst_match.end())        # end(): 매칭된 문자열의 끝 위치 반환
+print(rst_match.span())       # span(): 매칭된 문자열의 (시작, 끝) 위치 튜플 반환
 
+# re.sub(pattern, replacement, string, 치환횟수) 치환
+print(re.sub(pattern='aaa', repl='xxx', string='aa aaa aaaa aaaaa', count=2))
+print(re.sub('aaa', 'xxx', 'aa aaa aaaa aaaaa', 3))
+
+# >>> [-] 사용법
+text = 'my.name@localhost.com'
+# pattern = re.compile(r'[a-zA-Z0-9-.]+@[\w-.]+.com')  # '-'이 짝을 이루면 '범위'로 해석되어 bad character 에러 발생
+pattern = re.compile(r'[a-zA-Z0-9-.]+@[\w-]+.com')     # '-' 앞뒤의 짝을 깨서 해결
+pattern = re.compile(r'[a-zA-Z0-9-.]+@[\w\-.]+.com')   # '-' 앞에 \ 추가해서 해결
+rst_matchLst = re.findall(pattern, text)
+print(rst_matchLst)
+
+# >>> | 사용법
+text = "kor 단어는 매칭이 되지만, korea 또는 korean 단어에는 매칭이 안되는 패턴"
+pattern = re.compile(r'kor|korea|korean')  # kor을 먼저 쓰면 kor만 3개 찾음
+pattern = re.compile(r'korean|korea|kor')
+print(re.findall(pattern, text))
+
+# >>> \b 사용법
+print("\\b 개수: ", len(re.findall(r'\b', 'Welcome to Seoul.')))
+print("\\B 개수: ", len(re.findall(r'\B', 'Welcome to Seoul.')))
+print(re.findall(r'\bkor\w+\b', "kor 는 비매칭 korea 또는 korean 와는 매칭"))
+
+# >>> 웹페이지 URL 정규식
+text = '웹주소는 http://yourcompany.com/search?a=111&b=222 이다.'
+pattern = re.compile(r'http[s]*://[a-zA-Z0-9-_]*[.]*[\w-]+[.]+[\w.-/~?&=%]+')
+rst_matchLst = re.findall(pattern, text)
+print(''.join(rst_matchLst))  # 리스트에서 문자열만 추출
+
+# >>> 한글만 추출
 text = "ㅋㅋㅋ ab 안녕하세요, do노력합ㅣ니다"
 
 re.compile('[ㄱ-ㅎ]+').findall(text)  # 출력 ['ㅋㅋㅋ']
@@ -950,57 +871,27 @@ p.findall(txt)
 p2 = re.compile('(?<=\[\[분류:)([ |0-9|ㄱ-ㅎ|ㅏ-ㅣ|가-힣]*?)(?=\]\])')
 p2.findall(txt)
 
-# finditer: 문자열의 전체를 검색 -> 전부 찾아서 iterator(순회객체)로 반환
-result = re.finditer('love', str)
-for iter in result:
-    print(iter)
+# >>> 정규식과 문자열 함수 대비
+# Q) Notebook 이 포함된 단어를 모두 찾아라
+text = '''
+jupyternotebook, evernote, notebook, onenote, notebook1, 21세기notebook, jupyter-notebook,
+jupyter_notebook, jupyter@notebook
+'''
 
-# fullmatch: 문자열과 완벽하게 일치할 때 반환
-result = re.fullmatch('love people around you, love your work, love yourself', str)
-print(result)
+# A1) 정규식
+pattern = re.compile(r'\w*[-@]*notebook\w*')
+print(', '.join(re.findall(pattern, text)))
 
-result = re.fullmatch('.*', str)
-print(result)
+# A2) 문자열 함수
+a = text.split()
+rst_lists = []
+for i in a:
+    if 'notebook' in i:
+        rst_lists.append(i)
 
-# sub(패턴, new문자열, old문자열, 교체횟수)
-str2 = '010-2343-9537'
-result = re.sub(r'(?<=\d{3}-\d{4}-)\d{4}', '****', str2)
-print(result)
+print(rst_lists)
 
-re.sub("2343", "1234", str2)
-re.sub(r"[^\d]", "", str2, 1)
-
-# compile(패턴, 플래그): 정규식을 반복 사용할 때 지정 필요
-c = re.compile('c')
-print(c.sub('zzz', 'abcdefg'))
-print(c.search('vcxdfsa'))
-
-# # match 객체의 메소드 예제
-result = re.search('people', str)
-
-# group(): 매칭된 문자열 반환
-print(result.group())
-# start(): 매칭된 문자열의 시작 위치 반환
-print(result.start())
-# end(): 매칭된 문자열의 끝 위치 반환
-print(result.end())
-# span(): 매칭된 문자열의 (시작, 끝) 위치 튜플 반환
-print(result.span())
-# groups(), group(int)
-result = re.match(r'(\d{2})-(\d{3,4})-(\d{4})', '02-123-1234')
-print(result.group())
-print(result.groups())
-print(result.group(0))  # 전체 원소값
-print(result.group(1))
-print(result.group(2))
-print(result.group(3))
-
-# -----------------------------
-# eval()
-# -----------------------------
-
-ex = '5 + 4'
-eval(ex)
+print([i for i in a if 'notebook' in i])
 
 # -----------------------------
 # globals(), locals()

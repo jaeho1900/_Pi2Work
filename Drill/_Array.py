@@ -113,13 +113,15 @@ ar30[1::2]  # 시작도 포함 !!
 ar30[-1::-1]
 ar30[-1:-6:-2]
 
-# >>> 팬시 색인: 배열(리스트)을 색인에 사용, 기존(다차원) 배열의 형태를 유지하며 반환
+# >>> 팬시 색인: 정수배열(리스트)을 색인에 사용, 연속범위는 사용 못함
 # 팬시 색인은 메모리 공유를 하지 않는다(뷰가 아님)
-ar30[[0]]      # array([[1, 2, 3, 4, 5, 6]])
-ar30[[0, -1]]  # array([[1, 2, 3, 4, 5, 6], [25, 26, 27, 28, 29, 30]])
+ar30[[0]]                   # array([[1, 2, 3, 4, 5, 6]])
+ar30[[0, -1]]               # array([[1, 2, 3, 4, 5, 6], [25, 26, 27, 28, 29, 30]])
+ar30[[0, -1], :]
+ar30[[1, 3, 3], [2, 1, 3]]  # array([ 9, 20, 22])
 
-# >>> 넘파이 ix_함수를 이용한 팬시 색인: 지정된 인덱스 값을 반환하여 직관적임
-ar30[np.ix_([2,3],[2,3])]
+# >>> 넘파이 ix_함수를 이용한 팬시 색인: 지정된 인덱스 값을 배열합 기준으로 반환(직관적)
+ar30[np.ix_([1, 3, 3], [2, 1, 3])]
 
 # >>> 3차원 배열의 인덱싱과 슬라이싱
 
@@ -345,7 +347,6 @@ pd.DataFrame([[1, 2, 3, 4, 5], [6, 7, 8, 9, 10]], index=list('ab'))
 
 # 넘파이로 생성
 pd.Series(np.array([1, 2, 3, -4, 5]))
-
 pd.DataFrame(np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]]))
 pd.DataFrame(np.arange(1, 10).reshape(3, 3))
 
@@ -360,13 +361,13 @@ raw_data = {'food':['melon', 'melon', 'apple', 'apple', 'apple', 'peach'],
 df = pd.DataFrame(raw_data)
 df
 
+# 특정 범위로 생성
+x = {'selectFood': df['food'][:-1]}
+pd.DataFrame(x)
+
 # 인덱스로 생성
 pd.DataFrame(df, columns=['year', 'food', 'quantity'])
 pd.DataFrame(df, index=[0, 1, 3])
-
-# 특정 범위로 생성
-x = {'selectFood': df2['food'][:-1]}
-pd.DataFrame(x)
 
 # 추가된 인덱스에 miss match된 값은 NaN(Not a Number) 생성
 pydic = {"서울": 100, "부산": 200, "광주": 300}
@@ -377,8 +378,8 @@ ar1 = pd.Series(pydic, index=_ix_name)
 ar1
 
 # 조건을 이용한 열 생성
-df2['addcol'] = df2.food == 'apple'
-df2
+df['addcol'] = df.food == 'apple'
+df
 
 # 시리즈를 데이터베이스로 변환
 ar = pd.Series(['a', 'b', 'c', 'd', 'e'])
@@ -466,7 +467,7 @@ del ar['k']
 df.drop(['Dave', 'Ellen'], inplace=False)  # 행(axis=0)
 df.drop('pop', axis=1, inplace=False)      # 열(axis=1)
 
-del df2['addcol']  # 열 삭제
+del df['addcol']  # 열 삭제
 
 # >>> 중복값 확인, 삭제
 
@@ -485,29 +486,29 @@ df.info()
 df.isnull().sum()
 
 # dropna()
-df.dropna(axis=0)                          # 결측값이 존재하는 모든 행(관측값) 삭제
-df.dropna(axis=1)                          # 결측값이 존재하는 모든 열(변수) 삭제
-df.dropna(subset=['city', 'pop'], axis=0)  # 지정된 열에 결측값이 존재하는 행(관측값)만 삭제
+df.dropna(axis=0)                          # 결측값이 존재하는 모든 행 삭제
+df.dropna(axis=1)                          # 결측값이 존재하는 모든 열 삭제
+df.dropna(subset=['city', 'pop'], axis=0)  # 지정된 열에 결측값이 존재하는 행만 삭제
 df.dropna(thresh=6, axis=1)                # thresh 옵션은 정상값이 지정 갯수 미만인 열 삭제
 
 # fillna(): 원본을 변화시키지는 않음
 mean_age = df.area.mean(axis=0)
-df.area.fillna(mean_age)                             # 평균값 대체
-df.where(pd.notnull(df), df.mean(), axis='columns')  # S.where(), DF.where(): 조건이 true면 원래값 유지, false면 명시된 값으로 대체
+df.area.fillna(mean_age)                                  # 평균값 대체
 most_freq = df['pop'].value_counts(dropna=True).idxmax()  # value_counts(): S의 unique value로 그룹핑해서 count하는 함수(groupby()에선 그룹 중복으로 피함)
 df['pop'].fillna(most_freq)                               # 최빈값 대체
-df['pop'].fillna(method='ffill', inplace=False)      # 이웃값 대체('ffill', 'bfill')
-df.fillna({'pop': most_freq, 'area': mean_age})      # 열별 대체
+df['pop'].fillna(method='ffill', inplace=False)           # 이웃값 대체('ffill', 'bfill')
+df.fillna({'pop': most_freq, 'area': mean_age})           # 열별 대체
 
 # 보간 대체(linear 선형보간, time 시간보간: 시간형 인덱스이어야 함)
 df.interpolate(method='linear')
 
-# np.where(조건문, true 일때 값, false 일때 값)
-np.where(pd.notnull(df['area']), df['call'], df['city'])
-
-# S.where(조건문, [특정값]): true 이면 현재 값 유지, false 이면 NaN 또는 '특정값' 대체
+# S.where(), DF.where(): 조건이 true면 원래값 유지, false면 명시된 값 또는 NaN으로 대체
+df.where(pd.notnull(df), df.mean(), axis='columns')
 ndf['확인일시'].where(pd.notnull(ndf['확인일시']), ndf['delay'] + ndf['발생일시'])
 ndf['건물'].where(ndf['대분류'] == '건물군', ndf['건물'].str.split('_').str[2])
+
+# np.where(조건문, true 일때 값, false 일때 값)
+np.where(pd.notnull(df['area']), df['call'], df['city'])
 
 # >>> 데이터셋 합치기, 나누기
 
@@ -533,7 +534,8 @@ df['city'].str.slice(2, 3)
 # np.where(조건문, true 일때 값, false 일때 값)
 np.where(df['area'] >= 50e3, "Big", "Small")
 
-# 행과 열 바꾸기(Transpose)
+# >>> 행과 열 바꾸기(Transpose)
+
 df2.T
 
 # >>> View
@@ -571,12 +573,12 @@ np.may_share_memory(v, v1)
 pydic = {"서울": 100, "부산": 200, "광주": 300, "세종": 400}
 ar = pd.Series(pydic)
 
-ar['서울']
-ar['부산':]
-ar['부산':'세종']  # 라벨로 슬라이싱(마지막도 포함!!)
 ar[-1]
 ar[2:]
 ar[1:3]
+ar['서울']
+ar['부산':]
+ar['부산':'세종']  # 라벨로 슬라이싱(마지막도 포함!!)
 
 ar = pd.Series(['a', 'b', 'c', 'd', 'e'])
 ar[ar > 'b']  # 비교 연산 활용
@@ -585,17 +587,17 @@ ar[ar > 'b']  # 비교 연산 활용
 df = pd.DataFrame(np.arange(1, 31).reshape(5, 6))
 
 df[4, 4]  # error (넘파이 배열 인덱싱 안됨 !!)
-df[0]     # 데이터프레임은 열기준 색인이 기본
+df[0]     # 데이터프레임은 [열]기준 색인이 기본
 df[5]
 df[3][4]  # df[열][행] 개념 !!
 df[4][4]
 
 df1 = pd.DataFrame(np.arange(1, 31).reshape(5, 6), index=list('abcde'), columns=list('ABCDEF'))
 
-df1[0]  # error
+df1[0]  # error (라벨이 존재하면 라벨로 색인)
 df1.A
 df1['A']
-df1[['A','E']]  # 다중 열 색인
+df1[['A','E']]  # 팬시색인
 df1['D']['b']   # df[열][행] 개념 !!
 
 # >>> 불린 응용
@@ -615,9 +617,10 @@ raw_data = {'food':['melon', 'melon', 'apple', 'apple', 'apple', 'peach'],
 df1 = pd.DataFrame(raw_data)
 
 # loc: 라벨형
-df1.loc[3]
+df1.loc[3]     # Series 반환
+df1.loc[[3]]   # DataFrame 반환
 df1.loc[:]
-df1.loc[[:]]   # error
+df1.loc[[:]]   # error (팬시색인은 연속범위는 사용 못함)
 df1.loc[1, 5]  # error
 df1.loc[[1, 5]]
 df1.loc[[1, 5], :]
@@ -628,22 +631,8 @@ df1.loc[2:4, 'food':'quantity']  # 마지막 지정 범위도 반환
 df1.iloc[:, 2]     # Series 반환
 df1.iloc[:, [2]]   # DataFrame 반환
 df1.iloc[:, 1:]
-df1.iloc[:, [1:]]  # error
+df1.iloc[:, [1:]]  # error (팬시색인은 연속범위는 사용 못함)
 df1.iloc[:, [0, 2, 1]]
-
-# >>> xs 인덱서
-
-# 행: axis=0
-mdf.xs('2000')
-mdf.xs('A_Seoul', level=1, drop_level=False)
-mdf.xs(('2000', 'A_Busan'))
-mdf.xs(('A_Seoul', slice(None)), level=[1, 0])
-
-# 열: axis=1
-mdf.xs('number', axis=1)
-mdf.xs('pop', level=1, axis=1)
-mdf.xs(('number', 'area'), axis=1)
-mdf.xs(('area', 'number'), level=[1, 0], axis=1)
 
 # >>> 멀티 인덱스
 
@@ -663,7 +652,22 @@ mdf.sort_index(level=1, axis=1)
 mdf.reorder_levels(['city', 'year'])
 mdf.reorder_levels([1, 0], axis=1)
 
+# >>> xs 인덱서
+
+# 행: axis=0
+mdf.xs('2000')
+mdf.xs('A_Seoul', level=1, drop_level=False)
+mdf.xs(('2000', 'A_Busan'))
+mdf.xs(('A_Seoul', slice(None)), level=[1, 0])
+
+# 열: axis=1
+mdf.xs('number', axis=1)
+mdf.xs('pop', level=1, axis=1)
+mdf.xs(('number', 'area'), axis=1)
+mdf.xs(('area', 'number'), level=[1, 0], axis=1)
+
 # >>> 피벗테이블
+
 # 행인덱스와 열인덱스의 조건을 만족하는 데이터가 2개 이상인 경우는 에러가 발생
 # 피벗테이블은 피라미드의 밑에서부터 columns->values->aggfunc 순으로 쌓임
 pd.pivot_table(df,
@@ -681,20 +685,19 @@ pd.pivot_table(df,
 # 전처리
 # --------------------
 
-# >>> 표준화
+# >>> 데이터 형식 변경
 df['area'].replace(np.nan, 0).astype('int64')                      # 형 변환
 df['pop'].str.replace(',', '').replace(np.nan, 0).astype('int64')  # 천단위 콤마 삭제
 df['area'].apply(lambda x: format(x, ','))                         # 천단위 콤마 추가
 df['area'].apply(lambda x: '{:.2f}'.format(x))                     # 소수점 자리수 변경
 
-# >>> 정규화
+# >>> 정규화(Normalization): 변수별 범위차이로 인한 상대적 크기 차이 해소, 데이터를 [0~1|-1~1]으로 변경
 
 # 통계정보
 # include 옵션: 문자형 데이터의 원소수, 카테고리값갯수, 최빈값, 최빈값사용빈도수 추가
 df.describe(include='all')
 
-# 상대적 크기 차이 삭제
-# 열데이터에서 열최솟값을 뺀 값을 분자로 하고, 열최댓값-열최솟값을 분모로 산출(0~1)
+# 상대적 크기 차이 해소: 열데이터에서 열최솟값을 뺀 값을 분자로 하고, 열최댓값-열최솟값을 분모로 산출(0~1)
 min_x = df['area'] - df['area'].min()
 min_max = df['area'].max() - df['area'].min()
 df['area_normalization'] = min_x / min_max
@@ -742,12 +745,12 @@ df['city'].map({'A_Busan': 'Pusan', 'B_Kwangju': 'Gwangju', np.nan: 'None'})
 df['pop'].map('city people is {}'.format, na_action=None)
 df['pop'].map('city people is {}'.format, na_action='ignore')
 
-# >>> DF.applymap -> value -> DF
-df.applymap(lambda x: print(x, '\n-- 작업 --\n'))
-
 # >>> S.apply -> value -> S
 df['city'].apply(lambda x: print(x, '\n-- 작업 --\n'))
 df['area'].apply(lambda x: 'Giant' if x >= 8e4 else 'Big' if x >= 5e4 else 'Small')
+
+# >>> DF.applymap -> value -> DF
+df.applymap(lambda x: print(x, '\n-- 작업 --\n'))
 
 # >>> DF.apply -> column, row -> S, DF
 df.apply(lambda x: print(x, '\n-- 작업 --\n'))
@@ -832,7 +835,6 @@ grouped['fare'].mean()                # Series
 pd.DataFrame(grouped['fare'].mean())  # DataFrame 
 
 # >>> 사용자정의 함수
-
 def func(x):
     d = {}
     d['fare_mean'] = x['fare'].mean()
