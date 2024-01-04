@@ -1,5 +1,5 @@
 # =====================
-# Numpy
+# 배열
 # =====================
 
 # --------------------
@@ -8,42 +8,43 @@
 
 import numpy as np
 
-# >>> 배열 생성
+# >>> 배열 생성 -----
+
 np.array([1, 2, 3, 4, 5])                                # 1차원
 np.array([[1, 2, 3, 4], [5, 6, 7, 8], [9, 10, 11, 12]])  # 2차원
-np.array([[[0, 1, 2], [4, 5, 6], [8, 9, 10]],
-          [[2, 3, 4], [6, 7, 8], [10, 11, 12]]])         # 3차원
+np.array([[[0, 1, 2], [4, 5, 6], [8, 9, 10]],            # 3차원
+          [[2, 3, 4], [6, 7, 8], [10, 11, 12]]])
 np.arange(24).reshape(2, 3, 4)                           # 3차원 (깊이, 행, 열)
 
-# >>> 특수 배열
+# >>> 특수 배열 -----
+
 np.zeros((3, 4))               # 모든 요소를 0으로
 np.ones((3, 4))                # 모든 요소를 1로
 np.eye(4)                      # 단위행렬: 대각선은 1, 나머지는 0
 np.empty([3, 3], dtype=float)  # 빈배열: 초기화가 안되어 속도가 빠른 배열
-np.empty_like(z, dtype=int)    # z와 동일한 형태의 초기화가 안된 배열 생성
+np.empty_like(A, dtype=int)    # A배열과 동일한 형태의 초기화가 안된 배열 생성
 
-# >>> 관련 함수
+# >>> np.함수 -----
 
-# arange() 함수: 파이썬의 range
+# arange(): 파이썬의 range
 np.arange(10)
 np.arange(1, 20, 2)
 np.arange(1, 10, 0.5)  # 간격이 0.5이면 10-0.5(간격)까지로 범위가 변경되어 9.5도 출력!!
 
-# reshape() 함수: 배열 구조 변경
+# reshape(): 배열 형태 변경
 np.arange(12).reshape(3, 4)
 
-# reshape(-1, n[정수]): 열 기준으로 변경(요소보다 배열을 중시)
-ar.reshape(-1, 1)  # (12, 1) 원소의 갯수를 모르거나 변동일때 유용
-ar.reshape(-1, 2)  # ( 6, 2)
-
-# reshape(n[정수, -1]): 행 기준으로 변경
+# reshape(n[정수, -1]): 행 기준으로 변경(요소보다 배열 형태를 중시, 원솟수를 모르거나 변동일때 유용)
+ar.reshape(-1)     # (12), (12,), (1, -1), (1, 12), 행 기준의 1차원 배열로 변경
 ar.reshape(2, -1)  # (2, 6)
 ar.reshape(4, -1)  # (4, 3)
 
-# reshape(-1) : 행 기준으로 1차원 배열로 변경
-ar.reshape(-1)     # (12), (12,), (1, -1), (1, 12)
+# reshape(-1, n[정수]): 열 기준으로 변경
+ar.reshape(-1, 1)  # (12, 1)
+ar.reshape(-1, 2)  # ( 6, 2)
 
-# >>> 정보 확인
+# >>> 배열 정보 -----
+
 arr.shape  # 배열 형태: (3, 4) 큰방 3개에 각 방마다 4개씩 들어있다
 len(arr)   # 길이(큰방의 갯수)
 arr.size   # 원소 갯수
@@ -51,31 +52,35 @@ arr.ndim   # 차원 확인
 
 
 # --------------------
-# 행렬 추가
+# 배열의 행, 열 추가
 # --------------------
 
-# >>> 넘파이 append(axis=0,1): 1차원 배열로 추가 array([1., 2., 3., 4.])
-a = np.array([])
-a = np.append(a, [1, 2])
-a = np.append(a, [3, 4])
-a
+import numpy as np
 
-artest = np.ones((5, 5), int)
-artest
-artest = np.append(artest, np.array([[3, 4, 5, 6, 7]]), axis=0)  # axis옵션 주의 !!
-artest
+# >>> np.append(): 모든 배열 원소를 풀어서 1차원 배열 array([1., 2., 3., 4.])로 추가 -----
 
-arr1 = np.array([[1, 2, 3, 4, 5], [6, 7, 8, 9, 10]])
-arr1
-addcol = np.zeros((2, 1))
-addcol
-np.append(arr1, addcol, axis=1)
+arr = np.array([])
+arr = np.append(arr, [1, 2])
+arr = np.append(arr, [3, 4])
+arr
 
-# 파이썬의 append() 비교: 2차원 배열로 추가([[1, 2], [3, 4]])
+# 파이썬의 append(): 2차원 배열로 추가([[1, 2], [3, 4]])
 a = []
 a.append([1, 2])
 a.append([3, 4])
 a
+
+# >>> np.append(axis=0): 배열 형태를 유지하며 행 끝에 추가 -----
+
+arr1 = np.ones((3, 5), int)
+arr1 = np.append(arr1, np.array([[3, 4, 5, 6, 7]]), axis=0)
+arr1
+
+# >>> np.append(axis=1): 배열 형태를 유지하며 열 끝에 추가 -----
+
+arr2 = np.array([[1, 2, 3, 4, 5], [6, 7, 8, 9, 10]])
+add2 = np.append(arr2, np.zeros((2, 1)), axis=1) 
+add2
 
 
 # --------------------
@@ -83,77 +88,81 @@ a
 # --------------------
 
 import numpy as np
-
 ar30 = np.arange(1, 31).reshape(5, 6)
 print(ar30)
 
-# >>> 파이썬의 인덱싱([][])
-ar30[0]
+# >>> 파이썬의 인덱싱([][]) -----
+
 ar30[2]
 ar30[-1]
-ar30[-1:]      # [-1:] 은 -1부터 시작해서 역방향으로 가는 것이 아님 !!(정방향)
-ar30[-3:]
-ar30[4][4]
+ar30[-3:]      # [-3:] 은 -3부터 시작해서 역방향으로 가는 것이 아님 !!(정방향)
 ar30[1][1:]
-ar30[:3][1:3]  # []+[] 결과는 다중 슬라이싱과 다름(행렬개념이 아니다) !!
+ar30[:3][1:3]  # [] -> [] 결과는 순차개념으로 다중 슬라이싱(행열개념)과 다름 !!
 
-# >>> 넘파이의 인덱싱(빠르다)
+# >>> 넘파이의 인덱싱(빠르다) -----
+
 ar30[1, 1:]
-ar30[2,]    # 1차원 반환
-ar30[2:3]   # 2차원 반환
+ar30[2,]       # 1차원 반환
+ar30[2:3]      # 2차원 반환
 ar30[:, 1:-1]
 ar30[:, 3:]
 ar30[:3, 1:3]  # 다중 슬라이싱(행렬개념)
 
-# >>> 넘파이 슬라이싱 [스타트행:라스트행:스텝]
-ar30[::2]
+# >>> 넘파이 슬라이싱 [스타트행:라스트행:스텝] -----
+
 ar30[::3]
-ar30[:3:3]
-ar30[1::2]  # 시작도 포함 !!
-ar30[-1::-1]
+ar30[:300:3]    # 존재하는 행 갯수보다 많아도 오류 없음
+ar30[1::2]
+ar30[-1::]       # 순방향 인식!!
+ar30[-1::-1]     # 역방향 인식!!
 ar30[-1:-6:-2]
 
-# >>> 팬시 색인: 정수배열(리스트)을 색인에 사용, 연속범위는 사용 못함
+# >>> 팬시 색인: 정수리스트를 색인에 사용, 연속범위는 사용 못함 -----
 # 팬시 색인은 메모리 공유를 하지 않는다(뷰가 아님)
+
 ar30[[0]]                   # array([[1, 2, 3, 4, 5, 6]])
 ar30[[0, -1]]               # array([[1, 2, 3, 4, 5, 6], [25, 26, 27, 28, 29, 30]])
 ar30[[0, -1], :]
-ar30[[1, 3, 3], [2, 1, 3]]  # array([ 9, 20, 22])
+ar30[[1, 3, 3], [2, 1, 3]]  # array([ 9, 20, 22]), 해당 결과만(1,2)(3,1)(3,3) 반환
 
-# >>> 넘파이 ix_함수를 이용한 팬시 색인: 지정된 인덱스 값을 배열합 기준으로 반환(직관적)
-ar30[np.ix_([1, 3, 3], [2, 1, 3])]
+# >>> np.ix_함수를 이용한 팬시 색인 -----
 
-# >>> 3차원 배열의 인덱싱과 슬라이싱
+ar30[np.ix_([1, 3, 3], [2, 1, 3])]  # 배열곱(1,2)(1,1)...(3,1)(3,3) 기준 정방향(3x3) 결과 반환
+
+# >>> 3차원 배열의 인덱싱과 슬라이싱 -----
 
 # 3차원 배열 인덱싱
-a = np.arange(27).reshape(3, 3, 3)
-a
-a[0]
-a[0, 2]
-a[0, 2, 2]
+arr = np.arange(27).reshape(3, 3, 3)
+arr[0]
+arr[0, 2]
+arr[0, 2, 2]
 
 # 3차원 배열 슬라이싱
-a[-1, -1, :2]
+arr[-1, -1, :2]
 
-# >>> View vs Copy()
+# >>> View vs Copy() -----
 
 # View: 넘파이에서 배열의 인덱싱/슬라이싱 결과는 View(원본 참조)
-ar30 = np.arange(1, 31).reshape(5, 6)
-a = ar30[-1][2:-1]
-a[-1] = 0            # a 는 view
-ar30                 # 슬라이싱한 a 사본을 변경했는데 ar30의 값이 변경됨 !!
+arr1 = np.arange(1, 31).reshape(5, 6)
+arr2 = arr1[-1][2:-1]
+arr2[-1] = 0                     # arr2 는 view
+arr1                             # 슬라이싱한 arr2를 변경했는데 arr1의 값이 변경됨 !!
 
-# 넘파이의 may_share_memory()사용하여 메모리 공유 여부를 확인
-# 뷰에 새로운 원소가 추가되면 원본에서 독립하여 분리됨 !!
-np.may_share_memory(ar30, a)
+np.may_share_memory(arr1, arr2)  # 메모리 공유 여부 확인
 
-# Copy: 넘파이에서 배열 결과를 복사하고 싶다면 copy()메서드를 사용
-a = np.arange(10)
-a1 = a[:5].copy()
-a1
-a1[:2] = 100
-a1
-a
+# Copy: 넘파이에서 결과를 복사하고 싶다면 copy()메서드를 사용
+arr = np.arange(10)
+arr1 = arr[:5].copy()
+arr1
+arr1[:2] = 100
+arr1
+arr
+
+
+
+
+
+
 
 
 # --------------------
@@ -424,7 +433,7 @@ ar.index.name = 'no'
 # 인덱스명 지정
 ar.index = ['a', 'b', 'c', 'd']
 
-# 특정 라벨 변경
+# 특정 라벨명 변경
 ar.rename(index={'a':'충주'})
 df.rename(index={1: 'no_1', 2: 'no_2'}, inplace=False)
 df.rename(columns={'food': 'flout'}, inplace=False)
@@ -433,7 +442,7 @@ df.rename(columns={'food': 'flout'}, inplace=False)
 df.set_index('year', drop = True, append = False, inplace = False)
 
 # 정수 인덱스로 초기화: drop는 기존 인덱스의 열 이동 여부
-df.reset_index(drop = True, inplace = False)
+df.reset_index(drop=True, inplace=False)
 
 # >>> label 정렬
 
@@ -635,47 +644,55 @@ df1.iloc[:, [1:]]  # error (팬시색인은 연속범위는 사용 못함)
 df1.iloc[:, [0, 2, 1]]
 
 # >>> 멀티 인덱스
+import pandas as pd
+import seaborn as sns
+titanic = sns.load_dataset('titanic')
+df = titanic.loc[:, ['age', 'fare', 'class', 'who', 'embark_town', 'alive']]
 
-# 설정
-mdf = df.set_index(['year', 'city'])
-mdf.columns = pd.MultiIndex.from_arrays([['object', 'object', 'number', 'number'], mdf.columns],
-                                        names=['col_level_1', 'col_level_2'])
+df.columns = pd.MultiIndex.from_arrays([['num','num','object','object','object','object'], list(df.columns)], names=("col1", "col2"))
+mdf = df.set_index([('object','class'), ('object','who')], drop = True)
+print(mdf)
 
-# 축명칭 변경
+# 멀티 레벨명 변경
 mdf.rename_axis(['분류1', '분류2'], axis=1)
+mdf.rename_axis(['선실', '남녀'], axis=0)
 
 # 정렬
-mdf.sort_index(level=0, ascending=False)
+mdf.sort_index(level=0, axis=1, ascending=False)
 mdf.sort_index(level=1, axis=1)
 
 # 레벨수준 변경
-mdf.reorder_levels(['city', 'year'])
-mdf.reorder_levels([1, 0], axis=1)
+mdf.reorder_levels(['col2', 'col1'], axis=1)
+mdf.reorder_levels([1, 0], axis=0)
+
+# 색인
+print(mdf.loc['First'])
 
 # >>> xs 인덱서
 
 # 행: axis=0
-mdf.xs('2000')
-mdf.xs('A_Seoul', level=1, drop_level=False)
-mdf.xs(('2000', 'A_Busan'))
-mdf.xs(('A_Seoul', slice(None)), level=[1, 0])
+mdf.xs('First')
+mdf.xs('man', level=1, drop_level=False)
+mdf.xs(('First', 'man'))
+mdf.xs(('man', slice(None)), level=[1, 0])
 
 # 열: axis=1
-mdf.xs('number', axis=1)
-mdf.xs('pop', level=1, axis=1)
-mdf.xs(('number', 'area'), axis=1)
-mdf.xs(('area', 'number'), level=[1, 0], axis=1)
+mdf.xs('object', axis=1)
+mdf.xs('fare', level=1, axis=1)
+mdf.xs(('num', 'age'), axis=1)
+mdf.xs(('age', 'num'), level=[1, 0], axis=1)
 
 # >>> 피벗테이블
 
 # 행인덱스와 열인덱스의 조건을 만족하는 데이터가 2개 이상인 경우는 에러가 발생
-# 피벗테이블은 피라미드의 밑에서부터 columns->values->aggfunc 순으로 쌓임
-pd.pivot_table(df,
-               index=['city', 'call'],
-               columns='year',
-               values=['area', 'home'],
-               aggfunc=['mean', 'max'],
-               # aggfunc={'인구': 'sum', '기온': 'mean'},
+# 피벗테이블은 열인덱스의 피라미드 밑에서부터 columns->values->aggfunc 순으로 쌓임
+df.columns = [j for i,j in df.columns]
+pd.pivot_table(df,                       # 피벗할 데이터프레임
+               index=['class', 'who'],   # 행위치에 들어갈 열
+               columns='alive',          # 열 위체에 들어갈 열
+               values=['age', 'fare'],   # 데이터로 사용할 열
+               aggfunc=['max', 'mean'],  # 데이터 집계함수
+               # aggfunc={'age': 'max', 'fare': 'mean'},
                fill_value=0,            # NaN 채우기
                margins=True,            # 행별,열별 합계
                margins_name='계')
@@ -761,10 +778,8 @@ df.pipe(lambda x: x.dropna(axis=0)).pipe(lambda x: x.sum())
 
 
 # --------------------
-# groupby()
+# groupby() 집계
 # --------------------
-
-# >>> 데이터셋
 import pandas as pd
 import numpy as np
 import seaborn as sns
@@ -773,39 +788,29 @@ df = pd.DataFrame(data=np.arange(20).reshape(4, 5),
                   columns=['c1', 'c2', 'c3', 'c4', 'c5'],
                   index=['r1', 'r2', 'r3', 'r4'])
 
-titanic = sns.load_dataset('titanic')
-gdf = titanic.loc[:, ['survived', 'age', 'fare', 'class', 'who', 'embark_town']]
-gdf.info()
+# >>> 딕셔너리로 그룹핑 기준 생성
 
-# >>> 객체생성
-
-# Dicts 사용
+# 행 라벨기준 그룹 합산
 mapping_dict_row = {'r1': 'row_g1',
                     'r2': 'row_g1',
                     'r3': 'row_g2',
                     'r4': 'row_g2'}
-grouped_by_row = df.groupby(mapping_dict_row)
-grouped_by_row.sum()
 
+df.groupby(mapping_dict_row).sum()  # 그룹핑 후 집계함수 적용
+df.groupby(mapping_dict_row).sum().reset_index(drop=True)  # 그룹라벨 삭제
+
+# 열 라벨기준 그룹 합산
 mapping_dict_col = {'c1': 'col_g1',
                     'c2': 'col_g1',
                     'c3': 'col_g2',
                     'c4': 'col_g2',
                     'c5': 'col_g2'}
-grouped_by_col = df.groupby(mapping_dict_col, axis=1)
-grouped_by_col.sum()
 
-# Series 사용
-mapping_series_row = pd.Series(mapping_dict_row)
-df.groupby(mapping_series_row).sum()
-# 그룹 키를 인덱스로 미지정 옵션
-df.groupby(mapping_series_row, as_index=False).sum()
-df.groupby(mapping_series_row).sum().reset_index(drop=True)
+df.groupby(mapping_dict_col, axis=1).sum()
+mdf.groupby(level='col1', axis=1).sum()  # 멀티인덱스 적용
 
-mapping_series_col = pd.Series(mapping_dict_col)
-df.groupby(mapping_series_col, axis=1).sum()
+# >>> 사용자함수로 그룹핑 기준 생성
 
-# Functions 사용
 def row_grp_func(x):
     if x == 'r1' or x == 'r2':
         row_group = 'row_g1'
@@ -815,26 +820,29 @@ def row_grp_func(x):
 
 df.groupby(row_grp_func).sum()
 
-# Index Levels 사용
-mdf.groupby(level='col_level_1', axis=1).sum()
 
-# >>> 기술통계량(연속형 변수) 집계
-# [nan 포함] size, [nan 미포함] count, sum, min, max, mean, median, std, var, first, last 등
+# --------------------
+# 기술통계량 집계
+# --------------------
+titanic = sns.load_dataset('titanic')
+gdf = titanic.loc[:, ['survived', 'age', 'fare', 'class', 'who', 'embark_town']]
 grouped = gdf.groupby(['who', 'class'])
 
-# 그룹핑 -> 함수
-grouped.mean()
-grouped.mean().reset_index()
-grouped.mean().reset_index().sort_values('fare', ascending=False)
+# >>> key 기준으로 특정 그룹 데이터만 추출
+grouped.get_group(('man', 'First'))
 
-# 그룹핑 -> 함수 -> 선택
-grouped.mean()['fare']
+# >>> 기술통계량(연속형 변수) 함수
+# [nan 포함]   size
+# [nan 미포함] count, sum, min, max, mean, median, std, var, first, last 등
 
-# 그룹핑 -> 선택 -> 함수
-grouped['fare'].mean()                # Series
-pd.DataFrame(grouped['fare'].mean())  # DataFrame 
+grouped['age'].mean()                         # Series
+pd.DataFrame(grouped['age'].mean())           # DataFrame
+grouped[['age','fare']].mean().reset_index()  # DataFrame(계층라벨모두 채움)
+grouped[['age','fare']].mean().reset_index(drop=True)
+grouped[['age','fare']].mean().reset_index().sort_values('fare', ascending=False)
 
 # >>> 사용자정의 함수
+
 def func(x):
     d = {}
     d['fare_mean'] = x['fare'].mean()
@@ -845,10 +853,11 @@ def func(x):
 
 # apply(): 그룹핑된 개별 원소에 일대일 함수 매핑(그룹별 한 줄의 결과값으로 정리됨)
 grouped.apply(func)
+
 grouped.apply(lambda x: x.describe())
 grouped.apply(lambda x: len(x) >= 200)
-grouped.age.apply(lambda x: x.min()).reset_index()  # 계층적 인덱스 미적용
-mdf.groupby(level=['year', 'city']).apply('sum')
+
+mdf.groupby(level=1, axis=1).apply('sum')
 
 # 평균값 대체
 grouped['age'].apply(lambda g: g.fillna(g.mean()))
@@ -856,7 +865,7 @@ grouped['age'].apply(lambda g: g.fillna(g.mean()))
 grouped['embark_town'].apply(lambda g: g.fillna(g.value_counts().idxmax()))
 
 # agg(): 숫자 타입의 Series(행/열)의 빠른 집계를 목적으로 하는 apply()의 특수 형태
-grouped.agg(['min', 'max'])
+grouped['age'].agg(['min', 'max'])
 # 동일 열에 다수의 함수 매핑
 grouped['age'].agg(['min', 'max'])
 # 다수 열에 다수의 함수 매핑
@@ -866,7 +875,7 @@ grouped.agg({'fare': ['min', 'max'], 'age': 'mean'})
 
 # >>> transform(): 원래 인덱스와 원소를 유지하며 그룹별 연산결과만 채움
 # apply()와 달리 매서드안에서는 열명을 사용할 수 없고, 연산 불가능한 열은 자동 필터링됨
-grouped.transform(np.mean)
+grouped['age'].transform(np.mean)
 ndf.groupby('경보명')['delay'].transform(lambda g: g.mean(numeric_only=False))  # 시간 등 숫자 이외의 평균값 적용 옵션
 
 # >>> filter(): 조건을 충족하지 못하는 소그룹을 삭제
@@ -876,9 +885,6 @@ grouped.filter(lambda x: len(x) >= 200)
 for key, group in grouped:
     print('* key : ', key)
     print(group.head())
-
-# >>> key 기준으로 특정 그룹 데이터만 선택하기
-grouped.get_group(('child', 'First'))
 
 
 # --------------------
@@ -1058,13 +1064,13 @@ xl.Quit()
 
 
 # --------------------
-# IPython 설정
+# IPython 환경 설정
 # --------------------
 
-# 옵션 확인: pd.get_option()
-# 옵션 설정: pd.set_option()
-# 옵션 초기화: pd.reset_option()
-pd.set_option('display.max_rows', None)                  # 출력할 행의 개수
-pd.set_option('display.max_columns', 10)                 # 출력할 열의 개수
-pd.set_option('display.max_colwidth', 20)                # 개별 열의 너비
-pd.set_option('display.unicode.east_asian_width', True)  # 유니코드 사용 너비 조정
+# 옵션 확인: pd.get_option('~~')
+# 옵션 설정: pd.set_option('~~')
+# 옵션 초기화: pd.reset_option('~~')
+pd.set_option('display.max_rows', None)                  # 행 개수
+pd.set_option('display.max_columns', 10)                 # 열 개수
+pd.set_option('display.max_colwidth', 20)                # 열 너비
+pd.set_option('display.unicode.east_asian_width', True)  # 유니코드로 조정한 열 너비
