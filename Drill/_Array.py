@@ -3,6 +3,53 @@
 # =====================
 
 # --------------------
+# 넘파이 자료형
+# --------------------
+# i  integer(int8 은 -128~127)
+# u  unsigned integer(-부호가 없는 0을 포함한 양수만, uint8 은 0~255, -1은 255를 -2는 254로 대체)
+# f  single precision float
+# d  double precision float
+# b  bool
+# D  complex(실수와 허수로 구성된 복소수)
+# S  string
+# U  unicode
+
+import numpy as np
+
+# >>> 자료형 특징 -----
+
+# 모든 요소를 동일한 타입으로 처리 !!
+arr = np.array([1, 2, 3, 'a', 'b', 'c'])
+type(arr[0])   # numpy.str_
+
+# 넘치면 0부터 다시 순환, -는 뒤부터 순환
+np.array([1, 2, 3, 255, 256, -2, -1], dtype=np.uint8)  # uint8(0~255)
+
+# >>> 자료형 지정 -----
+
+# 옵션에서 지정
+np.array([1, 2, 3, 4, 5], dtype=np.int64)
+np.arange(10, dtype=np.uint8)
+np.arange(10, dtype='uint8')
+np.arange(10, dtype='u1')   # u 뒤의 숫자는 바이트(8비트) 의미: 1x8
+np.arange(10, dtype='<u1')  # <리틀엔디언은 디폴트값
+
+# 직접 지정
+np.int_([1, 2, 4])     # int32
+np.float_([1, 2, 4])   # float64
+np.float32([1, 2, 4])  # float32
+
+# >>> 자료형 변환 -----
+
+np.int_([1, 2, 4]).astype(int)
+np.int_([1, 2, 4]).astype(np.float64)
+
+# >>> 자료형 확인 -----
+
+np.array([1, 2, 3.5, 4, 5]).dtype
+
+
+# --------------------
 # 배열 생성
 # --------------------
 
@@ -10,42 +57,80 @@ import numpy as np
 
 # >>> 배열 생성 -----
 
-np.array([1, 2, 3, 4, 5])                                # 1차원
-np.array([[1, 2, 3, 4], [5, 6, 7, 8], [9, 10, 11, 12]])  # 2차원
-np.array([[[0, 1, 2], [4, 5, 6], [8, 9, 10]],            # 3차원
-          [[2, 3, 4], [6, 7, 8], [10, 11, 12]]])
-np.arange(24).reshape(2, 3, 4)                           # 3차원 (깊이, 행, 열)
-
-# >>> 특수 배열 -----
-
 np.zeros((3, 4))               # 모든 요소를 0으로
 np.ones((3, 4))                # 모든 요소를 1로
 np.eye(4)                      # 단위행렬: 대각선은 1, 나머지는 0
 np.empty([3, 3], dtype=float)  # 빈배열: 초기화가 안되어 속도가 빠른 배열
-np.empty_like(A, dtype=int)    # A배열과 동일한 형태의 초기화가 안된 배열 생성
+np.empty_like(A, dtype=int)    # A배열과 동일한 형상의 초기화가 안된 배열 생성
 
-# >>> np.함수 -----
+np.array([1, 2, 3, 4, 5])                                # 1차원
+np.array([[1, 2, 3, 4], [5, 6, 7, 8], [9, 10, 11, 12]])  # 2차원
+np.array([[[0, 1, 2], [4, 5, 6], [8, 9, 10]], [[2, 3, 4], [6, 7, 8], [10, 11, 12]]])  
+np.arange(24).reshape(2, 3, 4)                           # 3차원 (깊이, 행, 열)
 
-# arange(): 파이썬의 range
+# np.arange(): 원소 생성 (파이썬의 range와 유사)
 np.arange(10)
 np.arange(1, 20, 2)
-np.arange(1, 10, 0.5)  # 간격이 0.5이면 10-0.5(간격)까지로 범위가 변경되어 9.5도 출력!!
+np.arange(1, 10, 0.5)  # 간격 0.5이면 9.5 까지 출력!!
 
-# reshape(): 배열 형태 변경
-np.arange(12).reshape(3, 4)
+# np.reshape(): 배열 형상 생성
+arr = np.arange(12).reshape(3, 4)
+print(arr)
 
-# reshape(n[정수, -1]): 행 기준으로 변경(요소보다 배열 형태를 중시, 원솟수를 모르거나 변동일때 유용)
-ar.reshape(-1)     # (12), (12,), (1, -1), (1, 12), 행 기준의 1차원 배열로 변경
-ar.reshape(2, -1)  # (2, 6)
-ar.reshape(4, -1)  # (4, 3)
+# reshape(정수, -1): 행 기준(원솟수를 모르거나 가변적일 때 형상 중심으로 변경)
+arr.reshape(-1)     # (12), (12,), (1, -1), (1, 12) 와 동일 결과
+arr.reshape(1, -1)  # (1, ?)
+arr.reshape(2, -1)  # (2, ?)
+arr.reshape(4, -1)  # (4, ?)
 
-# reshape(-1, n[정수]): 열 기준으로 변경
-ar.reshape(-1, 1)  # (12, 1)
-ar.reshape(-1, 2)  # ( 6, 2)
+# reshape(-1, 정수): 열 기준
+arr.reshape(-1, 1)  # (?, 1)
+arr.reshape(-1, 2)  # (?, 2)
+
+# >>> 샘플링 데이터 생성 -----
+
+# numpy.random.choice(a, size=None, replace=True, p=None)
+# a: 배열 데이터 또는 정수이면 np.arange(정수) 명령으로 해석하여 데이터 생성
+# size: 샘플 숫자(정수)
+# replace: True이면 한번 선택한 데이터를 다시 선택 가능
+# p: 배열, 각 데이터가 선택될 수 있는 확률
+
+np.random.choice(10, 3, replace=False)
+np.random.choice(3, 10, replace=True)
+
+# np.random.rand(행, 열):           0부터 1사이의 균일 분포
+# np.random.randn(행, 열):          표준 정규 분포
+# np.random.randint(size=(행, 열)): 균일 분포의 정수 난수
+
+np.random.rand(5)
+np.random.rand(3, 5)
+np.random.randn(5)
+np.random.randn(3, 5)
+np.random.randint(10, size=10)           # 0  ~ 10 사이 10개의 1차원 배열
+np.random.randint(10, 20, size=10)       # 10 ~ 20 사이 10개의 1차원 배열
+np.random.randint(10, 20, size=(3, 5))   # 10 ~ 20 사이 3x5의 2차원 배열
+
+# >>> View vs Copy -----
+
+# View: 넘파이 인덱싱|슬라이싱으로 생성(참조)된 복사본은 '원본에 영향'을 주므로 주의 !!
+arr1 = np.arange(1, 31).reshape(5, 6)
+arr2 = arr1[-1][2:-1]            # arr2 는 view
+arr2[-1] = 10000                 # arr2 를 변경
+print(arr1)                      # arr1 값도 변경 !!
+
+# Copy: 원본과 분리된 복사본 생성
+arr3 = np.arange(10)
+arr4 = arr3[:5].copy()
+arr4[-1] = 10000
+print(arr3)
+
+# 메모리 공유 여부 확인
+np.may_share_memory(arr1, arr2)
+np.may_share_memory(arr3, arr4)
 
 # >>> 배열 정보 -----
 
-arr.shape  # 배열 형태: (3, 4) 큰방 3개에 각 방마다 4개씩 들어있다
+arr.shape  # 배열 형상, (3, 4) 큰방 3개에 각 방마다 4개씩 들어있다
 len(arr)   # 길이(큰방의 갯수)
 arr.size   # 원소 갯수
 arr.ndim   # 차원 확인
@@ -57,30 +142,29 @@ arr.ndim   # 차원 확인
 
 import numpy as np
 
-# >>> np.append(): 모든 배열 원소를 풀어서 1차원 배열 array([1., 2., 3., 4.])로 추가 -----
+# >>> np.append(): 모든 배열 원소를 풀어서 1차원 배열로 추가 -----
 
-arr = np.array([])
-arr = np.append(arr, [1, 2])
+arr = np.array([1, 2])
 arr = np.append(arr, [3, 4])
-arr
+print(arr)         # [1 2 3 4]
 
-# 파이썬의 append(): 2차원 배열로 추가([[1, 2], [3, 4]])
-a = []
-a.append([1, 2])
-a.append([3, 4])
-a
+# 파이썬의 append(): 2차원 배열로 추가
+x = []
+x.append([1, 2])
+x.append([3, 4])
+print(x)           # [[1, 2], [3, 4]]
 
-# >>> np.append(axis=0): 배열 형태를 유지하며 행 끝에 추가 -----
+# >>> np.append(axis=0): 배열 형상을 유지하며 마지막 행에 추가 -----
 
 arr1 = np.ones((3, 5), int)
 arr1 = np.append(arr1, np.array([[3, 4, 5, 6, 7]]), axis=0)
-arr1
+print(arr1)
 
-# >>> np.append(axis=1): 배열 형태를 유지하며 열 끝에 추가 -----
+# >>> np.append(axis=1): 배열 형상을 유지하며 마지막 열에 추가 -----
 
-arr2 = np.array([[1, 2, 3, 4, 5], [6, 7, 8, 9, 10]])
-add2 = np.append(arr2, np.zeros((2, 1)), axis=1) 
-add2
+arr2 = np.array([[1, 2, 3], [4, 5, 6]])
+arr2 = np.append(arr2, np.zeros((2, 1)), axis=1) 
+print(arr2)
 
 
 # --------------------
@@ -88,81 +172,45 @@ add2
 # --------------------
 
 import numpy as np
-ar30 = np.arange(1, 31).reshape(5, 6)
-print(ar30)
+arr = np.arange(1, 31).reshape(5, 6)
+print(arr)
 
-# >>> 파이썬의 인덱싱([][]) -----
+# >>> 파이썬의 순차 인덱싱 [선][후] -----
 
-ar30[2]
-ar30[-1]
-ar30[-3:]      # [-3:] 은 -3부터 시작해서 역방향으로 가는 것이 아님 !!(정방향)
-ar30[1][1:]
-ar30[:3][1:3]  # [] -> [] 결과는 순차개념으로 다중 슬라이싱(행열개념)과 다름 !!
+arr[2]
+arr[-3:]        # [-3:] 은 -3부터 시작해서 순방향으로 진행 !!(역방향 X)
+arr[1][1:]
+arr[:4][2:100]
 
-# >>> 넘파이의 인덱싱(빠르다) -----
+# >>> 넘파이의 핀셑 인덱싱 [행, 열] -----
 
-ar30[1, 1:]
-ar30[2,]       # 1차원 반환
-ar30[2:3]      # 2차원 반환
-ar30[:, 1:-1]
-ar30[:, 3:]
-ar30[:3, 1:3]  # 다중 슬라이싱(행렬개념)
+arr[1, 1:]
+arr[2,]         # 1차원 반환
+arr[2:3]        # 2차원 반환
+arr[:, 1:-1]
+arr[:, 3:]
+arr[:4, 2:100]  # 다중 슬라이싱(행렬개념)
 
 # >>> 넘파이 슬라이싱 [스타트행:라스트행:스텝] -----
 
-ar30[::3]
-ar30[:300:3]    # 존재하는 행 갯수보다 많아도 오류 없음
-ar30[1::2]
-ar30[-1::]       # 순방향 인식!!
-ar30[-1::-1]     # 역방향 인식!!
-ar30[-1:-6:-2]
+arr[::3]
+arr[:3:3]
+arr[1::2]
+arr[-1::]
+arr[-1::-1]     # (-)스텝은 역방향 진행!!
+arr[-1:-10:-2]
 
-# >>> 팬시 색인: 정수리스트를 색인에 사용, 연속범위는 사용 못함 -----
-# 팬시 색인은 메모리 공유를 하지 않는다(뷰가 아님)
+# >>> 팬시 인덱싱: '[정수]' 리스트를 인덱싱에 활용, 연속범위(:)는 사용 못함!! -----
 
-ar30[[0]]                   # array([[1, 2, 3, 4, 5, 6]])
-ar30[[0, -1]]               # array([[1, 2, 3, 4, 5, 6], [25, 26, 27, 28, 29, 30]])
-ar30[[0, -1], :]
-ar30[[1, 3, 3], [2, 1, 3]]  # array([ 9, 20, 22]), 해당 결과만(1,2)(3,1)(3,3) 반환
+# 팬시 인덱싱은 메모리 공유를 하지 않으모로 뷰가 아님
+arr[[0]]              # array([[1, 2, 3, 4, 5, 6]])
+arr[[0, -1]]          # array([[1, 2, 3, 4, 5, 6], [25, 26, 27, 28, 29, 30]])
 
-# >>> np.ix_함수를 이용한 팬시 색인 -----
+# 동일 위치의 원소 추출 [(0,1), (2,4), (-1,3)] !!
+arr[[0, 2, -1], [1, 4, 3]]          # array([2, 17, 28])
 
-ar30[np.ix_([1, 3, 3], [2, 1, 3])]  # 배열곱(1,2)(1,1)...(3,1)(3,3) 기준 정방향(3x3) 결과 반환
-
-# >>> 3차원 배열의 인덱싱과 슬라이싱 -----
-
-# 3차원 배열 인덱싱
-arr = np.arange(27).reshape(3, 3, 3)
-arr[0]
-arr[0, 2]
-arr[0, 2, 2]
-
-# 3차원 배열 슬라이싱
-arr[-1, -1, :2]
-
-# >>> View vs Copy() -----
-
-# View: 넘파이에서 배열의 인덱싱/슬라이싱 결과는 View(원본 참조)
-arr1 = np.arange(1, 31).reshape(5, 6)
-arr2 = arr1[-1][2:-1]
-arr2[-1] = 0                     # arr2 는 view
-arr1                             # 슬라이싱한 arr2를 변경했는데 arr1의 값이 변경됨 !!
-
-np.may_share_memory(arr1, arr2)  # 메모리 공유 여부 확인
-
-# Copy: 넘파이에서 결과를 복사하고 싶다면 copy()메서드를 사용
-arr = np.arange(10)
-arr1 = arr[:5].copy()
-arr1
-arr1[:2] = 100
-arr1
-arr
-
-
-
-
-
-
+ # 행열의 곱(3x3)으로 원소 추출 [[0,[1,4,3]],[2,[1,4,3]],[-1,[1,4,3]]] !!
+arr[np.ix_([0, 2, -1], [1, 4, 3])]  # array([[2, 4], [26, 28]])
 
 
 # --------------------
@@ -171,32 +219,34 @@ arr
 
 import numpy as np
 
-ar1 = np.eye(2)
-ar2 = np.array([[3, 4], [5, 6]])
+# >>> 행렬의 곱셈 -----
 
-# >>> 일반곱셈: 같은 위치의 요소끼리만 수식 적용
-ar1 * ar2
+arr1 = np.eye(2)
+arr2 = np.array([[3, 4], [5, 6]])
 
-# >>> 행렬의 곱셈
-np.dot(ar1, ar2)
+np.dot(arr1, arr2)
 
-# >>> Broadcasting 확장: 스칼라값, 한쪽배열크기1, 동일차원, 동일축길이인 경우에 적용
+# 일반 곱셈: 같은 위치의 요소끼리만 수식 적용
+arr1 * arr2
 
-# 스칼라(상수)값은 넘파이 내부에서 np.array([3,3,3,3,3])로 확장되어 계산
-a = np.array([1, 2, 3, 4, 5])
-a + 3
+# >>> Broadcasting -----
 
-# 열 갯수가 같으면 행으로 자동 확장되어 계산
-a = np.ones((4, 4))
-b = np.arange(4)
-a + b
+# 스칼라값은 상대 배열 형상으로 자동 확장
+arr3 = np.array([1, 2, 3, 4, 5])
+arr3 + 3
 
-# 상대 배열 형상에 맞춰 각각 열과 행을 확장 후 계산됨
-a = np.arange(5).reshape(5, 1)
-b = np.arange(3)
-a + b
+# 상대 배열 형상에 맞춰 각각 행과 열을 확장
+arr4 = np.arange(3)
+arr5 = np.arange(5).reshape(5, 1)
+arr4 + arr5
 
-# 비교연산(==, !=, >, <, >=, <=)
+# 열 갯수가 같으면 행으로 자동 확장
+arr6 = np.eye(4)
+arr7 = np.arange(4)
+arr6 + arr7
+
+# >>> 비교연산(==, !=, >, <, >=, <=) -----
+
 a = np.array([[1, 2, 3], [4, 5, 6]])
 b = np.array([[7, 8, 9], [1, 5, 2]])
 c = np.array([7, 8, 9])
@@ -204,134 +254,19 @@ d = np.array([7, 8])
 e = np.array([1, 2, 3, 4])
 
 a == b
-a == c  # c가 브로드케스팅됨
+a == c  # c는 브로드케스팅
 b == c
 b != c
 b >= c
 
 
-# --------------------
-# 넘파이 자료형
-# --------------------
-# i  integer(int8 은 -128~127)
-# u  unsigned integer(-부호가 없는 즉 0을 포함한 양수만, uint8 은 0~255, -1은 255를 -2는 254를 대체)
-# f  single precision float
-# d  double precision float
-# b  bool
-# D  complex(실수와 허수로 구성된 복소수)
-# S  string
-# U  unicode
-
-import numpy as np
-
-# >>> 넘파이는 모든 요소를 동일한 타입으로 처리 !!
-arr = np.array([1, 2, 3, 'a', 'b', 'c'])
-arr[0]        # '1'
-type(arr[0])  # 숫자와 문자가 혼재되어 있으면 모두 문자 타입으로 통일
-
-# >>> 자료형 이해
-ar1 = np.array([1, 2, 3, 255, 256, -2, -1], dtype=np.uint8)  # 넘치면 0부터 다시 순환, -는 뒤부터 순환
-ar1
-
-ar1 = np.array([True, False])
-ar1.dtype
-
-# >>> 자료형 지정
-np.array([1, 2, 3, 4, 5], dtype=np.int64)
-np.arange(10, dtype=np.uint8)
-np.arange(10, dtype='uint8')
-np.arange(10, dtype='u1')   # u 뒤의 숫자는 바이트(8비트) 의미: 1x8
-np.arange(10, dtype='<u1')  # <리틀엔디언은 디폴트값
-
-# 직접 타입 지정
-np.float32([1, 2, 4])
-
-# int_ : int32 약칭으로 int 가 아님 주의!!
-x = np.int_([1, 2, 4])    # int32 약칭
-x.dtype
-
-x = np.float_([1, 2, 4])  # float64 약칭
-x.dtype
-
-# >>> dtype: 자료형 확인
-ar = np.array([1, 2, 3.5, 4, 5])
-ar.dtype
-
-# str: 자료형의 문자형 확인
-x = np.dtype('float64')
-x       # dtype('float64')
-x.type  # numpy.float64
-x.str   # '<f8': < 리틀엔디언저장방식 float 8 x 8,  참고.> 빅엔디언저장방식(중요한 것을 먼저 저장)
-
-# issubdtype: 자료형을 확인하여 True/False 반환
-ar = np.arange(10, dtype=np.float32)
-np.issubdtype(ar.dtype, np.integer)
-np.issubdtype(ar.dtype, np.float64)
-np.issubdtype(ar.dtype, np.floating)
-
-# >>> astype: 데이터 자료형 변환
-ar = ar.astype(np.float64)
-ar.dtype
-
-ar = ar.astype(int)
-ar.dtype
-
-
-# --------------------
-# 샘플링, 난수
-# --------------------
-
-import numpy as np
-
-# # 데이터 샘플링
-# numpy.random.choice(a, size=None, replace=True, p=None)
-# a: 배열 데이터 또는 정수이면 arange(a) 명령으로 데이터 생성
-# size: 샘플 숫자(정수)
-# replace: True이면 한번 선택한 데이터를 다시 선택 가능
-# p: 배열, 각 데이터가 선택될 수 있는 확률
-
-np.random.choice(10, 3, replace=False)
-np.random.choice(3, 10, replace=True)
-
-# # 난수 생성
-# rand: 0부터 1사이의 균일 분포
-# randn: 표준 정규 분포
-# randint: 균일 분포의 정수 난수
-
-np.random.rand(5)
-np.random.rand(3, 5)
-np.random.randn(5)
-np.random.randn(3, 5)
-np.random.randint(10, size=10)           # 10 ~ 0(미지정) 사이 10개
-np.random.randint(10, 20, size=10)       # 10 ~ 20 사이 10개
-np.random.randint(10, 20, size=(3, 5))
-
-
-# --------------------
-# 실전 코드
-# --------------------
-
-# 문제) 2차원 배열과 3차원 배열을 각각 arange()로 생성한 후 각 요소들의 값을 for문으로 출력하시오?
-import numpy as np
-
-a = np.arange(1, 26).reshape(5, 5)
-for x_ in range(0, 5):
-    for y_ in range(0, 5):
-        print(a[x_, y_], end='\t')
-    print()
-
-b = np.arange(1, 61).reshape(3, 4, 5)
-for n_ in range(0, 3):
-    for x_ in range(0, 4):
-        for y_ in range(0, 5):
-            print(b[n_, x_, y_], end='\t')
-        print()
-    print()
-
-
 # =====================
-# Pandas
+# 시리즈와 데이터프레임
 # =====================
+
+# 1) Series:    label + 1차원 배열 형상 --> 행단위 처리
+# 2) DataFrame: label + 2차원 배열 형상 --> 열단위 처리
+
 
 # --------------------
 # 데이터 생성
@@ -340,145 +275,91 @@ for n_ in range(0, 3):
 import numpy as np
 import pandas as pd
 
-# >>> 판다스 데이터 타입
+# >>> 데이터프레임 생성 -----
 
-# 1) Series: label로 이뤄진 1차원 배열 구조 --> 행단위 처리
-# 2) DataFrame: 2차원 배열 구조 --> 열단위 처리
-
-# >>> 데이터 생성
-
-# 리스트로 생성
-pd.Series([1, 2, 3, -4, 5], index=['a', 'b', 'c', 'd', 'e'])
-
-pd.DataFrame([[1, 2, 3, 4, 5], [6, 7, 8, 9, 10]], index=['a', 'b'], columns=['a', 'b', 'c', 'd', 'e'])
-pd.DataFrame([[1, 2, 3, 4, 5], [6, 7, 8, 9, 10]], ['a', 'b'])  # index 생략가능
-pd.DataFrame([[1, 2, 3, 4, 5], [6, 7, 8, 9, 10]], index=list('ab'))
-
-# 넘파이로 생성
-pd.Series(np.array([1, 2, 3, -4, 5]))
-pd.DataFrame(np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]]))
+pd.Series(['a', 'b', 'c', 'd', 'e']).to_frame()
+pd.DataFrame([[1, 2, 3, 4], [6, 7, 8, 9]], index=list('ab'), columns=['a', 'b', 'c', 'd'])
 pd.DataFrame(np.arange(1, 10).reshape(3, 3))
+df = pd.DataFrame({'food':['melon', 'melon', 'apple', 'apple'],
+                   'year':[2018, 2019, 2018, 2019],
+                   'quantity':[490, 512, 478, 325]})
+pd.DataFrame(df, index=[0, 1], columns=['food', 'man', 'quantity'])  # miss match된 라벨의 원솟값은 NaN(Not a Number) 으로 채워짐
 
-# 딕셔너리로 생성
-pydic = {"서울": 100, "부산": 200, "광주": 300, "세종": 400}
-ar = pd.Series(pydic)
-ar
+# >>> 자료형 변경 -----
 
-raw_data = {'food':['melon', 'melon', 'apple', 'apple', 'apple', 'peach'],
-            'year':[2018, 2019, 2018, 2019, 2020, 2018],
-            'quantity':[490, 512, 478, 325, 290, 800]}
-df = pd.DataFrame(raw_data)
-df
+# 변경하고자 하는 열명과 자료형을 딕셔너리의 키와 값으로 전달
+df = df.astype({'food':str, 'year':int, 'quantity':float})            # 파이썬 자료형 적용
+df = df.astype({'food':str, 'year':np.float32, 'quantity':np.int32})  # 넘파이 자료형 적용
+df['quantity'] = df['quantity'].astype('float64')
 
-# 특정 범위로 생성
-x = {'selectFood': df['food'][:-1]}
-pd.DataFrame(x)
+# >>> label 지정 -----
 
-# 인덱스로 생성
-pd.DataFrame(df, columns=['year', 'food', 'quantity'])
-pd.DataFrame(df, index=[0, 1, 3])
+# 라벨명 설정
+df.index = ['a', 'b', 'c', 'd']
+df.columns = ['food', 'year', 'quantity']
+df.rename(index={'a': 'no_1', 'b': 'no_2'}, inplace=False)
+df.rename(columns={'food': 'Fruit'}, inplace=False)
 
-# 추가된 인덱스에 miss match된 값은 NaN(Not a Number) 생성
-pydic = {"서울": 100, "부산": 200, "광주": 300}
-ar = pd.Series(pydic)
-
-_ix_name = ['서울', '광주', '인천', '세종']
-ar1 = pd.Series(pydic, index=_ix_name)
-ar1
-
-# 조건을 이용한 열 생성
-df['addcol'] = df.food == 'apple'
-df
-
-# 시리즈를 데이터베이스로 변환
-ar = pd.Series(['a', 'b', 'c', 'd', 'e'])
-test = ar.to_frame()
-test
-
-# >>> 열 자료형 변환
-# 변경하고자 하는 열의 이름을 딕셔너리 키와 값으로 전달
-df = df.astype({'A':int32, 'B':float32, 'C':str})        # error 판다스에는 int32자료형이 없음
-df = df.astype({'A':np.int32, 'B':np.float32, 'C':str})  # 넘파이 자료형 적용
-df = df.astype({'A':int, 'B':float, 'C':str})            # 파이썬 자료형 적용
-
-# 특정 열의 자료형 변경
-df['E'] = df['E'].astype('float64')
-
-# >>> 정보 확인
-
-ar.index
-ar.values  # 복수형(s)철자 주의!!
-ar.dtype
-ar.dtypes
-type(ar)
-
-df.values
-type(df)         # DataFrame
-type(df.values)  # numpy.ndarray(넘파이 다차원배열)
-df.index
-df.columns
-df.ndim
-df.size
-df.shape
-
-isinstance(ar, pd.DataFrame)  # 변수의 데이터프레임 여부 확인
-isinstance(test, pd.DataFrame)
-
-# >>> label 생성
-
-# 이름 지정
-ar.name = "대한민국 광역시"
-ar.index.name = 'no'
-
-# 인덱스명 지정
-ar.index = ['a', 'b', 'c', 'd']
-
-# 특정 라벨명 변경
-ar.rename(index={'a':'충주'})
-df.rename(index={1: 'no_1', 2: 'no_2'}, inplace=False)
-df.rename(columns={'food': 'flout'}, inplace=False)
-
-# 특정 열을 인덱스로 지정: drop은 지정된 열의 삭제 여부, append는 기존 인덱스의 삭제 여부
+# 특정 열을 인덱스로 설정: drop은 지정된 열의 삭제 여부, append는 기존 인덱스의 삭제 여부
 df.set_index('year', drop = True, append = False, inplace = False)
 
 # 정수 인덱스로 초기화: drop는 기존 인덱스의 열 이동 여부
 df.reset_index(drop=True, inplace=False)
 
-# >>> label 정렬
+# >>> label 정렬 -----
 
-# 행 기준
+# 인덱스 기준
 df.sort_index(ascending=False)           # 내림차순(False)
 
-# 열 기준
-df.sort_values(by=['city', 'call'],      # 기준열
+# 컬럼 기준
+df.sort_values(by=['year', 'food'],      # 기준열
                ascending=True,           # 오름차순(True)
                na_position='first',      # 결측값 위치 'first'
                # ignore_index=True,      # 기존 인덱스 무시
                # inplace=True,           # 자체 저장
                )
 
+# >>> 정보 확인 -----
+
+df          # DataFrame
+df.values   # numpy.ndarray(넘파이 다차원배열)
+df.index
+df.columns
+df.size
+df.shape
+df.ndim
+type(df.values)
+
 
 # --------------------
-# 데이터 추가, 삭제, 대체
+# 데이터 조작
 # --------------------
 
-# >>> 원소값 추가, 삭제
+import numpy as np
+import pandas as pd
+df = pd.DataFrame({'food':['melon', 'melon', 'apple', 'apple'],
+                   'year':[2018, 2019, 2018, 2019],
+                   'quantity':[490, 512, 478, 325]},
+                   index = list('abcd'))
+print(df)
 
-# 원소값 추가
-ar[10] = 100   # 정수인덱스로는 추가할 수 없다(인덱스범위를 벗어남)
-ar['k'] = 100  # 라벨인덱스로 원소 추가
+# >>> 열 추가
 
-# 원소값 삭제
-del ar['k']
+df['man'] = 10
 
-# >>> 행 열 삭제
+# >>> 행 열 삭제 -----
 
-df.drop(['Dave', 'Ellen'], inplace=False)  # 행(axis=0)
-df.drop('pop', axis=1, inplace=False)      # 열(axis=1)
+df.drop(['a', 'b'], inplace=False)       # 행(axis=0), default
+df.drop('man', axis=1, inplace=False)    # 열(axis=1)
+del df['man']                            # 열 삭제, 즉시 적용 
 
-del df['addcol']  # 열 삭제
 
-# >>> 중복값 확인, 삭제
+
+## >>> 하단부분 복습 필요 지점
+
+
+
+# >>> 중복값 확인, 삭제 -----
 
 # 확인
 df.duplicated()
@@ -488,7 +369,7 @@ df['city'].duplicated()
 df.drop_duplicates()
 df.drop_duplicates(subset=['city'], keep='last')
 
-# >>> 결측값 확인, 삭제, 대체
+# >>> 결측값 확인, 삭제, 대체 -----
 
 # 확인
 df.info()
@@ -519,7 +400,7 @@ ndf['건물'].where(ndf['대분류'] == '건물군', ndf['건물'].str.split('_'
 # np.where(조건문, true 일때 값, false 일때 값)
 np.where(pd.notnull(df['area']), df['call'], df['city'])
 
-# >>> 데이터셋 합치기, 나누기
+# >>> 데이터셋 합치기, 나누기 -----
 
 # 병합
 # 키: 열명(on, left_on, right_on), 인덱스(left_index, right_index), 방식: inner, outer, left, right
@@ -543,11 +424,11 @@ df['city'].str.slice(2, 3)
 # np.where(조건문, true 일때 값, false 일때 값)
 np.where(df['area'] >= 50e3, "Big", "Small")
 
-# >>> 행과 열 바꾸기(Transpose)
+# >>> 행과 열 바꾸기(Transpose) -----
 
 df2.T
 
-# >>> View
+# >>> View -----
 
 # 슬라이싱한 데이터프레임은 뷰일 뿐이다
 v = pd.DataFrame(np.arange(1,16).reshape(3,5), index=list('abc'), columns=list('ABCDE'))
