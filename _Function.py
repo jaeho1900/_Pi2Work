@@ -224,6 +224,15 @@ lst.count(1)
 
 # >>> Print
 
+# separate(프린트문 안에서의 구분자)
+s1 = "First str"
+s2 = "Second str"
+print(s1, s2, sep='\n그리고\t')  # \t tap, \n 줄바꿈
+
+# end(프린트문 끝부분에서의 구분자)
+print("First str", end='\t')    # \t tap, \n 줄바꿈
+print("Second str")
+
 # str concatenation: + ,
 print("우리", "나라")                        # 띄어쓰기
 print("우리" + "나라")                       # 붙여쓰기
@@ -1348,3 +1357,38 @@ jupyter-nbextension enable rise --py --sys-prefix
 #사용
 Alt +R
 """
+
+
+# -----------------------------
+# VSCODE
+# -----------------------------
+
+# # VScode terminal 설정하기 - Windows ----------
+"""
+* VScode terminal git bash로 설정 (웹개발 환경)
+- VScode에 들어가 ctrl + , 를 눌러, 설정에 들어간다
+
+- 검색창에 terminal.integrated.shell.windows 를 입력한다
+- Edit in settings.json 을 클릭한다
+- termianl.integrated.sheel.windows에 자신의 Git 설치 경로\bin\bash.exe\를 입력해준다.
+(예시)"terminal.integrated.shell.windows": "C:\\Program Files\\Git\\bin\\bash.exe"
+- 설정을 하고 난 후, vscode를 한 번 껐다가 켜준다
+- ctrl + shift + `를 눌러 새 터미널을 확인한다.
+
+* Terminal 변경하기 (Anaconda 환경)
+- Ctrl + Shift + P(팔레트 선택)을 누르고 명령어에 shell을 친다.
+- 아래의 Select Default Shell을 선택하면 shell을 선택할 수 있고,
+- Commnad Prompt를 선택하면 Anaconda Activation 환경을 사용할 수 있다.
+"""
+
+# str.extract: 정규표현식으로 선택한 문자를 독립된 열로 분할
+df.city.str.extract(r'(.*)_(.*)')
+
+# str.split(slice)
+df['city'].str.split('_').str[0]
+df['city'].str.split('_').str[1]
+df['city'].str.slice(2, 3)
+
+# str.contains(): 정규표현식으로 조건 만족 여부를 반환
+df['city'].str.contains('S|j', na=False, regex=True)  # 결측값은 'False'로 반환
+df[~df.city.str.contains('(S|j)', na=False)]          # 불포함(결측값이 있는 경우 'na=False')
