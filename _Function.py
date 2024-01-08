@@ -2,104 +2,20 @@
 # Function
 # =====================
 
-# --------------------
-# 사용자 정의 함수
-# --------------------
-
-# >>> 매개변수가 없는 사용자 정의 함수 -----
-
-def pair_gugudan():
-    for x in range(2, 10, 2):
-        for y in range(1, 10):
-            print(x, 'x', y, '=', x * y, end='\t')
-        print(end='\n')
-
-pair_gugudan()
-
-# >>> 매개변수가 있는 사용자 정의 함수 -----
-
-def show_list_element(ani):
-    for i in ani:
-        print(i)
-
-animals = ['Tiger', 'Wolf', 'Lion']
-show_list_element(animals)
-
-# >>> 리턴값이 있는 사용자 정의 함수 -----
-
-def my_func_rtn(x, y):
-    return x - y
-
-my_func_rtn(5, 3)
-
-# >>> 작성 사례 -----
-
-# [퀴즈] 거스름돈 계산
-# Q) 사용자의 거스름돈을 동전으로 계산해줄때 각 동전이 몇 개 필요한지 출력하시오
-# Q1) 거스름돈은 사용자 입력으로 처리
-# Q2) 1원 동전 단위까지 처리한다. 안할 경우는 예외처리하거나 절삭 처리
-# Q3) 각 동전이 몇 개 필요한지 출력
-# Q4) 총 동전이 몇 개 필요한지 출력
-# A) 계산할 거스름돈을 입려해주세요: 1780
-# 총 필요한 동전의 갯수는: 9개
-# 500원: 3개, 100원: 2개, 50원: 1개, 10원: 3개, 1원: 0개
-
-def _test():
-    # ------------------------------------------------
-    # 사용자 입력(거스름존) 및 정수 처리
-    m = int(input("계산할 거스름돈을 입려해주세요:"))
-
-    # 변수 선언 및 초기화
-    money = m
-    cnt = 0
-    cnts = []
-
-    # 각각의 동전을 리스트로 선언
-    lst = [500, 100, 50, 10, 1]
-
-    # 반복하면서 각 동전 카운트 및 총 동전 카운트 저장
-    for i in lst:
-        cnts.append(money // i)
-        cnt += money // i
-        money %= i
-
-    # 출력
-    print("총 필요한 동전의 갯수는: {0}개".format(cnt))
-    print("500원: {0}개, 100원: {1}개, 50원: {2}개, 10원: {3}개, 1원: {4}개"
-          .format(cnts[0], cnts[1], cnts[2], cnts[3], cnts[4]))
-    # ------------------------------------------------
-
-_test()
-
-# [퀴즈] 앞뒤가 똑같은 문자열인지 비교?
-
-def _test2():
-    # ------------------------------
-    # 사용자 입력 및 예외처리
-    while (True):
-        a = input("문자를 입력하세요")
-        if a == '':
-            print("뭐라도 입력하세요")
-            continue
-        else:
-            break
-
-    # 사용자가 입력한 문자열을 거꾸로 저장
-    b = ''.join(reversed(a))
-
-    # 비교
-    if a == b:
-        print("앞뒤가 똑같은 문자열입니다 ^_^")
-    else:
-        print("앞뒤가 다른 문자열입니다 ㅠ.ㅠ")
-    # ------------------------------
-
-_test2()
+# # 함수는 코드에 대한 이름표
+# ┌ '함수명'으로 바로 사용: 내장함수, 사용자 정의 함수
+# └ '객체명.함수명'으로 사용: 다른 모듈(패키지) 함수, 클래스 함수
+# 내장 함수: print, open, int 등 기본 함수
+# 사용자 정의 함수: def 를 활용하여 직접 정의한 함수
+# 다른 모듈(패키지) 함수: 별도 파일에서 정의한 함수나 패키지의 함수('import 폴더명.파일명.함수명'으로 호출)
+# 클래스 함수: 파이썬은 클래스로 모든 요소를 생성하며, 클래스의 객체는 '객체명.함수명'으로 사용할 수 있다
+# 함수호출부: argument = 전달인자 = 값 = 인수
+# 함수정의부: parameter = 매개변수 = 변수 = 인자
 
 
-# --------------------
+# =====================
 # 내장 함수
-# --------------------
+# =====================
 
 # >>> zip(): 동일 개수의 자료형을 묶어서 리스트로 반환(짝이 안 맞으면 맞는 만큼만 적용) -----
 
@@ -148,303 +64,46 @@ x = list([1, 2, 3, 4, 5])
 type(x)
 isinstance(x, list)
 
+# >>> globals(), locals() -----
 
-# --------------------
-# 람다식
-# --------------------
+globals()['test'] = 100	                # {'test': 100} 글로벌 변수에 추가
+print(test)
 
-# >>> iterable 자료형에 적용 -----
+for i in range(1, 4):
+    locals()['test' + str(i)] = i * 10  # {생략, 'test1': 10, 'test2': 20, 'test3': 30}
 
-lst = [1, 2, 3, 4, 5, 6, 7, 8, 9]
-
-list(filter(lambda x: x % 2, lst))  # filter(): 참인 결과 값만 반환
-list(filter(lambda x: x % 2 != 0, lst))
-list(filter(lambda x: x % 2 == 0, lst))
-
-# >>> 함수의 인자에 적용 -----
-
-def my_strip(x):
-    return x.strip()
-
-a = ' UD001 - lion, UD002 - tiger , UD003 - hippo '
-b = a.split(',')
-
-c = list(map(my_strip, b))
-c.sort(key=lambda x: x[8])  # 9번째 글자 기준 오름차순 정렬
-print(c)
-
-
-# --------------------
-# iterable 메서드
-# --------------------
-
-# >>> List Comprehention -----
-
-lst = ['lion', 'tiger', 'hippo']
-[i.upper() for i in lst]
-
-# >>> Add -----
-
-lst = [1, 2, 3]
-lst2 = ('lion', 'tiger', 'hippo')
-
-lst + ['cow']
-lst + list(lst2)        # 튜플+리스트 병합은 리스트로 작업 후 튜플로 변환
-lst.extend(list(lst2))
-
-lst.append(4)       # [1, 2, 3, 4]
-lst.append([5, 6])  # [1, 2, 3, 4, [5, 6]]
-
-lst.extend(4)         # error: iterable 자료형만 입력 가능
-lst.extend([4])       # [1, 2, 3, 4]
-lst.extend([5, 6])    # [1, 2, 3, 4, 5, 6]
-lst.extend([[5, 6]])  # [1, 2, 3, 4, [5, 6]]
-
-lst.insert(0, [10, 20])    # 0번째(맨앞에) 추가, insert(위치인덱스, 값)
-lst.insert(-1, 100)        # 마지막-1번째 추가
-lst.insert(len(lst), 100)  # 마지막에 추가
-
-# >>> Delete -----
-
-lst = ['li', 'Co', 'Ni', 'Mn', 'Al', 'Mg']
-
-lst.pop(-1)       # pop(index): 해당 인덱스의 값을 빼면서 뺀 값을 보여줌
-lst.pop()         # 인덱스가 없으면 마지막 원소에 적용
-lst.remove('Mn')  # Remove(value): index 불가!!
-del lst[-1]
-lst.clear()
-
-# >>> Sort -----
-
-lst = 'I am a bright Man'.split()
-
-sorted(lst)              # 원본보존 및 결과반환
-lst.sort()               # 원본변경(오름차순)
-lst.sort(reverse=True)   # 내림차순
-lst.sort(key=len)        # 요소의 길이를 기준 정렬
-lst.sort(key=str.lower)  # 알파벳 기준 정렬
-
-# >>> Reverse -----
-
-lst = [4, 5, 1, 3, 2, 6]
-
-reversed(lst)  # 원본보존 및 결과반환
-lst.reverse()  # 원본변경
-
-# >>> Count -----
-
-lst = [4, 5, 1, 3, 2, 6, 1, 3, 1, 7]
-lst.count(1)
-
-
-# --------------------
-# String
-# --------------------
-
-# >>> Print -----
-
-# separate(프린트문 안에서의 구분자)
-s1 = "First str"
-s2 = "Second str"
-print(s1, s2, sep='\n그리고\t')  # \t tap, \n 줄바꿈
-
-# end(프린트문 끝부분에서의 구분자)
-print("First str", end='\t')    # \t tap, \n 줄바꿈
-print("Second str")
-
-# str concatenation: + ,
-print("우리", "나라")                        # 띄어쓰기
-print("우리" + "나라")                       # 붙여쓰기
-print("우리" + "나라" + str(10000) + "세")   # + 에서는 자료형 맞춰야 함
-print("그는 \"J\"에게 말했다. \'가지마!\'")   # 문장 안에서 ', " 사용( \ 백슬래시)
-
-# C 언어 % 타입: %s, %c, %d, %f, %%
-print("23년 승률은 %d%% 입니다." % 100)      # 퍼센트 시는 2번 써 준다
-print("%5.3f" % 3.141592)                   # 소수점 찍기
-print("'%d년은 %s년 입니다." % (24, "갑진"))
-print('%s의 투자비중은 %-15.2f%%입니다.' % (a[-6:-1], b))              # 좌정렬 및 자릿수 맞춤
-print('%s의 투자비중은 % 15.2f%%입니다.' % (a[-6:-1], b))              # 우정렬 및 자릿수 맞춤
-print('%s의 투자비중은 %015.2f%%입니다.' % (a[-6:-1], b), end='\n\n')  # 우정렬 및 0채움
-
-# format 타입: {지정변수:[빈공간채울문자][정렬방향<>][+양수부호][공간수][,][.소수자릿수]}
-print('value is {{ {} }}'.format('%d' % b))
-print('{}의 투자비중은 {}%입니다.'.format(a[7:12], '%15.2f' % b))
-print('{name}의 투자비중은 {money}%입니다.'.format(name=a[7:12], money='%15.2f' % b))
-print('{0}의 투자비중은 {1:<15.2f}%입니다.'.format('K씨', -1000.5))   # 좌정렬
-print('{}의 투자비중은 {:^15.2f}%입니다.'.format('K씨', -1000.5))     # 가운데정렬
-print('{}의 투자비중은 {:>15.2f}%입니다.'.format('K씨', -1000.5))     # 우정렬
-print('{}의 투자비중은 {:0>15.2f}%입니다.'.format('K씨', -1000.5))    # 공백채우기
-print('{}의 투자비중은 {:,.2f}%입니다.'.format('K씨', -1000.5))       # 천단위콤마표시
-print('{0:+15,} 과 {1:+15,} 사이'.format(50000, -50000))             # 양수부호
-
-# f-string 타입(python 3.6 이후)
-lst = [20, '시험', 21]
-strValue = lst[1]
-
-print(f'{lst[0]}회 {lst[1]} 만점자 총 {lst[2]}명')
-print(f"'{lst[0]}'회 {lst[1]} 만점자 총 '{lst[2]}'명")  # 홀따옴표 활용하기(외부를 쌍따옴표로 감싸기)
-print(f"나의 조국은 '{strValue}'입니다.")
-print(f"나의 조국은 '{strValue:<15}'입니다.")
-print(f"나의 조국은 '{strValue:>15}'입니다.")
-print(f"나의 조국은 '{strValue:^15}'입니다.")           # 가운데정렬의 중간이 맞지 않으면 왼쪽으로 치우침
-print(f'value is {{ {int(b)} }}')
-print(f'{a[7:12]}의 투자비중은 {b:<15,.2f}%입니다.')
-print(f'{a[7:12]}의 투자비중은 {b:^15,.2f}%입니다.')
-print(f'{a[7:12]}의 투자비중은 {b:>15,.2f}%입니다.')
-
-# >>> Count -----
-
-test = "Welcome to Korea"
-
-len(test)        # 문자열의길이, 리스트/튜플카운팅(NaN 포함)
-test.count('e')  # 특정문자갯수, 리스트/튜플카운팅(NaN 제외)
-
-# >>> 인덱스 위치값 -----
-
-test.find("Z")              #  찾는 문자없으면 -1
-test.index("Z")              # error
-
-test.find("K")              # 11 (이하 index 매서드 동일)
-test.find("K") - len(test)  # -5
-test.find("e")              # 왼쪽부터 첫번째 인덱스 위치값
-test.rfind("e")             # 오른쪽부터 첫번째 인덱스 위치값
-[i for i, x in enumerate(test) if x == 'e']  # 모든 원소의 인덱스 위치 반환
-
-# >>> 공백 제거 -----
-
-test = "   Welcome to Korea   "
-test.strip()
-test.lstrip()
-test.rstrip()
-
-# >>> 대문자 양식 -----
-
-test = "Welcome to Korea"
-print(test.lower())
-print(test.upper())
-print(test.capitalize())  # 문장의 시작 단어만 대문자
-
-# >>> 문자길이 양식 -----
-
-test.ljust(50, '-')   # 총길이 50, 왼쪽정렬, 지정문자 채움
-test.rjust(50, ' ')   # 총길이 50, 오른쪽정렬, 공백 채움
-
-# >>> Replace, Split, Join -----
-
-a = 'asiana air com'
-b = a.replace(' ', '.')
-a[7:10] + '@' + a[-3:]
-c = b.split('.', maxsplit=1)
-d = '@'.join(c)
-print(d)
-
-# >>> 워드클라우드: 딕셔너리 키 정렬 -----
-
-str = """Lorem Ipsum is simply dummy text of the printing and typesetting industry.
- Lorem Ipsum has been the industry's standard dummy text ever since the 1500s,
- when an unknown printer took a galley of type and scrambled it to make a type
- specimen book. It has survived not only five centuries, but also the leap into
- electronic typesetting, remaining essentially unchanged. It was popularised in
- the 1960s with the release of Letraset sheets containing Lorem Ipsum passages,
- and more recently with desktop publishing software like Aldus PageMaker including
- versions of Lorem Ipsum."""
-
-sltstr = str.split()
-
-cnts = dict()
-for i in sltstr:
-    if i not in cnts:
-        cnts[i] = 1
-    else:
-        cnts[i] += 1
-
-print(cnts)
-
-lstcnts = sorted(cnts.items())      # 키 값으로 정렬된 리스트!! 반환
-
-for k, v in dict(lstcnts).items():  # 리스트를 딕셔너리로 변환하여 키와 값으로 분리하여 출력
-    print(k, '\t', v)
-
-
-# --------------------
-# Dictionary : 순서와 index 는 무의미, []는 키값을 나타낼 뿐
-# --------------------
-
-aa = {1: 'one', 2: [1, 2, 3], '인사': '방가'}
-bb = {'korea': 'seoul', 'japan': 'tokyo'}
-
-# >>> access -----
-
-list(aa.keys())
-list(aa.values())
-
-aa['인사']               # 키값이없으면 KeyError, 프로세스 중단
-aa.get('인사')           # 키값이없으면 무반응, 다음 프로세스 진행
-aa.get('gender', 'man')  # 키값이없을때 지정값 반환
-
-# >>> update: 이어 붙이기 -----
-
-aa[1] = 'bye'
-aa[6] = 'six'
-aa.update(bb)
-
-# >>> delete -----
-
-del aa['인사']
-aa.clear()
-
-# >>> 딕셔너리의 생성 -----
-
-name = ['merona', 'gugucon', 'bibibig']
-price = [500, 1000, 600]
-{"메로나": 500, "구구콘": 1000}          # 일반 방법
-dict(메로나=500, 구구콘=1000)            # 키가 문자열일 때 dict클래스에 담는 방법
-dict(zip(name, price))                   # dict() + zip() 메소드
-{k: v * 2 for k, v in zip(name, price)}  # 딕셔너리 컴프리헨션 방법: 연산 및 조건 식 가능
-{k: v for k, v in zip(name, price) if v < 1000}
-
-
-# --------------------
-# 조건문, 반복문
-# --------------------
-
-# # if문: if:_[elif:]_[else:]
-
-# # while문: while:_[break]_[continue]_[pass]_[else:]
-
-# # for문 : for_in_:[else:]
+print(globals())
+print(locals())
 
 
 # =====================
-# 파이썬 함수
+# 사용자 정의 함수
 # =====================
 
-# # 함수는 코드에 대한 이름표
-# ┌ '함수명'으로 바로 사용: 내장함수, 사용자 정의 함수
-# └ '객체명.함수명'으로 사용: 다른 모듈(패키지) 함수, 클래스 함수
-# 내장 함수: print, open, int 등 기본 함수
-# 사용자 정의 함수: def 를 활용하여 직접 정의한 함수
-# 다른 모듈(패키지) 함수: 별도 파일에서 정의한 함수나 패키지의 함수('import 폴더명.파일명.함수명'으로 호출)
-# 클래스 함수: 파이썬은 클래스로 모든 요소를 생성하며, 클래스의 객체는 '객체명.함수명' 사용할 수 있다
-# 함수호출부: argument = 전달인자 = 값 = 인수
-# 함수정의부: parameter = 매개변수 = 변수 = 인자
+# --------------------
+# 매개변수가 없는 사용자 정의 함수
+# --------------------
+
+def pair_gugudan():
+    for x in range(2, 10, 2):
+        for y in range(1, 10):
+            print(x, 'x', y, '=', x * y, end='\t')
+        print(end='\n')
+
+pair_gugudan()
 
 
 # --------------------
-# Return Method
+# 매개변수가 있는 사용자 정의 함수
 # --------------------
 
-# >>> 리턴은 결과값을 반환하며 함수를 중단하는 역할 -----
+def show_list_element(ani):
+    for i in ani:
+        print(i)
 
-def f(treeHit):  # treeHit: 파라미터, 매개변수, 인자
-    while treeHit < 10:
-        treeHit = treeHit + 1
-        print("나무를 %d번 찍었습니다." % treeHit)
-        if treeHit == 5:
-            return "나무 넘어갑니다."
-    return -1
+animals = ['Tiger', 'Wolf', 'Lion']
+show_list_element(animals)
 
-print(f(9))     # 9: 인수, 전달인자
 
 # >>> 가변 매개변수 -----
 
@@ -504,6 +163,23 @@ foo(1, 2, 3, a=1, b=1, c=2)
 
 
 # --------------------
+# 리턴값이 있는 사용자 정의 함수
+# --------------------
+
+# >>> 리턴은 결과값을 반환하며 함수를 중단하는 역할 -----
+
+def f(treeHit):  # treeHit: 파라미터, 매개변수, 인자
+    while treeHit < 10:
+        treeHit = treeHit + 1
+        print("나무를 %d번 찍었습니다." % treeHit)
+        if treeHit == 5:
+            return "나무 넘어갑니다."
+    return -1
+
+print(f(3))     # 3: 인수, 전달인자
+
+
+# --------------------
 # yield Method (제너레이터 함수)
 # --------------------
 
@@ -536,9 +212,86 @@ num2 = next(k)
 print(num1, num2)
 
 
-# --------------------
-# Class
-# --------------------
+# =====================
+# 모듈(패키지) 함수
+# =====================
+
+# >>> 진행율 그래프 -----
+
+from tqdm import tqdm
+for i in tqdm(range(1, 10000000, 1)):
+    i += i
+print(i)
+
+# >>> os() -----
+
+import os
+os.getcwd()                              # 현재 경로
+__file__                                 # 현재 파일의 경로(파일명 포함)
+ds_path = os.getcwd()
+ds_file_path = __file__
+os.path.abspath(ds_file_path)            # 절대경로로 변환
+os.path.dirname(ds_file_path)            # 마지막 경로,파일명을 제외하고 반환
+os.path.basename(ds_file_path)           # 마지막 경로,파일명을 반환
+os.path.split(ds_file_path)              # 마지막 경로,파일명을 분리 반환
+os.path.exists(ds_file_path)             # 파일 또는 경로가 존재 여부 반환
+os.path.join(ds_path + os.sep + 'Test')  # 경로 병합
+dir_name = os.path.join(ds_path + os.sep + 'Test')
+os.mkdir(dir_name)                       # 새로운 폴더를 만들기
+os.chdir(dir_name)                       # 작업 경로 변경
+os.listdir(dir_name)                     # 경로 안의 하위경로명 및 파일명 리스트
+os.rename('test0.txt', 'test6.txt')      # 파일명 또는 경로명 바꾸기
+os.remove('test1.txt')                   # 파일삭제
+os.system('copy test3.txt test7.txt')    # 시스템의 유틸리티나 dos명령어 사용
+os.system('del *.txt')
+os.chdir(os.path.dirname(dir_name))
+print(os.getcwd())
+os.rmdir(dir_name)                       # 폴더 삭제
+
+# >>> datetime() -----
+
+import datetime
+print(datetime.datetime.__doc__)
+
+# 날짜와 시간 출력
+current = datetime.datetime(2020, 5, 16, 23, 10, 1, 100)
+# 마이크로세컨드 제외
+current_time = current.replace(microsecond=0)
+# 날짜 출력
+currentdate = datetime.datetime.now().date()
+currentdate2 = datetime.date.today()
+# 시간 출력
+currenttime = datetime.datetime.now().time()
+# 날짜와 시간 합치기
+combine_datetime = datetime.datetime.combine(currentdate, currenttime)
+# timestamp 는 float형!!
+timestamp = datetime.datetime.now().timestamp()
+# timestamp를 datetime형으로 변환
+fts = datetime.datetime.fromtimestamp(timestamp)
+# datetime을 원하는 형식의 str로 변환
+chg = datetime.datetime.strftime(current, '%b %d %y %H %M %S')
+chg2 = current.strftime('%b %d %y %H %M %S')
+# str을 datetime으로 변환
+todatetime = datetime.datetime.strptime(chg2, '%b %d %y %H %M %S')
+# 날짜 차이
+days_cap = (combine_datetime - current).days
+# 시간 차이
+hours_cap = (combine_datetime - current).seconds / 3600
+# 분 차이
+mins_cap = (combine_datetime - current).seconds / 60
+# 초 차이
+scds_cap = (combine_datetime - current).seconds
+# 날짜계산과 시간계산을 위해서는 timedelta클래스를 사용!!
+base_day = datetime.timedelta(days=3)
+# 이전날짜
+previous_day = current - base_day
+# 다음날짜
+next_day = current + base_day
+
+
+# =====================
+# Class 함수
+# =====================
 
 # >>> Man 이라는 객체를 만들기 위한 클래스 함수 정의: 클래스 공간에 데이터 저장 -----
 
@@ -711,7 +464,6 @@ try:
 except Exception as err:
     print('오류: ', err)
 
-
 # >>> traceback 모듈은 에러메세지와 에러발생위치를 함께 반환 -----
     
 try:
@@ -721,8 +473,8 @@ except Exception:
     import traceback
     traceback.print_exc()
 
-
 # >>> 사용자 정의 예외(에러): 기본적으로 Exception 클래스를 상속 받아서 사용 -----
+
 class MyError(Exception):
     """Base 에러 클래스"""
     pass
@@ -733,304 +485,19 @@ class InsufficientFundsAsk(MyError):
 
 
 # =====================
-# re
+# 조건문, 반복문
 # =====================
 
-# --------------------
-# 정규표현식
-# --------------------
+# # if문: if:_[elif:]_[else:]
 
-# abc                  문자열('abc')를 찾음
-# [abc]                a 또는 b 또는 c
-# [^ab]                부정, [^a^b], [^(ab)]와 같음
-# [a-zA-Z]             (-)기호로 짝을 맞춰 범위를 지정
-# [ㄱ-ㅎ|ㅏ-ㅣ|가-힣]   한글
-# [0-9]                숫자
-# ^                    시작
-# $                    끝
-# .                    문자(공백문자, 기호 포함) 1개
-# * 	               0 or more
-# +	                   1 or more
-# ?	                   0 or 1
-# {숫자}               숫자 만큼
-# {숫자,}              숫자 이상
-# {숫자1,숫자2}        숫자1 이상, 숫자2 이하 (숫자1,숫자2 모두 붙여쓰기에 주의!!)
-# a+?    	           match as few as possible(1 if 1 or more)
-# a{2,}?	           match as few as possible(2 if 2 or more)
-# ab|cd	               match ab or cd (순서 중요!!)
+# # while문: while:_[break]_[continue]_[pass]_[else:]
 
-# \d 숫자 1개                        \D
-# \w 알파벳+한글+숫자+_               \W
-# \s 공백+탭                         \S
-# \b 단어경계(\w 와 \W 사이의 경계)   \B 철자경계(\w와 \w 사이)
-
-# >>> \ 사용법!! -----
-    
-# '\문자열' 은 --> 짝수로만 인식
-"\superman"        # \2개
-"\\superman"       # \2개
-"\\\superman"      # \4개
-"\\\\\superman"    # \6개
-
-# r'\문자열' 은 --> 2배수로 인식
-r"\superman"        # \2개
-r"\\superman"       # \4개
-r"\\\superman"      # \6개
-
-# 파이썬 엔진은 --> '\문자열', r'\문자열'에서 산정된 '\' 개수를 --> 50% 만 인식
-print("\superman")    # \1개 -> \2개 -> \1개
-print("\\superman")   # \2개 -> \2개 -> \1개
-print(r"\\superman")  # \2개 -> \4개 -> \2개 (직관적임)
-
-
-# --------------------
-# 사용법
-# --------------------
-
-import re
-
-# >>> re 모듈의 메소드 -----
-
-# 종류          검색범위                         성공반환값     실패반환값
-# re.match      문장 처음부분만                   객체 1개       None
-# re.search     문장 처음부터 일치하는 첫번째 것   객체 1개       None
-# re.findall    문장 처음부터 일치하는 모든 것     리스트         빈 리스트
-# re.finditer   문장 처음부터 일치하는 모든 것     순환객체       None
-# re.fullmatch  문장 일치                        객체 1개       None
-# re.compile    정규식 반복 사용
-# re.sub        패턴 대체
-
-# >>> 옵션 -----
-
-# re.I 대소문자 불문
-# re.S 메타문자(.)에서 개행문자(\n) 포함
-# re.M 메타문자(^$)를 전체문장이 아닌 각 라인에 적용
-
-# >>> Groups & Lookaround -----
-
-# (abc)	    capture group
-# \1	    backreference to group #1(그룹1 표현식에서 캡쳐한 결과물을 복사)
-# (?:abc)	non-capturing group(캡쳐그룹 해제)
-# (?=abc)	positive lookahead, 조건 앞의 문자가 조건을 만족하는 경우 그것만 선택
-# (?!abc)	negative lookahead, 조건 앞의 문자가 조건을 만족하는 경우 그것만 제외하고 선택
-# (?<=abc)	positive lookbehind, 조건 뒤의 문자가 조건을 만족하는 경우 그것만 선택
-# (?<!abc)	negative lookbehind, 조건 뒤의 문자가 조건을 만족하는 경우 그것만 제외하고 선택
-
-# 패턴 컴파일에서 옵션 지정
-text = '''홍길동 010-1234-5671
-이순신 010-3333-9632
-김유신 010.9999.5417
-강감찬 010 111  2222'''
-pattern = re.compile(r'\w+\s+\d{3}[-_. ]+\d{3,4}[-_.\s]+\d{4}', re.M)
-rst_match = re.findall(pattern, text)
-print('\n'.join(rst_match))
-
-# 매칭함수(pattern, text, 옵션)에서 옵션 지정
-re.findall('k.', 'k5r k k\n Ks', re.I)
-re.findall('k.', 'k5r k k\n Ks', re.S)
-re.findall('k.', 'k5r k k\n Ks', re.M)
-result = re.finditer('010', text)
-for iter in result:
-    print(iter)
-
-re.findall('(?i)k.', 'k5r k k\n Ks')  # 패턴에 (?옵션)을 직접 입력(인라인 방식)
-re.findall('(?s)k.', 'k5r k k\n Ks')
-re.findall('(?m)k.', 'k5r k k\n Ks')
-
-# >>> 그룹핑 및 치환 -----
-
-text = '홍길동 010-1234-5671'
-
-# 컴파일의 sub() 그룹핑
-pattern = re.compile(r'^(\w+)\s+(\d{3}).(\d{3,4}).+(\d{4})$', re.M)
-print(pattern.sub(r'\g<1> : \g<2> - \g<3> - ****', text))
-print(pattern.sub(r'\1 : \2 - \3 - ****', text))
-print(pattern.sub('\\1 : \\2 - \\3 - ****', text))
-
-# 매칭객체의 group() 그룹핑
-rst_match = re.search(pattern, text)
-print(rst_match.group(0))  # group(0) : 매칭된 전체 문자열 결과값
-print(rst_match.group(1))  # group(1) : 매칭된 1번째 그룹의 문자열 결과값
-print(rst_match.group(4))  # group(4) : 매칭된 4번째 그룹의 문자열 결과값
-
-print(rst_match.start())      # start(): 매칭된 문자열의 시작 위치 반환
-print(rst_match.end())        # end(): 매칭된 문자열의 끝 위치 반환
-print(rst_match.span())       # span(): 매칭된 문자열의 (시작, 끝) 위치 튜플 반환
-
-# re.sub(pattern, replacement, string, 치환횟수) 치환
-print(re.sub(pattern='aaa', repl='xxx', string='aa aaa aaaa aaaaa', count=2))
-print(re.sub('aaa', 'xxx', 'aa aaa aaaa aaaaa', 3))
-
-# >>> [-] 사용법 -----
-
-text = 'my.name@localhost.com'
-# pattern = re.compile(r'[a-zA-Z0-9-.]+@[\w-.]+.com')  # '-'이 짝을 이루면 '범위'로 해석되어 bad character 에러 발생
-pattern = re.compile(r'[a-zA-Z0-9-.]+@[\w-]+.com')     # '-' 앞뒤의 짝을 깨서 해결
-pattern = re.compile(r'[a-zA-Z0-9-.]+@[\w\-.]+.com')   # '-' 앞에 \ 추가해서 해결
-rst_matchLst = re.findall(pattern, text)
-print(rst_matchLst)
-
-# >>> | 사용법 -----
-
-text = "kor 단어는 매칭이 되지만, korea 또는 korean 단어에는 매칭이 안되는 패턴"
-pattern = re.compile(r'kor|korea|korean')  # kor을 먼저 쓰면 kor만 3개 찾음
-pattern = re.compile(r'korean|korea|kor')
-print(re.findall(pattern, text))
-
-# >>> \b 사용법 -----
-
-print("\\b 개수: ", len(re.findall(r'\b', 'Welcome to Seoul.')))
-print("\\B 개수: ", len(re.findall(r'\B', 'Welcome to Seoul.')))
-print(re.findall(r'\bkor\w+\b', "kor 는 비매칭 korea 또는 korean 와는 매칭"))
-
-# >>> 웹페이지 URL 정규식 -----
-
-text = '웹주소는 http://yourcompany.com/search?a=111&b=222 이다.'
-pattern = re.compile(r'http[s]*://[a-zA-Z0-9-_]*[.]*[\w-]+[.]+[\w.-/~?&=%]+')
-rst_matchLst = re.findall(pattern, text)
-print(''.join(rst_matchLst))  # 리스트에서 문자열만 추출
-
-# >>> 한글만 추출 -----
-
-text = "ㅋㅋㅋ ab 안녕하세요, do노력합ㅣ니다"
-
-re.compile('[ㄱ-ㅎ]+').findall(text)  # 출력 ['ㅋㅋㅋ']
-re.compile('[ㄱ-ㅎ|ㅏ-ㅣ]+').findall(text)  # 출력 ['ㅋㅋㅋ', 'ㅣ']
-re.compile('[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]+').findall(text)  # 출력 ['ㅋㅋㅋ', '안녕하세요', '노력합ㅣ니다']
-
-txt = ("[[1월 20일]]| 부통령 = [[월터 먼데일]]| 전임 = 제럴드 포드| 전임대수 = 38| 후임 = 로널드 레이건|"
-       "후임대수 = 40&lt;!--주지사--&gt;|국가2 = [[조지아주]]|명칭2 = [[주지사]]|대수2 = 76|취임일2 ="
-       "[[1971년]] [[1월 12일]]|퇴임일2 = [[1975년]] [[1월 14일]]|부통령2 = 레스터 매독스|부통령명칭2 ="
-       "[[분류:지미 카터 ]][[분류:1924년 출생]][[분류:1976년 미국 대통령 후보]][[분류:1980년 미국 대통령 후보]]")
-
-p = re.compile('\[\[분류:(.*?)\]')
-p.findall(txt)
-
-p2 = re.compile('(?<=\[\[분류:)([ |0-9|ㄱ-ㅎ|ㅏ-ㅣ|가-힣]*?)(?=\]\])')
-p2.findall(txt)
-
-# >>> 정규식과 문자열 함수 대비 -----
-
-# Q) Notebook 이 포함된 단어를 모두 찾아라
-text = '''
-jupyternotebook, evernote, notebook, onenote, notebook1, 21세기notebook, jupyter-notebook,
-jupyter_notebook, jupyter@notebook
-'''
-
-# A1) 정규식
-pattern = re.compile(r'\w*[-@]*notebook\w*')
-print(', '.join(re.findall(pattern, text)))
-
-# A2) 문자열 함수
-a = text.split()
-rst_lists = []
-for i in a:
-    if 'notebook' in i:
-        rst_lists.append(i)
-
-print(rst_lists)
-
-print([i for i in a if 'notebook' in i])
+# # for문 : for_in_:[else:]
 
 
 # =====================
-# 기타 독립 함수
+# 파일 입출력 및 출력물 저장
 # =====================
-
-# --------------------
-# globals(), locals()
-# --------------------
-
-globals()['test'] = 100	                # {'test': 100} 글로벌 변수에 추가
-print(test)
-
-for i in range(1, 4):
-    locals()['test' + str(i)] = i * 10  # {생략, 'test1': 10, 'test2': 20, 'test3': 30}
-
-print(globals())
-print(locals())
-
-
-# --------------------
-# 진행율 막대그래프
-# --------------------
-
-from tqdm import tqdm
-for i in tqdm(range(1, 10000000, 1)):
-    i += i
-print(i)
-
-
-# --------------------
-# os()
-# --------------------
-
-import os
-os.getcwd()                              # 현재 경로
-__file__                                 # 현재 파일의 경로(파일명 포함)
-ds_path = os.getcwd()
-ds_file_path = __file__
-os.path.abspath(ds_file_path)            # 절대경로로 변환
-os.path.dirname(ds_file_path)            # 마지막 경로,파일명을 제외하고 반환
-os.path.basename(ds_file_path)           # 마지막 경로,파일명을 반환
-os.path.split(ds_file_path)              # 마지막 경로,파일명을 분리 반환
-os.path.exists(ds_file_path)             # 파일 또는 경로가 존재 여부 반환
-os.path.join(ds_path + os.sep + 'Test')  # 경로 병합
-dir_name = os.path.join(ds_path + os.sep + 'Test')
-os.mkdir(dir_name)                       # 새로운 폴더를 만들기
-os.chdir(dir_name)                       # 작업 경로 변경
-os.listdir(dir_name)                     # 경로 안의 하위경로명 및 파일명 리스트
-os.rename('test0.txt', 'test6.txt')      # 파일명 또는 경로명 바꾸기
-os.remove('test1.txt')                   # 파일삭제
-os.system('copy test3.txt test7.txt')    # 시스템의 유틸리티나 dos명령어 사용
-os.system('del *.txt')
-os.chdir(os.path.dirname(dir_name))
-print(os.getcwd())
-os.rmdir(dir_name)                       # 폴더 삭제
-
-
-# --------------------
-# datetime()
-# --------------------
-
-import datetime
-print(datetime.datetime.__doc__)
-
-# 날짜와 시간 출력
-current = datetime.datetime(2020, 5, 16, 23, 10, 1, 100)
-# 마이크로세컨드 제외
-current_time = current.replace(microsecond=0)
-# 날짜 출력
-currentdate = datetime.datetime.now().date()
-currentdate2 = datetime.date.today()
-# 시간 출력
-currenttime = datetime.datetime.now().time()
-# 날짜와 시간 합치기
-combine_datetime = datetime.datetime.combine(currentdate, currenttime)
-# timestamp 는 float형!!
-timestamp = datetime.datetime.now().timestamp()
-# timestamp를 datetime형으로 변환
-fts = datetime.datetime.fromtimestamp(timestamp)
-# datetime을 원하는 형식의 str로 변환
-chg = datetime.datetime.strftime(current, '%b %d %y %H %M %S')
-chg2 = current.strftime('%b %d %y %H %M %S')
-# str을 datetime으로 변환
-todatetime = datetime.datetime.strptime(chg2, '%b %d %y %H %M %S')
-# 날짜 차이
-days_cap = (combine_datetime - current).days
-# 시간 차이
-hours_cap = (combine_datetime - current).seconds / 3600
-# 분 차이
-mins_cap = (combine_datetime - current).seconds / 60
-# 초 차이
-scds_cap = (combine_datetime - current).seconds
-# 날짜계산과 시간계산을 위해서는 timedelta클래스를 사용!!
-base_day = datetime.timedelta(days=3)
-# 이전날짜
-previous_day = current - base_day
-# 다음날짜
-next_day = current + base_day
-
 
 # --------------------
 # open()
@@ -1420,16 +887,3 @@ for row in ws['B2:J2']:
 
 # 사용
 # Alt +R
-
-
-# str.extract: 정규표현식으로 선택한 문자를 독립된 열로 분할
-df.city.str.extract(r'(.*)_(.*)')
-
-# str.split(slice)
-df['city'].str.split('_').str[0]
-df['city'].str.split('_').str[1]
-df['city'].str.slice(2, 3)
-
-# str.contains(): 정규표현식으로 조건 만족 여부를 반환
-df['city'].str.contains('S|j', na=False, regex=True)  # 결측값은 'False'로 반환
-df[~df.city.str.contains('(S|j)', na=False)]          # 불포함(결측값이 있는 경우 'na=False')
