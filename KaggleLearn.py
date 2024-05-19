@@ -9,3 +9,4 @@ a = ""
 b = " "
 len(a)
 len(b)
+will_not_work = "abc" * 3
