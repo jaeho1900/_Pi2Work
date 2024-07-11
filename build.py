@@ -1,5 +1,7 @@
 import pandas as pd
 import psycopg2 as pg2
+import seaborn
+import matplotlib
 
 # ----------
 # '데이터구조.xls' 로 부터 DB.columns 추출
