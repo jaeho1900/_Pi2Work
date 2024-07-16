@@ -44,5 +44,5 @@ plt.plot (ysum, label='기간별 금액')
 plt.plot (ycount, label='기간별 유효사이트수')
 plt.show()
 
-
-df.category.unique()
+df[['23-11', '23-12', '24-01', '24-02', '24-03', '24-04', '24-05', '24-06']].groupby(df.category).sum()
+df[['23-11', '23-12', '24-01', '24-02', '24-03', '24-04', '24-05', '24-06']].groupby(df.category).count()
