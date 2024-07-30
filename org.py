@@ -16,5 +16,3 @@ df2 = df.drop_duplicates(subset=['시군구_코드'], keep='last')
 df2_blk = df2[df2['숏도로명'] == ""]  # 0, 38022
 
 df2.to_csv("C:/Users/Administrator/Desktop/shortname_org.csv",encoding='CP949')
-
-
