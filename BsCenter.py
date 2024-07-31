@@ -24,9 +24,14 @@ df2['Short_지명'].count()
 df2['Short_지명'].unique()
 df2['Short_지명'].nunique()
 
-df3 = df2['Short_지명'].value_counts().to_frame()
-df3.sum()
+df2.columns
+df2['주_용도_코드_명'].unique()
+df2[(df2['주_용도_코드_명'].isin(['제2종근린생활시설', '업무시설', '노유자시설'])) & (df2['연면적(㎡)'] >= 10000)]['건물_명'].head(30)
+df2[(df2['주_용도_코드_명'].isin(['제2종근린생활시설', '업무시설', '노유자시설'])) & (df2['연면적(㎡)'] >= 10000)].count()
 
+df3 = df2[(df2['주_용도_코드_명'].isin(['제2종근린생활시설', '업무시설', '노유자시설'])) & (df2['연면적(㎡)'] >= 10000)]
+df4 = df3['Short_지명'].value_counts().to_frame()
+df4.sum()
 
 # ============================
 import pandas as pd
@@ -49,9 +54,9 @@ plt.rcParams['axes.unicode_minus'] = False
 data_draw_korea = pd.read_csv("D:/_Pi2Work/ADP_ver01/data_map_draw_korea.csv", index_col=0)
 
 # 건축물 갯수 추가 ---
-data_draw_korea = pd.merge(data_draw_korea, df3, how='left', left_on='shortName', right_index=True)
+data_draw_korea = pd.merge(data_draw_korea, df4, how='left', left_on='shortName', right_index=True)
+data_draw_korea['count'].size
 # -------------------
-
 
 # 위치(x,y) 잡고, 경계선을 그리고, 데이터를 배치하고, colormap 적용
 BORDER_LINES = [
@@ -75,7 +80,7 @@ BORDER_LINES = [
     [(16, 9), (18, 9), (18, 8), (19, 8), (19, 9), (20, 9), (20, 10)], # 부산시
 ]
 
-gamma = 0.75
+gamma = 0.85 # 0.75  
 
 blockedMap = data_draw_korea
 targetData = 'count'
@@ -90,10 +95,10 @@ vmax = max(blockedMap[targetData])
 mapdata = blockedMap.pivot(index='y', columns='x', values=targetData)
 masked_mapdata = np.ma.masked_where(np.isnan(mapdata), mapdata)
 
-cmapname = 'Greens' # 'Blues' 'Reds' 'Greens'
+cmapname = 'Reds' # 'Blues' # 'Greens'
 
 plt.figure(figsize=(8, 13))
-plt.pcolor(masked_mapdata, vmin=vmin, vmax=vmax, cmap=cmapname, edgecolor='#aaaaaa', linewidth=0.5)
+plt.pcolor(masked_mapdata, vmin=vmin, vmax=vmax, cmap=cmapname, edgecolor='#aaaaaa', linewidth=0.7)
 
 # 지역 이름 표시
 for idx, row in blockedMap.iterrows():
@@ -120,7 +125,7 @@ for idx, row in blockedMap.iterrows():
 # 시도 경계 그린다.
 for path in BORDER_LINES:
     ys, xs = zip(*path)
-    plt.plot(xs, ys, c='black', lw=4)
+    plt.plot(xs, ys, c='black', lw=2)
 
 plt.gca().invert_yaxis()
 #plt.gca().set_aspect(1)
