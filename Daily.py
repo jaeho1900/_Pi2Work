@@ -44,3 +44,4 @@ for size in ['대형', '중형', '소형']:
 sns.boxplot(x='규모', y='연면적(㎡)', data=df_filtered)
 plt.title('규모별 연면적(㎡) 박스플롯')
 plt.show()
+
