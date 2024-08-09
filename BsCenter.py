@@ -1,17 +1,17 @@
 import pandas as pd
 
-xlcolumns = pd.read_excel("C:/Users/Administrator/Desktop/데이터구조.xls",
+xlcolumns = pd.read_excel("./ADP_ver01/데이터구조.xls",
                           engine='xlrd',
                           header=1,
                           usecols=[0, 1])
 
-df = pd.read_csv("C:/Users/Administrator/Desktop/mart_djy_03.txt",
+df = pd.read_csv("./ADP_ver01/mart_djy_03.txt",
                  header=None,
                 #  nrows=50,
                  encoding='cp949',
                  sep='|')
 
-code_df = pd.read_csv("D:/_Pi2Work/ADP_ver01/지도_지명_코드집.csv")
+code_df = pd.read_csv("./ADP_ver01/지도_지명_코드집.csv")
 
 df.shape
 df.columns = xlcolumns["컬럼 한글명"]
@@ -36,22 +36,18 @@ df4.sum()
 # ============================
 import pandas as pd
 import numpy as np
-
-import platform
 import matplotlib.pyplot as plt
 
-from matplotlib import font_manager, rc
-if platform.system() == 'Darwin':
-    rc('font', family='AppleGothic')
-elif platform.system() == 'Windows':
-    font_name = font_manager.FontProperties(fname="c:/Windows/Fonts/malgun.ttf").get_name()
-    rc('font', family=font_name)
-else:
-    print('Unknown system... sorry~~~~')    
-
+import platform
+if platform.system() == 'Windows': #윈도우
+        plt.rc('font', family='Malgun Gothic') 
+elif platform.system() == 'Darwin': #맥
+        plt.rc('font', family='AppleGothic') 
+elif platform.system() == 'Linux': #리눅스 (구글 콜랩)
+        plt.rc('font', family='Malgun Gothic') 
 plt.rcParams['axes.unicode_minus'] = False
 
-data_draw_korea = pd.read_csv("D:/_Pi2Work/ADP_ver01/data_map_draw_korea.csv", index_col=0)
+data_draw_korea = pd.read_csv("./ADP_ver01/data_map_draw_korea.csv", index_col=0)
 
 # 건축물 갯수 추가 ---
 data_draw_korea = pd.merge(data_draw_korea, df4, how='left', left_on='shortName', right_index=True)
