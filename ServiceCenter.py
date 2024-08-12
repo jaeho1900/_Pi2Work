@@ -14,7 +14,7 @@ plt.rcParams['axes.unicode_minus'] = False
 
 df = pd.read_excel('./ADP_ver01/서비스센터 월간 보고서_5월.xlsx',
                    sheet_name='엣지공수데이터 5월',
-                   usecols='C:H,L,M')
+                   usecols='C:H,L,M,N')
 print(df)
 
 # 결측값 확인
@@ -35,18 +35,20 @@ df = df[~df['일자'].isin(pd.to_datetime(['2024-05-01', '2024-05-06', '2024-05-
 
 df.columns
 # ['구분', 'WBS', '서비스센터', '작업일자', 'Patrol인원',
-# '계약공간', '작업시간(분)', '이동시간(분)', '일자', '요일']
+# '계약공간', '작업시간(분)', '이동시간(분)', '총업무시간(분)', '일자', '요일']
 
 # >>> [가설1] 작업건별 출동인원수? -----
 
-gdf1 = df.groupby(['계약공간', '작업일자']).agg({'Patrol인원' : 'count'})
-gdf1 = gdf1.groupby('Patrol인원').agg({'Patrol인원' : 'count'})
+gdf1 = df.groupby(['계약공간', '작업일자']).agg({'Patrol인원' : 'count', '작업시간(분)' : 'sum', '이동시간(분)' : 'sum', '총업무시간(분)' : 'sum'})
+gdf1 = gdf1.groupby('Patrol인원').agg({'Patrol인원' : 'count', '작업시간(분)' : 'sum', '이동시간(분)' : 'sum'})
+print(gdf1)
 
 plt.figure(figsize=(5, 5))
 gdf1.plot(kind='bar', legend='')
 plt.ylabel('출동건수', fontsize=10, color='black')
 plt.xlabel('작업조원수', fontsize=10, color='black')
 plt.xticks(rotation=0, ha='center')
+plt.legend (loc='center left')
 plt.show()
 
 gdf1['Patrol인원'].plot(kind = 'pie',
@@ -59,6 +61,11 @@ gdf1['Patrol인원'].plot(kind = 'pie',
                         ylabel='')
 plt.show()
 
+# 분석
+gdf1_a1 = df.groupby(['계약공간', '작업일자']).agg({'Patrol인원' : 'count', '작업시간(분)' : 'sum', '이동시간(분)' : 'sum', '총업무시간(분)' : 'sum'})
+gdf1_a2 = gdf1_a1.groupby('Patrol인원').agg({'Patrol인원' : 'sum', '작업시간(분)' : 'sum', '이동시간(분)' : 'sum', '총업무시간(분)' : 'sum'})
+print(gdf1_a2)
+
 # >>> [가설2] 이동시간 과다? -----
 
 gdf2 = df.groupby(['계약공간', '작업일자']).agg({'이동시간(분)' : 'mean'})
@@ -70,13 +77,13 @@ plt.ylabel('빈도수(건)')
 plt.vlines(long_travel, 125, 0, color='gray', linestyle='--', linewidth=1)
 plt.show()
 
-# 이동시간이 길었던 작업들
-long_travel_10 = gdf2[gdf2['이동시간(분)'] > gdf2['이동시간(분)'].quantile(0.90)]
-print(long_travel_10)  # 지연상위 10% : 64건 추출
+# 이동시간이 긴 작업 분석
+gdf2_a = df[df['이동시간(분)'] > long_travel].agg({'Patrol인원' : 'count', '작업시간(분)' : 'sum', '이동시간(분)' : 'sum', '총업무시간(분)' : 'sum'})
+print(gdf2_a)
 
 # >>> [가설3] 작업시간에 따른 이동시간 생산성? -----
 
-gdf3 = df.groupby(['계약공간', '작업일자']).agg({'작업시간(분)' : 'mean', '이동시간(분)' : 'mean'})
+gdf3 = df.groupby(['계약공간', '작업일자']).agg({'Patrol인원' : 'count', '작업시간(분)' : 'mean', '이동시간(분)' : 'mean'})
 gdf3['생산성비율'] = round(gdf3['작업시간(분)'] / (gdf3['이동시간(분)'] + gdf3['작업시간(분)']) * 100, 1)
 nor_Activity = gdf3[gdf3['생산성비율'] >= 30]
 low_Activity = gdf3[gdf3['생산성비율'] < 30]
@@ -88,9 +95,14 @@ plt.xlabel("이동시간(분)")
 plt.ylabel("작업시간(분)")
 plt.show()
 
+# 이동시간에 따른 작업시간 생산성 분석
+gdf3_a = low_Activity.agg(sum)
+gdf3_a = nor_Activity.agg(sum)
+print(gdf3_a)
+
 # >>> [가설4] 요일별 작업시간과 이동시간 -----
 
-gdf4 = df.groupby('요일').agg({'작업시간(분)' : 'mean', '이동시간(분)': 'mean'})
+gdf4 = df.groupby('요일').agg({'Patrol인원' : 'count', '작업시간(분)' : 'mean', '이동시간(분)': 'mean'})
 gdf4.index = [x[:3] for x in gdf4.index]
 weekday_order = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri']
 gdf4 = gdf4.reindex(weekday_order)
@@ -100,9 +112,12 @@ print("작업시간평균(분): ", work_avg)     # 123.5
 print("이동시간평균(분): ", travel_avg)   # 73.7
 
 plt.figure(figsize=(6, 5))
-plt.plot(gdf4.index, gdf4, label=['작업시간', '이동시간'], marker='o')
+plt.plot(gdf4.index, gdf4[['작업시간(분)', '이동시간(분)']], label=['주간작업시간', '주간이동시간'], marker='o')
 plt.hlines(work_avg, 0, 4, color='gray', linestyle='--', linewidth=1)
 plt.hlines(travel_avg, 0, 4, color='gray', linestyle='--', linewidth=1)
 plt.legend (loc='center left')
 plt.ylabel('시간(분)', fontsize=10, color='black')
 plt.show()
+
+# 요일별 작업시간 생산성 분석
+print(gdf4['작업시간(분)'])
