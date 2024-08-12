@@ -1,10 +1,8 @@
 import pandas as pd
 import numpy as np
-import matplotlib.pyplot as plt
 
 # Read
-df = pd.read_excel("C:/Users/Administrator/Desktop/통합자료보고서용.xlsx",
-                   sheet_name = '통합(금액)',
+df = pd.read_excel("./ADP_ver01/통합자료보고서용.xlsx",
                    index_col = 0,
                    header = 1)
 df.info()
@@ -28,17 +26,16 @@ df3 = df2.groupby(df2.index).sum()
 df3.shape
 df3.index
 
-result = df3.loc[['원격감시', '캡슐커피'], ['24']].groupby(level='month', axis=1).sum()
+result = df3.loc[['원격감시', '캡슐커피'], ['24']].T
+result = result.droplevel(0, axis=0)
 
 # graph
-from matplotlib import rc
-rc('font', family='malgun gothic')
-rc('axes', unicode_minus=False) 
+import matplotlib.pyplot as plt
+plt.rc('font', family='Malgun Gothic')
+plt.rcParams['axes.unicode_minus'] = False
 
-plt.plot(result.T, label=['원격감시', '캡슐커피'])
+plt.plot(result, label=['원격감시', '캡슐커피'])
 plt.xticks(rotation=90, ha='left')
 plt.legend()
 plt.show()
 # plt.savefig ("FIGURE.png")
-
-df3.loc[['원격감시', '캡슐커피'], ['24']]

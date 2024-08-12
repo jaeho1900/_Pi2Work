@@ -7,11 +7,11 @@ xlcolumns = pd.read_excel("./ADP_ver01/데이터구조.xls",
 
 df = pd.read_csv("./ADP_ver01/mart_djy_03.txt",
                  header=None,
-                #  nrows=50,
+                 nrows=50,
                  encoding='cp949',
                  sep='|')
 
-code_df = pd.read_csv("./ADP_ver01/지도_지명_코드집.csv")
+code_df = pd.read_csv("./ADP_ver01/표제부_시군구_코드_지명집.csv")
 
 df.shape
 df.columns = xlcolumns["컬럼 한글명"]
