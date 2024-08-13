@@ -210,34 +210,54 @@ else:
     print("불일치")
 
 
+예외 처리(Exception) : 프로그램이 갑자기 종료되는 것을 방지
+
+기본 구조는 다음과 같습니다.
+
+numbers = [1, 2, 3]
+
+try:
+    print(numbers[3])
+except:
+    print("해당 인덱스에 대한 요소가 리스트에 없습니다.")
+
+오류의 종류를 알고 해당 오류에 대해서만 예외처리를 하고 싶다면 except 바로 뒤에 오류의 종류를 넣어줍니다
+
+try:
+    result = 10 / 0
+    print(result)
+except ZeroDivisionError:
+    print("0으로 나눌 수 없습니다.")
 
 
+예외가 발생하든 안하든 상관 없이 항상 특정한 작업을 수행하도록 finally를 사용
+except를 쓰지 않고 try ~ finally 로 사용하기도 합니다.
+
+my_list = [1, 2, 3, 4, 5]
+
+try:
+    print(my_list[10])
+except IndexError:
+    print("해당 인덱스는 리스트 범위를 벗어났습니다.")
+finally:
+    print("이 코드는 항상 실행됩니다.")
 
 
+str.split(sep=None, maxsplit=-1)
 
+str.join(iterable)
 
+"Python".strip("P")  
 
+4) 문자열 찾기: find(), count(), startswith(), endswith()
 
+주어진 문자열(str)에 없을경우 -1을 반환합니다. 검색 문자열(substr)이 주어진 문자열(str)에 여러번 나올 경우에도 해당 문자열이 처음 나온 위치의 인덱스만 반환
+str.find(substr, start, end)
 
+str.count(substr, start, end)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+str.startswith(prefix, start, end)   # boolean 반환
+str.endswith(suffix, start, end)
 
 
 
