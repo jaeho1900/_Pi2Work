@@ -259,6 +259,67 @@ str.count(substr, start, end)
 str.startswith(prefix, start, end)   # boolean 반환
 str.endswith(suffix, start, end)
 
+str.replace(old, new, count)
+s = "apple apple apple"
+result = s.replace("apple", "orange", 2)
+print(result) 
+
+문자열 포맷팅
+1) % 포맷팅
+
+print("I have %d apples and %0.2f oranges." % (5, 4.5678))
+
+포맷지정자	의미
+%s	문자열
+%d	정수
+%f	부동소수점 숫자
+
+2) str.format() 메서드
+fruits = ["apple", "banana", "cherry"]
+print("I like {} and {}.".format(fruits[0], fruits[2]))
+print("My name is {0} and I am {1} years old.".format("Alice", 30))
+print("My name is {name} and I am {age} years old.".format(name="Alice", age=30))
+person = {'name': 'Alice', 'age': 30}
+print("My name is {person[name]} and I am {person[age]} years old.".format(person=person))
+print("My name is {name} and I am {age} years old.".format(**person))  # 딕셔너리명 앞에 기호 ** 을 붙여 딕셔너리를 언패킹하는 방식
+
+3) f-strings
+
+name = "지형"
+age = 28
+print(f"제 이름은 {name}이고 나이는 {age}세입니다.")
+print(f"5 곱하기 4는 {5 * 4}.")
+
+ratio = 0.756
+print(f"Conversion rate: {ratio:.2%}")  # 중괄호 안에 콜론(:)을 사용하여 해당 위치에서의 출력 형식을 지정
+
+name = "Alice"
+print(f"{name:<10}")
+print(f"{name:>10}")
+print(f"{name:^10}")
+
+fruits = ["apple", "banana", "cherry"]
+print(f"I like {fruits[0]} and {fruits[2]}.")
+
+person = {'name': 'Alice', 'age': 30}
+print(f"My name is {person['name']} and I am {person['age']} years old.")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
