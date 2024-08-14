@@ -3,7 +3,7 @@ import numpy as np
 
 # 사용자 데이터 받기 -----------------------------------------------------------
 
-df = pd.read_csv("./ADP_ver01/mart_djy_03.txt",
+df = pd.read_csv("D:/mart_djy_03.txt",
                  header=None,
                  nrows=50000,
                  encoding='cp949',

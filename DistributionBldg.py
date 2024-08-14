@@ -1,44 +1,48 @@
 import pandas as pd
 
-xlcolumns = pd.read_excel("./ADP_ver01/데이터구조.xls",
-                          engine='xlrd',
-                          header=1,
-                          usecols=[0, 1])
+# 사용자 데이터 받기 -----------------------------------------------------------
 
-df = pd.read_csv("./ADP_ver01/mart_djy_03.txt",
+df = pd.read_csv("D:/mart_djy_03.txt",
                  header=None,
-                 nrows=50,
+                #  nrows=50000,
                  encoding='cp949',
                  sep='|')
 
+xlcol = pd.read_excel("./ADP_ver01/데이터구조.xls",
+                      engine='xlrd',
+                      header=1,
+                      usecols=[0, 1])
+
 code_df = pd.read_csv("./ADP_ver01/표제부_시군구_코드_지명집.csv")
 
-df.shape
-df.columns = xlcolumns["컬럼 한글명"]
-df.head()
+df.columns = xlcol["컬럼 한글명"]
 df.tail(3)
+df.shape
 
-df2 = pd.merge(df, code_df, how='left', left_on='시군구_코드', right_on='시군구_코드')
+# 필요 데이터 추출
+df.shape
+df['주_용도_코드_명'].count()
+df2 = df.drop(df[df['주_용도_코드_명'].isna()].index)
 
-df2['Short_지명'].count()
-df2['Short_지명'].unique()
-df2['Short_지명'].nunique()
-
-df2.columns
+df2.shape
+df2['주_용도_코드_명'].count()
 df2['주_용도_코드_명'].unique()
-df2[(df2['주_용도_코드_명'].isin(['제2종근린생활시설', '업무시설', '노유자시설'])) & (df2['연면적(㎡)'] >= 10000)]['건물_명'].head(30)
-df2[(df2['주_용도_코드_명'].isin(['제2종근린생활시설', '업무시설', '노유자시설'])) & (df2['연면적(㎡)'] >= 10000)].count()
 
-df3 = df2[(df2['주_용도_코드_명'].isin(['제2종근린생활시설', '업무시설', '노유자시설'])) & (df2['연면적(㎡)'] >= 10000)]
-df4 = df3['Short_지명'].value_counts().to_frame()
-df4.sum()
+df3 = df2[(df2['주_용도_코드_명'].isin(['제2종근린생활시설', '업무시설', '노유자시설'])) \
+          & (df2['연면적(㎡)'] >= 10000)]
 
-# ============================
-import pandas as pd
-import numpy as np
+# Short_지명 컬럼 추가
+df4 = pd.merge(df3, code_df, how='left', left_on='시군구_코드', right_on='시군구_코드')
+df4.columns
+
+df4['Short_지명'].value_counts().to_frame()
+
+rname = 'Short_지명'
+# -----------------------------------------------------------------------------
+
 import matplotlib.pyplot as plt
-
 import platform
+
 if platform.system() == 'Windows': #윈도우
         plt.rc('font', family='Malgun Gothic') 
 elif platform.system() == 'Darwin': #맥
@@ -50,7 +54,7 @@ plt.rcParams['axes.unicode_minus'] = False
 data_draw_korea = pd.read_csv("./ADP_ver01/data_map_draw_korea.csv", index_col=0)
 
 # 건축물 갯수 추가 ---
-data_draw_korea = pd.merge(data_draw_korea, df4, how='left', left_on='shortName', right_index=True)
+data_draw_korea = pd.merge(data_draw_korea, df4, how='left', left_on='shortName', right_on=rname)
 data_draw_korea['count'].size
 # -------------------
 
