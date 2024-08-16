@@ -1,63 +1,6 @@
-파일(폴더) 존재유무 확인
-특정 경로에 파일이나 폴더를 생성하려고 할 때, 이미 그 경로에 동일한 이름의 파일이나 폴더가 있으면 오류가 발생할 것입니다. 따라서 파일이나 폴더가 이미 존재하고 있는지 확인하는 작업이 필요합니다. 
 
-import os
+\d(?=px)
+1pt 2px 3em 4px   # 2, 4
 
-if not os.path.exists('C:\\users\\mayhur\\Book'): # C드라이브 users에 'Book' 폴더가 있는지 확인
-    print("폴더 없음") 
-else:
-    print("폴더 있음")
-
-특정 폴더 내 목록 확인
-해당 경로에 있는 전체 파일과 폴더를 리스트 형태로 반환
-
-import os
-
-lists = os.listdir('C:\\users\\mayhur\\Book') # C드라이브 users 내 Book폴더에 있는 파일과 폴더 목록 반환
-print(lists) 
-
-폴더 생성
-import os
-
-if not os.path.exists('C:/users/mayhur/Book'): # mayhur 폴더 하위에 'Book' 폴더가 없으면 아래 명령어 수행
-    os.makedirs('C:/users/mayhur/Book')  # 경로에 'Book'폴더 생성
-
-폴더 이름 변경 : 폴더의 이동도 함께 가능
-import os
-
-if os.path.exists('C:/users/mayhur/Book/Test'): # 'Test' 폴더가 있으면 아래 명령어 수행
-    os.rename('C:/users/mayhur/Book/Test', 'C:/users/mayhur/Book/Test_2024') # 폴더명을 'Test'에서 'Test_2024'으로 변경
-
-폴더 복사  (파일x)
-폴더를 다른 경로로 복사하는 방법
-import os
-import shutil
-
-path_from = 'C:/Users/kshy5/OneDrive/바탕 화면/Book' # 복사할 원본 폴더 경로
-path_to = 'C:/Users/kshy5/OneDrive/바탕 화면/Book/Test_2024' # 복사 완료 후의 최종 폴더 경로
-
-if not os.path.exists(path_to): 
-  shutil.copytree(path_from, path_to) 
-
-폴더 삭제 (파일x)
-import shutil
-
-path = 'C:/users/mayhur/Book/Test_2024' # 삭제할 폴더 경로
-
-if os.path.exists(path):
-    shutil.rmtree(path)
-
-파일 복사
-import shutil
-shutil.copy('example.txt', 'example_copied.txt')
-
-파일 이동
-import shutil
-file_from = 'example_copied.txt'
-file_to = './2023\\example_copied.txt'
-shutil.move(file_from, file_to)
-
-파일 삭제
-import os
-if os.path.exists('example.txt'):
-    os.remove('example.txt')   # unlink() 동일
+\d(?!px)
+1pt 2px 3em 4px   # 1, 3

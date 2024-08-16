@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 
 # Read
-df = pd.read_excel("./ADP_ver01/통합자료보고서용.xlsx",
+df = pd.read_excel("통합자료보고서용.xlsx",
                    index_col = 0,
                    header = 1)
 df.info()
