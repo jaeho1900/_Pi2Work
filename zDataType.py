@@ -49,11 +49,19 @@ lst.index('Mn')
 
 # >>> Access : 리스트의 인덱싱과 슬라이싱 -----
 
-# 인덱싱        : 변수명[인덱스번호]
-# 슬라이싱(구간) : 변수명[start:end:step]
+# 인덱싱(indexing)란?
+# 인덱싱(indexing)이란 원하는 값을 가리키는 것으로 연속적인 객체에 부여된 번호를 의미.
+# 사용방법 : 객체[인덱스번호]
+
+# 슬라이싱(slicing)이란?
+# 슬라이싱(slicing)이란 연속적인 객체에 부여된 번호를 이용해 연속된 객체에 일부를 추출하는 작업.
+# 사용방법 : 객체[start:end:step]
+
+# 1차원 인덱싱
 lst[3]
+
+# 1차원 슬라이싱
 lst[3::2]
-lst[3, 4]  # error, integers or slices 만 허용
 
 # >>> 참조 -----
 
@@ -570,32 +578,40 @@ import numpy as np
 arr = np.arange(1, 31).reshape(5, 6)
 print(arr)
 
-# 인덱싱 : 변수명[인덱스번호]
-# 슬라이싱(구간) : 변수명[start:end:step]
+# 인덱싱        : 객체[인덱스번호]
+# 슬라이싱(구간) : 객체[start:end:step]
 
-# 순차 방식 [전][후] -----
+# 1차원 인덱싱
 arr[2]
+
+# 1차원 슬라이싱
+arr[2:3]        # 2차원 반환
 arr[-3::2]
 arr[-1::-1]     # 마이너스 스텝은 역방향 진행!!
-arr[1][1:]
-arr[:4][2:100]  # 작업 순서의 개념([전][후])
 
-# 핀셑 방식 [행,열] -----
+# 2차원 인덱싱
 arr[1, 1:]
-arr[2,]         # 1차원 반환
-arr[2:3]        # 2차원 반환
+
+# 2차원 슬라이싱
+arr[:, 0]
 arr[:, 1:-1]
 arr[:4, 2:100:2]
 
-# >>> 팬시 방식 [[선택적 추출]] -----
+# 순차 작업 [전][후]
+arr[1][1:]
+arr[:4][2:100]
+
+# >>> 팬시 인덱싱 [[리스트로 선택적 추출]] -----
 # 팬시 인덱싱은 메모리 공유를 하지 않으므로 뷰가 아님
 
-# 지정 행렬만 추출 : 대괄호[]사용하며 연속범위(:)는 사용불가
+# 1차원
 arr[[0]]
 arr[[0, -1]]
 
-# 교차 위치의 원소값 추출
-arr[[0, 2, -1], [1, 4, 3]]          # [(0,1), (2,4), (-1,3)] !!
+# 2차원
+arr[[0, 4]]
+arr[[0, 2], 2]
+arr[[0, 2, -1], [1, 4, 3]]   # [(0,1), (2,4), (-1,3)] !!
 
  # 행렬 곱셈으로 다차원 원소값 추출
 arr[np.ix_([0, 2, -1], [1, 4, 3])]  # [[0,[1,4,3]],[2,[1,4,3]],[-1,[1,4,3]]] !!
@@ -723,6 +739,10 @@ df.columns = ['food', 'year', 'quantity']
 df.rename(index={'a': 'no_1', 'b': 'no_2'}, inplace=False)
 df.rename(columns={'food': 'Fruit'}, inplace=False)
 
+# 인덱스 라벨명 설정
+df.index.name = 'No.'
+df.columns.name = 'multi1'
+
 # 컬럼명으로 인덱스 설정 : drop은 컬럼의 잔존 여부
 df_s = df.set_index('year', drop = False, inplace = False)
 df_s.loc[2018]
@@ -731,15 +751,11 @@ df_s.loc[2018]
 df_m = df.set_index(['food', 'year'])
 df_m.loc['apple', 2018]
 
-# 정수 인덱스로 설정 : drop는 기존 인덱스의 열 이동 여부
+# 인덱스 초기화(정수 인덱스로 설정) : drop는 기존 인덱스의 열 이동 여부
 df.reset_index(drop = False, inplace = False)
 
 # 인덱스 정렬
 df.sort_index(ascending=False, inplace = False)
-
-# 인덱스 라벨명 설정
-df.index.name = 'No.'
-df.columns.name = 'multi1'
 
 
 # --------------------
@@ -922,13 +938,8 @@ df2 = pd.DataFrame({'rkey': ['foo', 'bar', 'foo', 'sel'],
                     'value': [6, 3, 2, 5],
                     'year': [1999, 2021, 2018, 2019]})
 
-# 연결
-pd.concat([df1, df2])                     # 행기준(axis=0), 합집합(join='outer')
-pd.concat([df1, df2], axis=1)
-pd.concat([df1, df2], ignore_index=True)  # 새로운 정수 인덱스 설정
-
 # 병합
-# key  : 열명(on, left_on, right_on) 또는 인덱스(left_index, right_index)
+# key  : 열명(on, left_on, right_on) 또는 인덱스(left_index, right_index)
 # 방식: inner, outer, left, right
 df1.merge(df2)                                     # 공통된 기준으로 교집합으로 병합 (예제에선 value)
 df1.merge(df2, left_index=True, right_on='year')
@@ -936,6 +947,23 @@ df1.merge(df2, left_on=['lkey'], right_on=['rkey'], how='inner')  # 병합되는
 df1.merge(df2, left_on=['lkey'], right_on=['rkey'], how='outer')  # 양쪽 df에서 NaN 발생 가능
 df1.merge(df2, left_on=['lkey'], right_on=['rkey'], how='left')   # 오른쪽 df에서 NaN 발생 가능
 df1.merge(df2, left_on=['lkey'], right_on=['rkey'], how='right')  # 왼쪽 df에서 NaN 발생 가능
+
+# 연결
+df1 = pd.DataFrame({'A': [1, 2, 3],
+                    'B': [4, 5, 6],
+                    'C': [7, 8, 9]}, index=[0,1,10])
+df2 = pd.DataFrame({'A': [4, 5, 6],
+                    'D': [10, 11, 12],
+                    'E': [13, 14, 15]}, index=[0,2,10])
+
+# join='outer'으로 설정하여 모든 열을 유지
+pd.concat([df1, df2])   # 행기준(axis=0), 합집합(join='outer'), 새로운 정수인덱스(ignore_index=False)
+
+# join='outer'으로 설정하여 모든 행을 유지
+pd.concat([df1, df2], axis=1, join='outer')
+
+# join='inner'으로 설정하면 공통된 행만 유지
+pd.concat([df1, df2], axis=1, join='inner')
 
 # 행과 열 바꾸기(Transpose)
 df1.T

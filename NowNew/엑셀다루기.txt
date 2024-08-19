@@ -133,3 +133,59 @@ df['법정동명'].str[-1].head()
 4    동
 Name: 법정동명, dtype: object
 
+>>> 엑셀 열 이름 - 열 번호 변환
+
+열 번호로부터 엑셀 열 이름 얻기: openpyxl.utils.cell.get_column_letter(열 번호)
+엑셀 열 이름으로부터 열 번호 얻기: openpyxl.utils.cell.column_index_from_string(열 이름)
+
+from openpyxl.utils.cell import get_column_letter, column_index_from_string
+
+# 열 번호 16에 해당하는 엑셀 열 이름 얻기
+index = 16
+print('열 번호 16에 해당하는 엑셀 열 이름', get_column_letter(index))   # p
+
+# 엑셀 열 이름 'AB'에 해당하는 열 번호 얻기
+print('열 이름 "AB"에 해당하는 열 번호', column_index_from_string('AB'))  # 28
+
+# SELECT building.*, codetable."short_지명"
+# FROM building
+# LEFT JOIN codetable
+# ON building."시군구_코드" = codetable."시군구_코드"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
