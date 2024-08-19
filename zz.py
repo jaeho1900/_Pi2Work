@@ -15,3 +15,7 @@ pd.concat([df1, df2], axis=1, join='outer')
 
 # join='inner'으로 설정하면 공통된 행만 유지
 pd.concat([df1, df2], axis=1, join='inner')
+
+
+
+인덱스 초기화(정수 인덱스로 설정) : drop는 기존 인덱스의 열 이동 여부
