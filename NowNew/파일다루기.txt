@@ -1,6 +1,0 @@
-
-\d(?=px)
-1pt 2px 3em 4px   # 2, 4
-
-\d(?!px)
-1pt 2px 3em 4px   # 1, 3

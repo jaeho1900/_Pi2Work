@@ -17,23 +17,33 @@ xlcol = pd.read_excel("./ADP_ver01/데이터구조.xls",
 df.columns = xlcol["컬럼 한글명"]
 df.tail(1)
 
-# ----- 주소를 추출하여 코드 테이블 생성 -----
+# ----- Address 전처리 -----
 
+df2 = df['대지_위치'].to_frame()
 
-???? 빈자료를 못 잡아냄  size()???
+# 결측치 확인
+df2.isna().sum()
 
-df['대지_위치'].isna().sum()
-# df['대지_위치'].fillna("자료불명", inplace=True)
-df[df.index == 1934178]['대지_위치']
-df[df.index == 1934178]['시군구_코드']
+# 스페이스문자 요소 삭제
+df2[df2['대지_위치'] == ' ']
+df2['대지_위치'] = df2['대지_위치'].replace(' ', None)
+df2.dropna(inplace=True)
 
+# ----- next -----
 
-
-df2 = pd.DataFrame(df['대지_위치'])
 df3 = pd.DataFrame(df2['대지_위치'].apply(lambda v: v.strip().split()[:2]).tolist(), columns=('광역시도', '행정구역'))
-df3 = pd.concat([df2, df3], axis=1)
 
-df3['광역시도'].isna().sum()
+df2['대지_위치'].str.split().str[:2]
+
+len(df2)
+
+
+df4 = pd.concat([df3, df2], axis=1)
+
+
+
+df4['광역시도'].isna().sum()
+
 df3[df3['광역시도'].isna()]
 
 df3['행정구역'].isna().sum()
