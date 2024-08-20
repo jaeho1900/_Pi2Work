@@ -1233,7 +1233,7 @@ gdf[['age','fare']].mean().reset_index().sort_values('fare', ascending=False)   
 # >>> agg 메서드 : 빠른 수치 연산을 목적으로 하는 apply()의 특수 형태로 MultiColumns 형태로 반환 -----
 
 gdf['age'].agg(['min', 'max'])                    # 단일 열에 다수의 함수를 매핑
-gdf[['age', 'fare']].agg(['min', 'max'])          # 다수 열에 다수의 함수를 매핑(멀티컬럼으로 결과 반환)
+gdf[['age', 'fare']].agg(['min', 'max'])          # 다수 열에 다수의 함수를 매핑(멀티 컬럼으로 결과 반환)
 gdf.agg({'fare': ['min', 'max'], 'age': 'mean'})  # 각 열별로 각각의 함수 매핑
 
 # >>> apply 메서드 : 그룹별 & 열별로 함수 매핑 -----
@@ -1261,7 +1261,7 @@ gdf['age'].transform(np.mean)
 
 
 # --------------------
-# 멀티인덱스 그룹화
+# 멀티 인덱스 그룹화
 # --------------------
 
 import pandas as pd
@@ -1298,11 +1298,11 @@ mdf.droplevel(1, axis=0)   # (level, axis=0)
 
 # >>> 멀티 인덱스 행 or 열 삭제 -----
 
-# 멀티인덱스 행 삭제
+# 멀티 인덱스 행 삭제
 mdf.drop(['woman'], axis = 0, level = 1, inplace = False)
 mdf.drop(mdf.index[1], axis = 0, inplace = False)
 
-# 멀티인덱스 열 삭제
+# 멀티 인덱스 열 삭제
 mdf.drop(['fare'], axis = 1, level = 1, inplace = False)
 mdf.drop(mdf.columns[1], axis = 1, inplace = False)
 
