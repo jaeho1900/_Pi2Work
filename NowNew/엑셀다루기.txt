@@ -6,16 +6,16 @@ wb= Workbook()
 # 현재 활성화된 워크시트 선택 후 ws 변수에 할당
 ws = wb.active
 
-#시트 제목을 '수강생_정보'로 변경
+# 시트 제목을 '수강생_정보'로 변경
 ws.title = "수강생_정보"
 
-#시트의 A1셀에 '이철수'라는 데이터를 입력
+# 시트의 A1셀에 '이철수'라는 데이터를 입력
 ws['A1'] = '이철수'
 
 # 워크북을 '수강생_리스트.xlsx' 엑셀 파일을 저장합니다
 wb.save("수강생_리스트.xlsx")
 
-#워크북 닫기
+# 워크북 닫기
 wb.close()
 
 >>> 행 단위로 데이터 입력하기
@@ -46,93 +46,6 @@ wb.create_sheet('기말평가')
 wb.save("수강생_리스트.xlsx")
 wb.close()
 
-
-참조 -----
-
-sorted()는 순서가 있는 자료형(리스트, 튜플)을 전달받아 정렬하는 파이썬 내장함수로 기본적으로는 오름차순으로 정렬합니다. 
-key값으로 itemgetter()함수를 사용하면 리스트나 튜플, 딕셔너리에서 특정 위치의 인덱스나 키의 항목을 가져옵니다
-즉, row = sorted(row, key = itemgetter(0))에서 itemgetter(0)은 리스트의 첫번째 요소(인덱스 0)를 기준으로 정렬하겠다는 의미입니다.
-기준을 여러개로 지정하고자 한다면 itemgetter(1, 0) 이렇게 기준 값을 여러개로 넣어주면 됩니다.
-itemgetter() 함수는 operator 모듈에 포함되어 있기 때문에, from operator import itemgetter를 통해 사용할 수 있습니다.
-
-# 각 행의 데이터 리스트를 포함하는 리스트를 만들어 row에 저장
-row = [[1, '이철수', '수학'], [3, '김미소', '영어'], [2, '최학준', '컴퓨터']]
-
-# row리스트를 첫번째 키를 기준으로 정렬
-row = sorted(row, key = itemgetter(0))
-
-# row리스트를 for문으로 반복하여 시트에 입력
-for data in row:
-    ws.append(data)
---------------
-
-# >>> 문자열 공백제거 참고 코드
-1. str.replace() 메소드를 사용하여 모든 공백 제거
-string = "This is a sample string with spaces."
-new_string = string.replace(" ", "")
-print(new_string)
-
-# 2. 정규표현식을 사용하여 모든 공백 제거
-import re
-string = "This   is    a   sample    string   with  multiple  spaces."
-new_string = re.sub(r'\s+', '', string)
-print(new_string)
-
-# str.replace(old, new, count) : 교체 -----
-print(txt.replace('a', 'A'))    # 해당 문자 전부 교체
-print(txt.replace('a', 'A', 1))
-
->>> 판다스의 .str.contains()와 .isin() 메소드는 특정값의 포함여부를 확인할 때 사용합니다.
-
-.str.contains()
-
-문자열 데이터 타입에서만 적용,  '열이름'이라는 열에 '특정 단어'가 포함된 모든 행을 찾으려면,
-df['열이름'].str.contains('특정 단어')
-
- 대소문자를 구분하지 않으려면
-df['열이름'].str.contains('특정 단어', case=False)
-
-.isin()
-.isin() 메소드는 모든 종류의 데이터 타입에 사용될 수 있으며, 주어진 리스트에 정확하게 일치하는 값을 찾습니다.
-
-'열이름'이라는 열에서 '값1', '값2', '값3' 중 하나와 일치하는 모든 행을 찾으려면
-df['열이름'].isin(['값1', '값2', '값3'])
-
-하나의 값만 검사할 때도 리스트 형태로 값을 제공해야 합니다.
-df['열이름'].isin(['값1'])
-
-
->>> 판다스에서 문자열 관련 함수를 사용하거나 전처리를 하기 위해서는 함수 및 명령어 앞에 str을 붙여주어야 한다.
->>> https://late90.tistory.com/491
-
-법정동코드법정동명폐지여부01234
-1100000000	서울특별시	존재
-1111000000	서울특별시 종로구	존재
-1111010100	서울특별시 종로구 청운동	존재
-1111010200	서울특별시 종로구 신교동	존재
-1111010300	서울특별시 종로구 궁정동	존재
- 
-1. 인덱싱 .str[]
-# 앞 5자리까지만 추출
-df['법정동명'].str[:5].head()
-
-0    서울특별시
-1    서울특별시
-2    서울특별시
-3    서울특별시
-4    서울특별시
-Name: 법정동명, dtype: object
-
-# 마지막 한글자만 추출
-df['법정동명'].str[-1].head() 
-
-0    시
-1    구
-2    동
-3    동
-4    동
-Name: 법정동명, dtype: object
-
 >>> 엑셀 열 이름 - 열 번호 변환
 
 열 번호로부터 엑셀 열 이름 얻기: openpyxl.utils.cell.get_column_letter(열 번호)
@@ -146,6 +59,10 @@ print('열 번호 16에 해당하는 엑셀 열 이름', get_column_letter(index
 
 # 엑셀 열 이름 'AB'에 해당하는 열 번호 얻기
 print('열 이름 "AB"에 해당하는 열 번호', column_index_from_string('AB'))  # 28
+
+
+
+
 
 # SELECT building.*, codetable."short_지명"
 # FROM building

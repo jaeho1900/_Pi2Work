@@ -281,6 +281,11 @@ txt.lstrip()
 txt.rstrip()
 txt.strip().strip('Wel')
 
+txt.replace(' ', '')
+
+import re
+re.sub(r'^\s+|\s+$', '', txt)
+
 # >>> 대소문자 변환 -----
 
 txt = "Welcome to Korea"
@@ -744,7 +749,7 @@ df.index.name = 'No.'
 df.columns.name = 'multi1'
 
 # 컬럼명으로 인덱스 설정 : drop은 컬럼의 잔존 여부
-df_s = df.set_index('year', drop = False, inplace = False)
+df_s = df.set_index('year', drop=False, inplace=False)
 df_s.loc[2018]
 
 # 다중 인덱스 설정
@@ -752,10 +757,18 @@ df_m = df.set_index(['food', 'year'])
 df_m.loc['apple', 2018]
 
 # 인덱스 초기화(정수 인덱스로 설정) : drop는 기존 인덱스의 열 이동 여부
-df.reset_index(drop = False, inplace = False)
+df.reset_index(drop=False, inplace=False)
 
 # 인덱스 정렬
-df.sort_index(ascending=False, inplace = False)
+df.sort_index(ascending=False, inplace=False)   # 내림차순(False)
+
+# 컬럼별 조건으로 정렬
+df.sort_values(by=['year', 'food'],      # 기준열
+               ascending=[True, False],  # 오름차순(True)
+               na_position='first',      # 결측값 위치 'first'
+               # ignore_index=True,      # 기존 인덱스 무시
+               # inplace=True,           # 자체 저장
+               )
 
 
 # --------------------
@@ -917,19 +930,6 @@ min_max = df['fare'].max() - df['fare'].min()
 df['fare_normalization'] = min_x / min_max
 df['fare_normalization'].describe()
 
-# >>> 인덱스라벨로 정렬 -----
-
-df.sort_index(ascending=False)           # 내림차순(False)
-
-# >>> 컬럼별 조건으로 정렬 -----
-
-df.sort_values(by=['class', 'who'],      # 기준열
-               ascending=[True, False],  # 오름차순(True)
-               na_position='first',      # 결측값 위치 'first'
-               # ignore_index=True,      # 기존 인덱스 무시
-               # inplace=True,           # 자체 저장
-               )
-
 # >>> 데이터프레임 합치기, 형상 바꾸기 -----
 
 df1 = pd.DataFrame({'lkey': ['foo', 'bar', 'all', 'foo'],
@@ -992,7 +992,11 @@ df[0]                  # error, 컬럼라벨이 존재하면 정수인덱싱 불
 df[df['food'].isna()]  # 불린 응용
 df[df['food'].notna()]
 df[(400 < df.total) & (df.total < 700)]
+
 df[df['food'].isin(['melon', 'peach'])]
+
+df['food'].str.contains('aPPle', case=False)  # 대소문자를 불문
+df['food'].str.contains('aPPle|melon', case=False, regex=True)
 
 # >>> 판다스 인덱서 -----
 
@@ -1032,6 +1036,111 @@ print(df, view, sep='\n\n')
 # --------------------
 # 데이터프레임 메서드
 # --------------------
+
+# >>> str 메서드 -----
+# 판다스에서 문자열 관련 함수를 사용하거나 전처리를 하기 위해서는 함수 및 명령어 앞에 str을 붙여주어야 한다
+
+# 인덱싱 .str[] -----
+# 앞 5자리까지만 추출
+df['법정동명'].str[:5].head()
+# 마지막 한글자만 추출
+df['법정동명'].str[-1].head()
+
+# 분할 .str.split() -----
+# 공백(" ")으로 분리
+df['법정동명'].str.split(" ").head()
+# 분할된 개별 리스트를 바로 데이터 프레임으로 생성
+df['법정동명'].str.split(" ", expand=True).head()
+
+# 시작글자 인식 .str.startswith() -----
+df['법정동명'].str.startswith("서울").head()
+# 서울로 시작하는 데이터만 필터링
+df[df['법정동명'].str.startswith("서울")].head()
+
+# 끝글자 인식 .str.endswith() -----
+# 동으로 끝나는 데이터만 필터링
+df[df['법정동명'].str.endswith("동")].head()
+
+# 포함글자 인식 .str.contains() -----
+# 강서구가 들어간 데이터만 필터링
+df[df['법정동명'].str.contains("강서구")].head()
+df[df['법정동명'].str.contains("강서구|강남구", regex=True)].head()
+
+# 문자 위치찾기 -----
+# 왼쪽부터 검색후 위치반환 없으면 -1
+df['법정동명'].str.find(' ').head()
+# 오른쪽부터 sub값 검색후 위치반환
+df['법정동명'].str.rfind(sub=' ').head()
+# 찾은 모든 값 반환(정규식)
+df['법정동명'].str.findall('\w+동').head()
+
+# 문자 대체 .str.replace() -----
+# 공백을 "_"로 대체
+df['법정동명'].str.replace(" ", "_").head()
+
+# 원하는 문자열 추출 str.extract() -----
+# 그룹 ()을 꼭 지정해서 패턴을 입력해야 하며, 패턴에 맞는 단어가 없을 시 NaN이 출력된다.
+# 추출그룹이 많을 땐 자동으로 데이터프레임 처리
+df['법정동명'].str.extract('( \w*시 )|( \w*군 )|( \w*구 )')
+df['법정동명'].str.extract('( \w*읍)|( \w*면)|( \w*동)|(\w*\d+가)').dropna(how='all')
+
+# 문자열 패딩 -----
+# 문자열 길이 20자, 왼쪽부터 "_"로 채우기
+df['법정동명'].str.pad(width=20, side='left', fillchar='_').head(10)
+# 문자열 길이 20자, 오른쪽부터 "_"로 채우기
+df['법정동명'].str.pad(width=20, side='right', fillchar='_').head(10)
+# 문자열 길이 20자, 좌우로 "_"로 채우기
+df['법정동명'].str.center(width=20, fillchar='_').head(10)
+# 왼쪽부터 0으로 채우기
+df['법정동명'].str.zfill(width=20).head(10)
+
+# 공백제거 strip() -----
+df['col1'].str.strip()   # 앞 뒤 공백을 제거
+df['col1'].str.lstrip()  # 앞 공백을 제거
+df['col1'].str.rstrip()  # 뒤 공백을 제거
+ 
+# 대소문자 변경 -----
+df['col1'].str.lower()      # 모두 소문자로 변경
+df['col1'].str.upper()      # 모두 대문자로 변경
+df['col1'].str.swapcase()   # 소문자는 대문자, 대문자는 소문자로 변경 
+
+import pandas as pd
+df = pd.DataFrame({'city':['seoul_junggu', 'masan', 'jinju', 'wooljin'],
+                   'year':[2018, 2019, 2018, 2019],
+                   'quantity':[490, 512, 478, 325]})
+
+# str.contains(): 정규표현식으로 조건 만족 여부를 반환
+df['city'].str.contains('S|j', na=False, regex=True)  # 결측값은 'False'로 반환
+df[~df.city.str.contains('(S|j)', na=False)]          # 불포함(결측값이 있는 경우 'na=False')
+
+# 정규표현식으로 선택한 문자를 독립된 열로 분할
+df.city.str.extract(r'(.*)_(.*)')
+
+# str.split() : 옵션에 expand=True를 넣으면 데이터프레임으로 반환
+df['city'].str.split('_').str[0]
+df['city'].str.split('_').str[1]
+
+df['city'].str.split('_').str.get(0)
+df['city'].str.split('_').str[0].get(0)
+
+# str.slice()
+df['city'].str.slice(2, 3)
+
+# >>> replace 와 str.replace 차이 -----
+
+import pandas as pd
+import seaborn as sns
+
+titanic = sns.load_dataset('titanic')
+df = titanic.loc[:, ['age', 'fare', 'class', 'who', 'embark_town', 'alive']]
+
+# replace()     : 문자열이 완벽하게 일치하는 경우
+df.replace('Third', '3rd')                  # '정상'이라는 단어를 '양품'을 대체
+df.replace({'Third':'3rd', 'man':'human'})  # 복수단어의 대체가 모든 컬럼에 적용
+df.replace({'alive': {'yes': 'ok'}})        # 지정 컬럼에만 적용
+
+# str.replace() : 문자열의 일부라도 일치하는 경우
+df['embark_town'].str.replace('am', 'AM')
 
 # >>> map(), apply() 메서드 -----
 
@@ -1262,33 +1371,6 @@ pv_df.xs(('max', 'age'), axis=1)
 pv_df.xs(('max', 'age', 'yes'), axis=1)
 pv_df.xs(('max', 'age', 'yes'), axis=1).to_frame()
 pv_df.xs(('age', 'mean'), level=[1, 0], axis=1)
-
-
-# --------------------
-# str 메서드
-# --------------------
-
-import pandas as pd
-df = pd.DataFrame({'city':['seoul_junggu', 'masan', 'jinju', 'wooljin'],
-                   'year':[2018, 2019, 2018, 2019],
-                   'quantity':[490, 512, 478, 325]})
-
-# str.contains(): 정규표현식으로 조건 만족 여부를 반환
-df['city'].str.contains('S|j', na=False, regex=True)  # 결측값은 'False'로 반환
-df[~df.city.str.contains('(S|j)', na=False)]          # 불포함(결측값이 있는 경우 'na=False')
-
-# 정규표현식으로 선택한 문자를 독립된 열로 분할
-df.city.str.extract(r'(.*)_(.*)')
-
-# str.split() : 옵션에 expand=True를 넣으면 데이터프레임으로 반환
-df['city'].str.split('_').str[0]
-df['city'].str.split('_').str[1]
-
-df['city'].str.split('_').str.get(0)
-df['city'].str.split('_').str[0].get(0)
-
-# str.slice()
-df['city'].str.slice(2, 3)
 
 
 # --------------------
