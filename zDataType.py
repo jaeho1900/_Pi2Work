@@ -22,12 +22,11 @@ list(zip(name, price))
 [(i, x) for i, x in enumerate(filter(lambda x: x % 2 == 0, nlst))]
 
 # filter(함수, iterable객체) : 결과가 True인 값만 반환 -----
-list(filter(lambda x: x % 2, nlst))        # [1, 3, 5]
-list(filter(lambda x: x % 2 != 0, nlst))   # [1, 3, 5]
+list(filter(lambda x: x if x > 3 else 0, nlst))
+list(filter(lambda x: x % 2 == 0, nlst))
 
-# map(함수, iterable객체) : iterable객체의 각 요소에 함수를 적용, 결과값은 담을 그릇(리스트나 튜플) 필요 -----
-list(map(lambda x: x % 2, nlst))           # [0, 1, 0, 1, 0, 1]
-list(map(lambda x: x % 2 != 0, nlst))      # [False, True, False, True, False, True]
+# map(함수, iterable객체) : 각 요소에 함수를 적용, 결과를 담을 그릇 필요 -----
+list(map(lambda x: x * 1000 if x > 3 else x, nlst))
 
 
 # =====================
@@ -47,15 +46,10 @@ lst.count('Mn')
 # index() : 검색 요소와 일치하는 첫번째 인덱스를 반환 -----
 lst.index('Mn')
 
-# >>> Access : 리스트의 인덱싱과 슬라이싱 -----
+# >>> 리스트의 인덱싱과 슬라이싱 -----
 
-# 인덱싱(indexing)란?
-# 인덱싱(indexing)이란 원하는 값을 가리키는 것으로 연속적인 객체에 부여된 번호를 의미.
-# 사용방법 : 객체[인덱스번호]
-
-# 슬라이싱(slicing)이란?
-# 슬라이싱(slicing)이란 연속적인 객체에 부여된 번호를 이용해 연속된 객체에 일부를 추출하는 작업.
-# 사용방법 : 객체[start:end:step]
+# 인덱싱(indexing)이란 원하는 값을 가리키는 것 (객체[인덱스번호])
+# 슬라이싱(slicing)이란 객체에 부여된 번호로 연속된 객체의 일부를 추출하는 것 (객체[start:end:step])
 
 # 1차원 인덱싱
 lst[3]
@@ -63,8 +57,7 @@ lst[3]
 # 1차원 슬라이싱
 lst[3::2]
 
-# >>> 참조 -----
-
+# 요소 포함 여부 확인
 'Man' in lst
 'Man' not in lst
 
@@ -73,17 +66,17 @@ lst[3::2]
 lst1 = [1, 2, 3]; lst2 = [1, 2, 3]; lst3 = [1, 2, 3]
 lst4 = ('lion', 'tiger', 'hippo')
 
-# insert(삽입위치인덱스, 값) : 지정된 인덱스 위치에 요소를 삽입
+# insert(삽입위치인덱스, 요소) : 지정된 인덱스 위치에 요소를 삽입
 lst1.insert(0, [10, 20])       # [[10, 20], 1, 2, 3]
-lst1.insert(-1, 100)           # [[10, 20], 1, 2, 100, 3]          -2번째 추가
-lst1.insert(len(lst1), 'end')  # [[10, 20], 1, 2, 100, 3, 'end']   -1번째 추가
+lst1.insert(-1, 100)           # [[10, 20], 1, 2, 100, 3]          -2번째 위치에 추가
+lst1.insert(len(lst1), 'end')  # [[10, 20], 1, 2, 100, 3, 'end']   -1번째 위치에 추가
 
 # append() : 리스트의 끝에 요소를 추가
 lst2.append(4)         # [1, 2, 3, 4]
 lst2.append([5, 6])    # [1, 2, 3, 4, [5, 6]]
 
 # extend() : 리스트의 끝에 iterable 요소를 하나씩 꺼내어 추가
-# lst3.extend(4)       # error: iterable 자료형만 입력 가능
+# lst3.extend(4)       # error: iterable 자료형만 가능
 lst3.extend([4])       # [1, 2, 3, 4]
 lst3.extend([5, 6])    # [1, 2, 3, 4, 5, 6]
 lst3.extend([[5, 6]])  # [1, 2, 3, 4, 5, 6, [5, 6]]
@@ -114,7 +107,7 @@ lst.clear()
 # Dictionary
 # =====================
 
-# >>> Make  : key는 문자형이어야 함 -----
+# >>> 생성 : key는 문자형이어야 함 -----
 
 # dict() 함수
 name = ['merona', 'gugucon', 'bibibig']
@@ -123,22 +116,22 @@ price = [500, 1000, 600]
 dict(zip(name, price))
 dict(korea = name, japan = 'tokyo')
 
-# 일반 방법
+# {} 방법
 aa = {1: 'one', 2: [1, 2, 3], '인사': '방가'}
 bb = {'korea':'seoul', 'japan':'tokyo'}
 
 # >>> Access : 순서가 없기때문에 인덱싱이나 슬라이싱을 사용할 수 없음 -----
 
-aa.keys()
-aa.values()
-aa.items()
+list(aa.keys())
+list(aa.values())
+list(aa.items())
 
 # get() : key를 검색해서 요소를 가져오며, 찾는게 없을 경우 default 값을 반환 -----
 # Series.get(key, default=None)      # Series에서는 key로 행의 레이블(index)을 받는다
 # DataFrame.get(key, default=None)   # DataFrame에서는 key로 열의 레이블(columns)을 받는다
-aa['gender']             # 검색 key가 없으면 KeyError, 프로세스 중단
 aa.get('gender')         # 검색 key가 없으면 None, 다음 프로세스 진행
 aa.get('gender', 'man')  # 검색 key가 없을때 지정값 반환
+aa['gender']             # 검색 key가 없으면 KeyError, 프로세스 중단
 
 # >>> Replace -----
 
@@ -160,24 +153,26 @@ aa.clear()
 # String
 # =====================
 
-# >>> 문자열 포맷팅 -----
+# --------------------
+# 문자열 출력
+# --------------------
 
-# separate(사이 구분자)
+# 사이 구분자(separate) -----
 s1 = "First str"
 s2 = "Second str"
-print(s1, s2, sep='\n그리고\t')  # \t tap, \n 줄바꿈
+print(s1, s2, sep='\n그리고\t')   # \t tap, \n 줄바꿈
 
-# end(끝 구분자)
-print("First str", end='\t끝\n')    # \t tap, \n 줄바꿈
+# 끝 구분자(end) -----
+print("First str", end='\t끝\n')  # \t tap, \n 줄바꿈
 print("Second str")
 
-# str concatenation : + , -----
+# , 또는 + concatenation -----
 print("우리", "나라")                        # 띄어쓰기
 print("우리" + "나라")                       # 붙여쓰기
 print("우리" + "나라" + str(10000) + "세")   # + 에서는 자료형 맞춰야 함
 print("그는 \"J\"에게 말했다. \'가지마!\'")   # 문장 안에서 ', " 사용( \ 백슬래시)
 
-# C 언어 % 포맷팅: %s(문자열), %d(정수), %f(부동소수점) -----
+# % 포맷팅: %s(문자열), %d(정수), %f(부동소수점) -----
 print("23년 승률은 %d%% 입니다." % 100)      # 퍼센트는 2번 써 준다
 print("%5.3f" % 3.1415)                     # 소수점 자릿수
 print("'%d년은 %s년 입니다." % (24, "갑진"))
@@ -185,7 +180,7 @@ print('%s의 투자비중은 %-15.3f%%입니다.' % ('갑진년', 3.1415))      
 print('%s의 투자비중은 % 15.3f%%입니다.' % ('갑진년', 3.1415))              # 우정렬 및 자릿수 맞춤, 반올림
 print('%s의 투자비중은 %015.3f%%입니다.' % ('갑진년', 3.1415), end='\n\n')  # 우정렬 및 0채움, 반올림
 
-# str.format() 메서드 : {지정변수명또는인덱스번호:[빈공간채울문자][정렬방향<^>][+양수부호][공간수][,][.소수자릿수]} -----
+# format() 메서드 : {지정변수명또는인덱스번호:[빈공간채울문자][정렬방향<^>][+양수부호][공간수][,][.소수자릿수]} -----
 a = 'america dream'; b = 3.1415
 print('value is {{ {} }}'.format('%d' % b))
 print('{}의 투자비중은 {}%입니다.'.format(a[8:13], '%15.2f' % b))
@@ -224,76 +219,76 @@ print(f'평균은 {lst[2]:*>+15,.2f}%입니다.')
 dct = {'name': 'Alice', 'age': 30}
 print(f"My name is {dct['name']} and I am {dct['age']} years old.")
 
-# >>> 문자열 자리 간격 양식 -----
-
+# 문자열 정렬 -----
 txt = "Welcome to Korea"
-txt.ljust(50, '-')   # 총길이 50, 왼쪽정렬, 지정문자 채움
 txt.rjust(50, ' ')   # 총길이 50, 오른쪽정렬, 공백 채움
+txt.ljust(50, '-')   # 총길이 50, 왼쪽정렬, 지정문자 채움
 
-# >>> 문자열 검색 -----
+
+# --------------------
+# 문자열 검색
+# --------------------
 
 txt = "Welcome to Korea, King"
 
 # len() : 전체 문자열 길이 -----
 len(txt)
 
-# str.count(substr, start, end) : 검색문자 갯수 -----
+# count(substr, start, end) : 검색문자 갯수 -----
 txt.count('e', 5)
 
-# str.find(substr, start, end) : 검색문자의 첫번째 위치 인덱스 -----
-txt.find("K", 15)          # 검색된 문장의 첫번째 인덱스 위치값 반환
-txt.find("Z")              # 검색문자 없으면 -1 반환
+# find(substr, start, end) : 검색문자의 첫번째 인덱스 -----
+txt.find("K", 15)   # 검색된 문장의 첫번째 인덱스 반환
+txt.find("Z")       # 검색문자 없으면 -1 반환
+txt.rfind("e")      # 오른쪽부터 처음 검색된 인덱스 위치값
 
-# 오른쪽부터 처음 검색된 인덱스 위치값
-txt.rfind("e")
+txt.index("K", 15)  # 검색된 문장의 첫번째 인덱스 반환
+txt.index("Z")      # 검색문자 없으면 error
 
 # 모든 원소의 인덱스 위치 반환
 [i for i, x in enumerate(txt) if x == 'e']
 
-# 다른 데이터유형에서는 index가 사용
-txt.index("K", 15)         # 검색된 문장의 첫번째 인덱스 위치값 반환
-txt.index("Z")             # 검색문자 없으면 error
-
-# str.startswith(prefix, start, end) 문자열의 시작 또는 끝 부분 일치 여부를 # boolean 반환 -----
-# str.endswith(suffix, start, end)
+# startswith(prefix, start, end) 문자열의 시작 부분 일치 여부를 boolean 반환 -----
+# endswith(suffix, start, end)   문자열의 끝 부분 일치 여부를 boolean 반환 -----
 txt.startswith('Wel')
 txt.endswith('Kin', -4, -1)
 
-# >>> Replace, Split, Join -----
 
-txt = 'asiana air com'
+# --------------------
+# 문자열 조작
+# --------------------
 
-# str.replace(old, new, count) : 교체 -----
-print(txt.replace('a', 'A'))     # 해당 문자 전부 교체
-print(txt.replace('a', 'A', 1))
+txt = ' welcome to asiana air  '
 
-# str.split(sep=None, maxsplit=-1) : 분리 -----
-print(txt.split(' ', maxsplit=1))
+# replace(old, new, count) : 대체 -----
+print(txt.replace('o', 'O'))     # 해당 문자 전부 대체
+print(txt.replace('o', 'O', 1))
 
-# str.join(iterable) : 지정문자를 끼워넣기 -----
+# split(sep=None, maxsplit=-1) : 분리 -----
+print(txt.split(' ', maxsplit=3))
+
+# join(iterable) : 지정문자 끼워넣기 -----
 print('@'.join(txt))
 
-# >>> 공백 또는 검색문자 삭제 -----
+# 공백 삭제 -----
+print(txt.strip())
+print(txt.lstrip())
+print(txt.rstrip())
 
-txt = "   Welcome to Korea   "
-txt.strip()
-txt.lstrip()
-txt.rstrip()
-txt.strip().strip('Wel')
-
-txt.replace(' ', '')
+print(txt.replace(' ', ''))
 
 import re
 re.sub(r'^\s+|\s+$', '', txt)
 
-# >>> 대소문자 변환 -----
-
-txt = "Welcome to Korea"
+# 대소문자 변환 -----
 print(txt.lower())
 print(txt.upper())
-print(txt.capitalize())
+print(txt.strip().capitalize())
 
-# >>> 워드클라우드: 딕셔너리 key 정렬 -----
+
+# --------------------
+# 워드클라우드
+# --------------------
 
 txt = """Lorem Ipsum is simply dummy text of the printing and typesetting industry.
  Lorem Ipsum has been the industry's standard dummy text ever since the 1500s,
@@ -381,17 +376,6 @@ print("\superman")    # \1개 -> \2개 -> \1개
 print("\\superman")   # \2개 -> \2개 -> \1개
 print(r"\\superman")  # \2개 -> \4개 -> \2개 (직관적임)
 
-# ChatGPT 정규식 요청 프롬프트 -----
-
-# #명령어#
-# 너는 지금부터 Regex 생성기로 행동해.
-# 주어진 단어를 추출하는 Regex를 작성할 것.
-# 단어의 패턴을 이해하고 최대한 비슷한 구조의 다양한 단어를 추출하는 Regex로 작성해 줘.
-# Regex의 동작 설명이나 예제는 작성하지 말고, Regex만 답변해.
-# #단어#
-# 850101-1234567
-# 920305-2345678
-
 
 # --------------------
 # re 모듈
@@ -415,7 +399,7 @@ print(r"\\superman")  # \2개 -> \4개 -> \2개 (직관적임)
 # group():    그룹핑된 그룹별로 반환
 
 # flags : 컴파일된 패턴에서는 사용 불가 -----
-# 패턴에 (?옵션)을 직접 입력(인라인 방식)
+# 인라인 방식 : 패턴에 (?옵션)을 직접 입력
 # re.I        (?i)   대소문자 불문
 # re.S        (?s)   . 에 개행문자(\n) 포함
 # re.M        (?m)   ^ $ 를 행별로 적용
@@ -447,6 +431,7 @@ print(result.group(0))  # group(0) : 매칭된 전체 문자열
 print(result.group(1))  # group(1) : 매칭된 1번째 그룹의 문자열
 # print(result.group(4))  # error : 그룹번호 미등록(?:)
 
+print(re.sub(pattern, '\\1 : \\2 - \\3 - ****', txt))
 print(pattern.sub('\\1 : \\2 - \\3 - ****', txt))
 print(pattern.sub(r'\1 : \2 - \3 - ****', txt))
 print(pattern.sub(r'\g<1> : \g<2> - \g<3> - ****', txt))
@@ -455,6 +440,7 @@ print(pattern.sub(r'\g<1> : \g<2> - \g<3> - ****', txt))
 
 pattern = re.compile(r'\w+\s+\d{3}[-_. ]+\d{3,4}[-_.\s]+\d{4}')
 result = re.findall(pattern, txt)
+result = pattern.findall(txt)
 print(result)
 print('\n'.join(result))
 
@@ -474,13 +460,13 @@ print(re.sub(pattern=r'\d{4}[\n ]', repl='xxxx', string=txt, count=2))
 print(re.split(r'\d{4}[\n ]', txt, 1))
 print(re.split('ab', 'abaabca', 2))
 
-# >>> Lookaround -----
+# >>> Lookaround (?=) (?!), Lookbehind (?<=) (?<!) -----
 
 txt = '10월 26일 코로나 감염자 20명 비감염자 100명'
-pattern = r'\d+(?!명)'
+pattern = r'\d+(?=명)'
 print(re.findall(pattern, txt))
 
-# 후방탐색(look-behind)에서는 변동범위를 사용할 수 없다.(갯수 고정 필요)
+# 후방탐색(Lookbehind)에서는 변동범위를 사용할 수 없다.(갯수 고정 필요)
 txt = '"https://www.naver.com" 또는 "http://youtube.com"'
 # pattern = r'(?<=https?://)[\w.]+'  # error
 pattern = r'(?<=https://)[\w.]+|(?<=http://)[\w.]+'
@@ -506,7 +492,7 @@ print(rst_findLst)
 
 import numpy as np
 
-# >>> 일반 방식 -----
+# >>> 균일 방식 -----
 
 # np.arange(): 원소값 생성 (파이썬의 range와 유사)
 np.arange(10)          # 0 ~ 9
@@ -540,7 +526,7 @@ np.random.randint(10, 20, size=(3, 5))   # 10 ~ 20 사이 3x5의 2차원 배열
 np.random.choice(10, 5, replace=True)
 np.random.choice(10, 5, replace=False)
 
-# >>> 행 또는 열에 집중한 배열 생성(원솟수를 모르거나 가변적일 때 유용) -----
+# >>> 행 또는 열에 집중한 방식 (원솟수를 모르거나 가변적일 때 유용) -----
 
 arr= np.arange(12).reshape(3, 4)
 
@@ -583,16 +569,15 @@ import numpy as np
 arr = np.arange(1, 31).reshape(5, 6)
 print(arr)
 
-# 인덱싱        : 객체[인덱스번호]
-# 슬라이싱(구간) : 객체[start:end:step]
+# >>> 객체[인덱스번호] -----
 
 # 1차원 인덱싱
 arr[2]
 
 # 1차원 슬라이싱
-arr[2:3]        # 2차원 반환
+arr[2:3]
 arr[-3::2]
-arr[-1::-1]     # 마이너스 스텝은 역방향 진행!!
+arr[-1::-1]  # 마이너스 스텝은 역방향 진행!!
 
 # 2차원 인덱싱
 arr[1, 1:]
@@ -606,19 +591,17 @@ arr[:4, 2:100:2]
 arr[1][1:]
 arr[:4][2:100]
 
-# >>> 팬시 인덱싱 [[리스트로 선택적 추출]] -----
-# 팬시 인덱싱은 메모리 공유를 하지 않으므로 뷰가 아님
+# >>> 팬시 인덱싱 [[리스트]] : 뷰가 아님 -----
 
 # 1차원
 arr[[0]]
 arr[[0, -1]]
 
 # 2차원
-arr[[0, 4]]
 arr[[0, 2], 2]
 arr[[0, 2, -1], [1, 4, 3]]   # [(0,1), (2,4), (-1,3)] !!
 
- # 행렬 곱셈으로 다차원 원소값 추출
+ # 행렬 곱셈으로 다차원 요소 추출
 arr[np.ix_([0, 2, -1], [1, 4, 3])]  # [[0,[1,4,3]],[2,[1,4,3]],[-1,[1,4,3]]] !!
 
 # >>> View vs Copy -----
@@ -646,7 +629,7 @@ np.may_share_memory(arr3, arr4)
 
 import numpy as np
 
-# np.append(): 배열의 모든 원소로 1차원 배열을 생성 -----
+# np.append(): 모든 배열의 원소를 풀어서 1차원 배열로 생성 -----
 arr = np.array([[1, 2], [10, -1]])
 arr = np.append(arr, [3, 4])
 print(arr)         # [1 2 10 -1 3 4]
@@ -707,9 +690,8 @@ b >= c
 # 데이터프레임
 # =====================
 
-# 1) Series:    label + 1차원 배열 형상
-# 2) DataFrame: label + 2차원 배열 형상
-
+# 1) Series:    '라벨 + 1차원 배열' 형상
+# 2) DataFrame: '라벨 + 2차원 배열' 형상
 
 # --------------------
 # 데이터프레임 생성
@@ -728,7 +710,7 @@ df = pd.DataFrame({'food':['melon', 'melon', 'apple', 'apple'],
               'year':[2018, 2019, 2018, 2019],
               'quantity':[490, 512, 478, 325]})
 
-# 기존 데이터프레임에서 지정된 행렬로 새로운 데이터프레임 생성(miss match된 행렬은 NaN(Not a Number) 으로 채워짐)
+# 기존 데이터프레임에서 지정된 행렬의 라벨로 새로운 데이터프레임 생성(miss match 은 NaN(Not a Number) 으로 채워짐)
 pd.DataFrame(df, index=[2, 3, 4], columns=['food', 'man', 'quantity'])
 
 
@@ -736,23 +718,23 @@ pd.DataFrame(df, index=[2, 3, 4], columns=['food', 'man', 'quantity'])
 # 라벨 관리
 # --------------------
 
-# 일괄 라벨 생성 또는 덮어쓰기
+# 일괄 라벨명 생성 또는 덮어쓰기
 df.index = ['a', 'b', 'c', 'd']
 df.columns = ['food', 'year', 'quantity']
 
-# 부분 라벨 변경
+# 부분 라벨명 변경
 df.rename(index={'a': 'no_1', 'b': 'no_2'}, inplace=False)
 df.rename(columns={'food': 'Fruit'}, inplace=False)
 
-# 인덱스 라벨명 설정
+# 라벨 제목 설정
 df.index.name = 'No.'
 df.columns.name = 'multi1'
 
-# 컬럼명으로 인덱스 설정 : drop은 컬럼의 잔존 여부
+# 지정 컬럼을 인덱스로 설정 : drop은 컬럼의 잔존 여부
 df_s = df.set_index('year', drop=False, inplace=False)
 df_s.loc[2018]
 
-# 다중 인덱스 설정
+# 멀티 인덱스 설정
 df_m = df.set_index(['food', 'year'])
 df_m.loc['apple', 2018]
 
@@ -776,6 +758,7 @@ df.sort_values(by=['year', 'food'],      # 기준열
 # --------------------
 
 import pandas as pd
+import numpy as np
 import seaborn as sns
 
 titanic = sns.load_dataset('titanic')
@@ -792,16 +775,17 @@ df.columns                  # 컬럼명
 df.dtypes                   # 자료형
 df.isna().sum()             # 결측값
 df.describe(include='all')  # 통계정보(옵션 all은 문자형자료의 원솟수, 카테고리수, 최빈값, 최빈값사용빈도수 제공)
+df['age'].idxmax()          # 최대값을 갖는 행의 index 반환
+df['age'].idxmin()          # 최소값을 갖는 행의 index 반환
+df['embark_town'].value_counts()    # 시리즈의 유일값별 소계
 
 # >>> 자료형 변경 -----
 
-import numpy as np
-df.dtypes                   # 자료형
-df.isna().sum()             # 결측값
-
-# 형 변경을 위해서는 Nan, 문자, 수치간 변경제약사항 처리 필요
+# 형 변경을 위해서는 Nan, 문자, 수치간 변경제약사항 전처리 필요
 df['age'].replace(np.nan, 0).astype('int')
 df.replace(np.nan, 0).astype({'who':str, 'age':int})
+
+# >>> 수치 자료형 양식 변경 -----
 
 df['fare'] = df['fare'].apply(lambda x: format(x, ','))              # 천단위 콤마 추가 (object로 자동 형변경)
 df['fare'] = df['fare'].str.replace(',', '').astype('float32')       # 천단위 콤마 삭제 (자동형변경 안됨)
@@ -809,30 +793,22 @@ df['fare'].astype('float32').apply(lambda x: '{:,.2f}'.format(x))    # 소수점
 
 # >>> 컬럼 추가 -----
 
-df['man'] = 10  # 동일원소로 일괄 추가
+df['man'] = 10  # 컬럼의 모든 원소에 동일 값을 추가
 
 # >>> 인덱스 또는 컬럼 삭제 -----
 
 # 인덱스 (axis=0)
 df.drop([1, 6, 2], inplace=False)   # 다수의 인덱스 삭제, 범위(:) 지정불가
-df.drop(df.index[1:4])              # 하나 또는 범위(:)를 지정, 다수 인덱스 사용불가
 df.drop(df.index[[1, 4]])           # 다수의 인덱스 삭제, 범위(:) 지정불가
+df.drop(df.index[1:4])              # 하나 또는 범위(:)를 지정, 다수 인덱스 사용불가
 
 # 컬럼 (axis=1)
 df.drop(['who', 'man'], axis=1, inplace=False)  # 다수의 컬럼 삭제, 범위(:) 지정불가
-df.drop(df.columns[3:], axis=1)                 # 하나 또는 범위(:)를 지정, 다수 컬럼 사용불가
 df.drop(df.columns[[1, 4, 3]], axis=1)          # 다수의 컬럼 삭제, 범위(:) 지정불가
+df.drop(df.columns[3:], axis=1)                 # 하나 또는 범위(:)를 지정, 다수 컬럼 사용불가
 
 # 컬럼 1개 삭제 : 즉시 적용
 del df['man']
-
-
-
-
-
-
-
-
 
 # >>> 중복값 처리 -----
 
@@ -843,6 +819,10 @@ df['class'].duplicated()
 # 중복값 삭제
 df.drop_duplicates()
 df.drop_duplicates(subset=['class'], keep='last')
+
+# >>> \s 원소 처리 -----
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 # >>> 결측값 처리 -----
 
@@ -867,7 +847,7 @@ mean_age = df.age.mean(axis=0)
 df.age.fillna(mean_age)
 
 # 최빈값 대체
-most_freq = df['age'].value_counts(dropna=True).idxmax()  # value_counts(): 시리즈의 유일값을 그룹핑하여 count하는 함수
+most_freq = df['age'].value_counts(dropna=True).idxmax()
 df['age'].fillna(most_freq)
 
 # 이웃값 대체('ffill', 'bfill')
@@ -883,11 +863,24 @@ df['age'].where(df['alive'] == 'yes', df['fare'] + 10, axis=0)
 np.where(pd.notnull(df['age']), df['age'], df['fare'] + 10)
 np.where(df['age'] > 30, "Big", "Small")
 
+
+
+
+
+
+
+
+
+
+
+
+
+
 # >>> 카테고리화 -----
 
 # 컬럼 자료 확인
-df['class'].unique()                             # 카테고리값 구성원 배열
 df['class'].nunique()                            # 카테고리값 갯수
+df['class'].unique()                             # 카테고리값 구성원 배열
 df['class'].value_counts()                       # 카테고리값별 자료수(NaN 생략)
 df['class'].value_counts(dropna=False).idxmax()  # 카테고리값별 자료수(NaN 포함) 최빈값
 
