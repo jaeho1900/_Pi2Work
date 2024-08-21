@@ -51,13 +51,13 @@ lst.index('Mn')
 # 인덱싱(indexing)이란 원하는 값을 가리키는 것 (객체[인덱스번호])
 # 슬라이싱(slicing)이란 객체에 부여된 번호로 연속된 객체의 일부를 추출하는 것 (객체[start:end:step])
 
-# 1차원 인덱싱
+# 1차원 인덱싱 -----
 lst[3]
 
-# 1차원 슬라이싱
+# 1차원 슬라이싱 -----
 lst[3::2]
 
-# 요소 포함 여부 확인
+# 요소 포함 여부 확인 -----
 'Man' in lst
 'Man' not in lst
 
@@ -66,22 +66,22 @@ lst[3::2]
 lst1 = [1, 2, 3]; lst2 = [1, 2, 3]; lst3 = [1, 2, 3]
 lst4 = ('lion', 'tiger', 'hippo')
 
-# insert(삽입위치인덱스, 요소) : 지정된 인덱스 위치에 요소를 삽입
+# insert(삽입위치인덱스, 요소) : 지정된 인덱스 위치에 요소를 삽입 ----- 
 lst1.insert(0, [10, 20])       # [[10, 20], 1, 2, 3]
 lst1.insert(-1, 100)           # [[10, 20], 1, 2, 100, 3]          -2번째 위치에 추가
 lst1.insert(len(lst1), 'end')  # [[10, 20], 1, 2, 100, 3, 'end']   -1번째 위치에 추가
 
-# append() : 리스트의 끝에 요소를 추가
+# append() : 리스트의 끝에 요소를 추가 -----
 lst2.append(4)         # [1, 2, 3, 4]
 lst2.append([5, 6])    # [1, 2, 3, 4, [5, 6]]
 
-# extend() : 리스트의 끝에 iterable 요소를 하나씩 꺼내어 추가
+# extend() : 리스트의 끝에 iterable 요소를 하나씩 꺼내어 추가 -----
 # lst3.extend(4)       # error: iterable 자료형만 가능
 lst3.extend([4])       # [1, 2, 3, 4]
 lst3.extend([5, 6])    # [1, 2, 3, 4, 5, 6]
 lst3.extend([[5, 6]])  # [1, 2, 3, 4, 5, 6, [5, 6]]
 
-# + 연산자
+# + 연산자 -----
 lst1 + ['cow']
 lst1 + list(lst2)      # 튜플은 리스트로 변환 후 작업
 
@@ -89,17 +89,17 @@ lst1 + list(lst2)      # 튜플은 리스트로 변환 후 작업
 
 lst = ['li', 'Co', 'Ni', 'Mn', 'Al', 'Mg', 'Mn']
 
-# remove(value) : 검색된 첫번째 항목을 삭제
+# remove(value) : 검색된 첫번째 항목을 삭제 -----
 lst.remove('Mn')
 
-# pop(index) : 지정된 인덱스의 항목을 반환하며 삭제
-lst.pop()      # 인덱스가 없으면 마지막 원소에 적용
+# pop(index) : 지정된 인덱스의 항목을 반환하며 삭제 -----
+lst.pop()      # 인덱스가 없으면 마지막 요소에 적용
 lst.pop(-1)
 
-# del 함수
+# del 함수 -----
 del lst[-1]
 
-# clear() : 리스트 비우기
+# clear() : 리스트 비우기 -----
 lst.clear()
 
 
@@ -109,14 +109,14 @@ lst.clear()
 
 # >>> 생성 : key는 문자형이어야 함 -----
 
-# dict() 함수
+# dict() 함수 -----
 name = ['merona', 'gugucon', 'bibibig']
 price = [500, 1000, 600]
 
 dict(zip(name, price))
 dict(korea = name, japan = 'tokyo')
 
-# {} 방법
+# {} 방법 -----
 aa = {1: 'one', 2: [1, 2, 3], '인사': '방가'}
 bb = {'korea':'seoul', 'japan':'tokyo'}
 
@@ -219,7 +219,7 @@ print(f'평균은 {lst[2]:*>+15,.2f}%입니다.')
 dct = {'name': 'Alice', 'age': 30}
 print(f"My name is {dct['name']} and I am {dct['age']} years old.")
 
-# 문자열 정렬 -----
+# 문자열 패딩 -----
 txt = "Welcome to Korea"
 txt.rjust(50, ' ')   # 총길이 50, 오른쪽정렬, 공백 채움
 txt.ljust(50, '-')   # 총길이 50, 왼쪽정렬, 지정문자 채움
@@ -245,7 +245,7 @@ txt.rfind("e")      # 오른쪽부터 처음 검색된 인덱스 위치값
 txt.index("K", 15)  # 검색된 문장의 첫번째 인덱스 반환
 txt.index("Z")      # 검색문자 없으면 error
 
-# 모든 원소의 인덱스 위치 반환
+# 모든 요소의 인덱스 위치 반환 -----
 [i for i, x in enumerate(txt) if x == 'e']
 
 # startswith(prefix, start, end) 문자열의 시작 부분 일치 여부를 boolean 반환 -----
@@ -259,6 +259,11 @@ txt.endswith('Kin', -4, -1)
 # --------------------
 
 txt = ' welcome to asiana air  '
+
+# 대소문자 변환 -----
+print(txt.lower())
+print(txt.upper())
+print(txt.strip().capitalize())
 
 # replace(old, new, count) : 대체 -----
 print(txt.replace('o', 'O'))     # 해당 문자 전부 대체
@@ -279,11 +284,6 @@ print(txt.replace(' ', ''))
 
 import re
 re.sub(r'^\s+|\s+$', '', txt)
-
-# 대소문자 변환 -----
-print(txt.lower())
-print(txt.upper())
-print(txt.strip().capitalize())
 
 
 # --------------------
@@ -335,6 +335,7 @@ print(cnts)
 # $	        문자열의 끝 패턴
 # \b        단어경계(\w 와 \W 사이의 경계)
 # \B        철자경계(\w와 \w 사이)
+# \s        whitespace
 
 # Quantifiers & Alternation -----
 # *	        앞문자가 0 or more
@@ -387,7 +388,7 @@ print(r"\\superman")  # \2개 -> \4개 -> \2개 (직관적임)
 # re.findall()    문자열 처음부터 일치하는 모든 것     리스트         빈 리스트
 # re.finditer()   문자열 처음부터 일치하는 모든 것     순환객체       None
 
-# re.compile()    패턴을 컴파일(컴퓨터가 이해할 수 있는 형태로 변환)하여 정규식 객체로 반환
+# re.compile()    패턴을 컴파일(컴퓨터가 이해할 수 있는 형태로 변환)하여 정규표현식 객체로 반환
 # re.sub()        문자열에서 패턴과 일치하는 모든 부분을 다른 문자열로 대체
 # re.split()      문자열에서 패턴과 일치하면 패턴을 기준으로 리스트로 나눔
 
@@ -466,7 +467,7 @@ txt = '10월 26일 코로나 감염자 20명 비감염자 100명'
 pattern = r'\d+(?=명)'
 print(re.findall(pattern, txt))
 
-# 후방탐색(Lookbehind)에서는 변동범위를 사용할 수 없다.(갯수 고정 필요)
+# 후방탐색(Lookbehind)에서는 변동범위를 사용할 수 없다.(갯수 고정 필요) -----
 txt = '"https://www.naver.com" 또는 "http://youtube.com"'
 # pattern = r'(?<=https?://)[\w.]+'  # error
 pattern = r'(?<=https://)[\w.]+|(?<=http://)[\w.]+'
@@ -494,12 +495,12 @@ import numpy as np
 
 # >>> 균일 방식 -----
 
-# np.arange(): 원소값 생성 (파이썬의 range와 유사)
+# np.arange(): 요소값 생성 (파이썬의 range와 유사) -----
 np.arange(10)          # 0 ~ 9
 np.arange(1, 20, 2)    # 1 ~ 19, 간격 2
 np.arange(1, 10, 0.5)  # 1 ~ 9.5, 간격 0.5
 
-# np.reshape([깊이,] 행, 열): 형상 생성
+# np.reshape([깊이,] 행, 열): 형상 생성 -----
 np.arange(12).reshape(3, 4)
 np.arange(24).reshape(2, 3, 4)
 
@@ -509,9 +510,9 @@ np.arange(24).reshape(2, 3, 4)
 # np.random.randn(행, 열):          표준 정규 분포
 # np.random.randint(size=(행, 열)): 균일 분포의 정수 난수
 # np.random.choice(a, size=None, replace=True)
-# a        데이터 범위, 1차원 배열 또는 정수(arange(정수)로 해석)
-# size     샘플 생성 갯수(정수)
-# replace  중복 허용 여부
+#    a        데이터 범위, 1차원 배열 또는 정수(arange(정수)로 해석)
+#    size     샘플 생성 갯수(정수)
+#    replace  중복 허용 여부
 
 np.random.rand(5)
 np.random.rand(3, 5)
@@ -530,14 +531,14 @@ np.random.choice(10, 5, replace=False)
 
 arr= np.arange(12).reshape(3, 4)
 
-# reshape(정수, -1): 행 기준
+# reshape(정수, -1): 행 기준 -----
 arr.reshape(-1)     # (12), (12,), (1, -1), (1, 12) 와 동일 결과
 arr.reshape(1, -1)  # (1, ?)
 arr.reshape(2, -1)  # (2, ?)
 arr.reshape(3, -1)  # (2, ?)
 arr.reshape(4, -1)  # (4, ?)
 
-# reshape(-1, 정수): 열 기준
+# reshape(-1, 정수): 열 기준 -----
 arr.reshape(-1, 1)  # (?, 1)
 arr.reshape(-1, 2)  # (?, 2)
 
@@ -551,8 +552,8 @@ arr = np.arange(1, 31).reshape(5, 6)
 print(arr)
 
 arr.ndim   # 차원 확인
-arr.shape  # 배열 형상, (5, 6) 큰방 5개에 각 방마다 원소가 6개씩 들어있다
-arr.size   # 배열의 원소 갯수
+arr.shape  # 배열 형상, (5, 6) 큰방 5개에 각 방마다 요소가 6개씩 들어있다
+arr.size   # 배열의 요소 갯수
 arr.dtype  # 자료형 확인
 len(arr)   # 큰방의 갯수
 
@@ -571,54 +572,54 @@ print(arr)
 
 # >>> 객체[인덱스번호] -----
 
-# 1차원 인덱싱
+# 1차원 인덱싱 -----
 arr[2]
 
-# 1차원 슬라이싱
+# 1차원 슬라이싱 -----
 arr[2:3]
 arr[-3::2]
 arr[-1::-1]  # 마이너스 스텝은 역방향 진행!!
 
-# 2차원 인덱싱
+# 2차원 인덱싱 -----
 arr[1, 1:]
 
-# 2차원 슬라이싱
+# 2차원 슬라이싱 -----
 arr[:, 0]
 arr[:, 1:-1]
 arr[:4, 2:100:2]
 
-# 순차 작업 [전][후]
+# 순차 인덱싱 [전][후] -----
 arr[1][1:]
 arr[:4][2:100]
 
 # >>> 팬시 인덱싱 [[리스트]] : 뷰가 아님 -----
 
-# 1차원
+# 1차원 -----
 arr[[0]]
 arr[[0, -1]]
 
-# 2차원
+# 2차원 -----
 arr[[0, 2], 2]
 arr[[0, 2, -1], [1, 4, 3]]   # [(0,1), (2,4), (-1,3)] !!
 
- # 행렬 곱셈으로 다차원 요소 추출
+ # 행렬 곱셈으로 다차원 요소 추출 -----
 arr[np.ix_([0, 2, -1], [1, 4, 3])]  # [[0,[1,4,3]],[2,[1,4,3]],[-1,[1,4,3]]] !!
 
 # >>> View vs Copy -----
 
-# View: 넘파이 인덱싱, 슬라이싱으로 참조된 복사본은 '원본에 영향'을 주므로 주의 !!
+# View: 넘파이 인덱싱, 슬라이싱으로 참조된 복사본은 '원본에 영향'을 주므로 주의 !! -----
 arr1 = np.arange(1, 31).reshape(5, 6)
 arr2 = arr1[-1][2:-1]            # arr2 는 view
 arr2[-1] = 10000                 # arr2 를 변경
 print(arr1)                      # arr1(원본)도 변경 !!
 
-# Copy: 원본과 분리된 복사본 생성
+# Copy: 원본과 분리된 복사본 생성 -----
 arr3 = np.arange(10)
 arr4 = arr3[:5].copy()
 arr4[-1] = 10000
 print(arr3)
 
-# 메모리 공유 여부 확인
+# 메모리 공유 여부 확인 -----
 np.may_share_memory(arr1, arr2)
 np.may_share_memory(arr3, arr4)
 
@@ -629,7 +630,7 @@ np.may_share_memory(arr3, arr4)
 
 import numpy as np
 
-# np.append(): 모든 배열의 원소를 풀어서 1차원 배열로 생성 -----
+# np.append(): 모든 배열의 요소를 풀어서 1차원 배열로 생성 -----
 arr = np.array([[1, 2], [10, -1]])
 arr = np.append(arr, [3, 4])
 print(arr)         # [1 2 10 -1 3 4]
@@ -710,7 +711,7 @@ df = pd.DataFrame({'food':['melon', 'melon', 'apple', 'apple'],
               'year':[2018, 2019, 2018, 2019],
               'quantity':[490, 512, 478, 325]})
 
-# 기존 데이터프레임에서 지정된 행렬의 라벨로 새로운 데이터프레임 생성(miss match 은 NaN(Not a Number) 으로 채워짐)
+# 기존 데이터프레임에서 지정된 행렬의 라벨로 새로운 데이터프레임 생성(miss match 은 NaN(Not a Number) 으로 채워짐) -----
 pd.DataFrame(df, index=[2, 3, 4], columns=['food', 'man', 'quantity'])
 
 
@@ -718,33 +719,33 @@ pd.DataFrame(df, index=[2, 3, 4], columns=['food', 'man', 'quantity'])
 # 라벨 관리
 # --------------------
 
-# 일괄 라벨명 생성 또는 덮어쓰기
+# 일괄 라벨명 생성 또는 덮어쓰기 -----
 df.index = ['a', 'b', 'c', 'd']
 df.columns = ['food', 'year', 'quantity']
 
-# 부분 라벨명 변경
+# 부분 라벨명 변경 -----
 df.rename(index={'a': 'no_1', 'b': 'no_2'}, inplace=False)
 df.rename(columns={'food': 'Fruit'}, inplace=False)
 
-# 라벨 제목 설정
+# 라벨 제목 설정 -----
 df.index.name = 'No.'
 df.columns.name = 'multi1'
 
-# 지정 컬럼을 인덱스로 설정 : drop은 컬럼의 잔존 여부
+# 지정 컬럼을 인덱스로 설정 : drop은 컬럼의 잔존 여부 -----
 df_s = df.set_index('year', drop=False, inplace=False)
 df_s.loc[2018]
 
-# 멀티 인덱스 설정
+# 멀티 인덱스 설정 -----
 df_m = df.set_index(['food', 'year'])
 df_m.loc['apple', 2018]
 
-# 인덱스 초기화(정수 인덱스로 설정) : drop는 기존 인덱스의 열 이동 여부
+# 인덱스 초기화(정수 인덱스로 설정) : drop는 기존 인덱스의 열 이동 여부 -----
 df.reset_index(drop=False, inplace=False)
 
-# 인덱스 정렬
+# 인덱스 정렬 -----
 df.sort_index(ascending=False, inplace=False)   # 내림차순(False)
 
-# 컬럼별 조건으로 정렬
+# 컬럼별 조건으로 정렬 -----
 df.sort_values(by=['year', 'food'],      # 기준열
                ascending=[True, False],  # 오름차순(True)
                na_position='first',      # 결측값 위치 'first'
@@ -793,137 +794,135 @@ df['fare'].astype('float32').apply(lambda x: '{:,.2f}'.format(x))    # 소수점
 
 # >>> 컬럼 추가 -----
 
-df['man'] = 10  # 컬럼의 모든 원소에 동일 값을 추가
+df['man'] = 10  # 컬럼의 모든 요소에 동일 값을 추가
 
 # >>> 인덱스 또는 컬럼 삭제 -----
 
-# 인덱스 (axis=0)
+# 인덱스 (axis=0) -----
 df.drop([1, 6, 2], inplace=False)   # 다수의 인덱스 삭제, 범위(:) 지정불가
 df.drop(df.index[[1, 4]])           # 다수의 인덱스 삭제, 범위(:) 지정불가
 df.drop(df.index[1:4])              # 하나 또는 범위(:)를 지정, 다수 인덱스 사용불가
 
-# 컬럼 (axis=1)
+# 컬럼 (axis=1) -----
 df.drop(['who', 'man'], axis=1, inplace=False)  # 다수의 컬럼 삭제, 범위(:) 지정불가
 df.drop(df.columns[[1, 4, 3]], axis=1)          # 다수의 컬럼 삭제, 범위(:) 지정불가
 df.drop(df.columns[3:], axis=1)                 # 하나 또는 범위(:)를 지정, 다수 컬럼 사용불가
 
-# 컬럼 1개 삭제 : 즉시 적용
+# 컬럼 1개 삭제 : 즉시 적용 -----
 del df['man']
 
 # >>> 중복값 처리 -----
 
-# 중복값 확인
+# 중복값 확인 -----
 df.duplicated()
 df['class'].duplicated()
 
-# 중복값 삭제
+# 중복값 삭제 -----
 df.drop_duplicates()
 df.drop_duplicates(subset=['class'], keep='last')
 
-# >>> \s 원소 처리 -----
+# >>> Whitespace 처리 -----
 
->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+df[df['컬럼명'] == ' ']
+df['컬럼명'] = df['컬럼명'].replace(' ', None)
+df.dropna(inplace=True)
+df.reset_index(drop=True, inplace=True)
 
 # >>> 결측값 처리 -----
 
-# 결측값 확인
+# 결측값 확인 -----
 df.isna().sum()  # df.isnull().sum() 동일
 
-# 결측값 삭제
+# 결측값 삭제 -----
 df.dropna(axis=0)                          # 결측값이 존재하는 행 삭제
 df.dropna(axis=1)                          # 결측값이 존재하는 열 삭제
 df.dropna(subset=['age', 'fare'], axis=0)  # 검색된 열에 결측값이 존재하는 행 삭제
 df.dropna(subset=[888, 889, 890], axis=1)  # 검색된 행에 결측값이 존재하는 열 삭제
 df.dropna(thresh=3, axis=0)                # thresh 옵션은 정상값이 지정된 갯수 미만인 행 또는 열 삭제
 
-# 0으로 대체
+# 0으로 대체 -----
 df['age'].fillna(0)
 
-# 열별 대체
+# 열별 대체 -----
 df.fillna({'embark_town': 'most', 'age': 'mean'})
 
-# 평균값 대체
+# 평균값 대체 -----
 mean_age = df.age.mean(axis=0)
 df.age.fillna(mean_age)
 
-# 최빈값 대체
+# 최빈값 대체 -----
 most_freq = df['age'].value_counts(dropna=True).idxmax()
 df['age'].fillna(most_freq)
 
-# 이웃값 대체('ffill', 'bfill')
+# 이웃값 대체('ffill', 'bfill') -----
 df['age'].fillna(method='ffill', inplace=False)
 
-# 보간 대체(linear 선형보간, time 시간보간: 시간형 인덱스이어야 함)
+# 보간 대체(linear 선형보간, time 시간보간: 시간형 인덱스이어야 함) -----
 df.age.interpolate(method='linear')
 
-# S.where(), DF.where(): 조건이 true면 원래값 유지, false면 명시된 값 또는 NaN으로 대체
+# S.where(), DF.where(): 조건이 true면 원래값 유지, false면 명시된 값 또는 NaN으로 대체 -----
 df['age'].where(df['alive'] == 'yes', df['fare'] + 10, axis=0)
 
-# np.where(조건문, true 일때 값, false 일때 값) 대체  --> 카테고리 범주 활용 가능
+# np.where(조건문, true 일때 값, false 일때 값) 대체 -----
 np.where(pd.notnull(df['age']), df['age'], df['fare'] + 10)
 np.where(df['age'] > 30, "Big", "Small")
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 # >>> 카테고리화 -----
 
-# 컬럼 자료 확인
-df['class'].nunique()                            # 카테고리값 갯수
-df['class'].unique()                             # 카테고리값 구성원 배열
-df['class'].value_counts()                       # 카테고리값별 자료수(NaN 생략)
-df['class'].value_counts(dropna=False).idxmax()  # 카테고리값별 자료수(NaN 포함) 최빈값
+# 컬럼 자료 확인 -----
+df['class'].nunique()                            # 카테고리 갯수
+df['class'].unique()                             # 카테고리 요소
+df['class'].value_counts()                       # 카테고리별 자료수(NaN 생략)
+df['class'].value_counts(dropna=False).idxmax()  # 카테고리별 자료수(NaN 포함) 최빈값
 
-# 구간별 임의 기준 분할
+# 구간별 사용자 기준 분할 -----
 df['fare'].describe()
-df['fare'].value_counts(bins=[0, 7, 14, 31, 520], sort=False)
+df['fare'].value_counts(bins=[0, 7910, 14454, 31000, 512330], sort=False)
 
-# 구간별 동일 갯수 분할
-df['fare_cnt'] = pd.qcut(df['fare'], 3, labels=['Q1', 'Q2', 'Q3'])
+# 구간별 동일 갯수 분할 -----
+df['fare_cnt'] = pd.qcut(df['fare'], 3, labels=['Q1', 'Q2', 'Q3'])  # 디폴트로 오름차순 구간분할
 df['fare_cnt'].value_counts()
 df.groupby('fare_cnt')['fare'].mean()
 
-import seaborn as sns
 sns.displot(df, x='fare', hue='fare_cnt', element='step')
 
-# 구간별 동일 길이 분할
+# 구간별 동일 길이 분할 -----
 count, bin_divcityers = np.histogram(df['fare'], bins=3)  # np.histogram(): 도수분포함수
 bin_labels = ['low', 'middle', 'high']
 df['fare_bin'] = pd.cut(x=df['fare'],         # 데이터 배열
                         bins=bin_divcityers,  # 경계 값 리스트
                         labels=bin_labels,    # bin 라벨
                         include_lowest=True)  # 최하 경계값 포함
-
-bin_divcityers
-df['fare_bin'].value_counts()
 df.groupby('fare_bin')['fare'].mean()
 
-import seaborn as sns
 sns.displot(df, x='fare', hue='fare_bin', element='step')
 
-# 더미 열 생성 (속하면1, 속하지 않으면0)
+# 조건으로 카테고리 생성 -----
+df['fare_condition'] = np.where(df['age'] > 30, "Big", "Small")
+
+# 더미 열 생성 (속하면1, 속하지 않으면0) -----
 pd.get_dummies(df['fare_cnt'])
 pd.get_dummies(df['fare_bin'])
+pd.get_dummies(df['fare_condition'])
 
 # >>> 정규화(Normalization) -----
 
-# 상대적 크기 차이 해소: 열데이터에서 열최솟값을 뺀 값을 분자로 하고, 열최댓값-열최솟값을 분모로 산출(0~1)
+# 정규화 (Normalization) -----
+# [산출]   데이터에서 열최솟값을 뺀 값을 분자로 하고, 열최댓값-열최솟값을 분모로 산출
+# [스케일] 데이터의 스케일을 0과 1 사이로 조정
+# [유용성] 데이터가 정규 분포를 따르지 않거나, 거리 기반 알고리즘(예: k-최근접 이웃, k-평균 군집화)에 적합
+
 min_x = df['fare'] - df['fare'].min()
 min_max = df['fare'].max() - df['fare'].min()
 df['fare_normalization'] = min_x / min_max
 df['fare_normalization'].describe()
 
-# >>> 데이터프레임 합치기, 형상 바꾸기 -----
+# 표준화 (Standardization) -----
+# [산출 ]  데이터에서 평균을 빼고, 그 결과를 표준편차로 나누어 산출
+# [스케일] 데이터의 평균을 0으로, 표준편차를 1로 조정
+# [유용성] 데이터가 정규 분포를 따르거나, 머신 러닝 알고리즘(예: 선형 회귀, 로지스틱 회귀, 서포트 벡터 머신)에 적합
+
+# >>> 데이터프레임 병합 -----
 
 df1 = pd.DataFrame({'lkey': ['foo', 'bar', 'all', 'foo'],
                     'value': [1, 2, 3, 5]}, index=[2018, 2019, 2020, 2021])
@@ -931,7 +930,7 @@ df2 = pd.DataFrame({'rkey': ['foo', 'bar', 'foo', 'sel'],
                     'value': [6, 3, 2, 5],
                     'year': [1999, 2021, 2018, 2019]})
 
-# 병합
+# 병합 -----
 # key  : 열명(on, left_on, right_on) 또는 인덱스(left_index, right_index)
 # 방식: inner, outer, left, right
 df1.merge(df2)                                     # 공통된 기준으로 교집합으로 병합 (예제에선 value)
@@ -941,7 +940,7 @@ df1.merge(df2, left_on=['lkey'], right_on=['rkey'], how='outer')  # 양쪽 df에
 df1.merge(df2, left_on=['lkey'], right_on=['rkey'], how='left')   # 오른쪽 df에서 NaN 발생 가능
 df1.merge(df2, left_on=['lkey'], right_on=['rkey'], how='right')  # 왼쪽 df에서 NaN 발생 가능
 
-# 연결
+# 연결 -----
 df1 = pd.DataFrame({'A': [1, 2, 3],
                     'B': [4, 5, 6],
                     'C': [7, 8, 9]}, index=[0,1,10])
@@ -958,7 +957,7 @@ pd.concat([df1, df2], axis=1, join='outer')
 # join='inner'으로 설정하면 공통된 행만 유지
 pd.concat([df1, df2], axis=1, join='inner')
 
-# 행과 열 바꾸기(Transpose)
+# 행과 열 바꾸기(Transpose) -----
 df1.T
 
 
@@ -974,168 +973,173 @@ dct = {'food':['melon', 'melon', 'apple', 'apple', np.nan, 'peach'],
         'total':[np.nan, 512, 478, 325, 290, 800]}
 df = pd.DataFrame(dct)
 
-# >>> 인덱싱(열기준) -----
+# >>> 인덱싱 -----
 
-df.food                # 데이터프레임은 [열]기준 !!
-df['total'][3]         # 순차인덱싱 [전][후] !!
-df[['food', 'total']]  # 팬시인덱싱 [리스트]
-df['total', '3']       # error, 핀셑인덱싱[행,렬] 불가 !! ---> 판다스 인덱서로 대체
-df[0]                  # error, 컬럼라벨이 존재하면 정수인덱싱 불가 !! ---> 판다스 인덱서로 대체
+# 객체[컬럼]       : 컬럼을 다룰때는 loc, iloc 메서드 불필요
+# 객체.loc[행,열]  : 행 라벨이 문자형
+# 객체.iloc[행,열] : 행 라벨이 정수형
 
-df[df['food'].isna()]  # 불린 응용
+# 컬럼 인덱싱 -----
+df['food']
+
+# 행 인덱싱 -----
+df.loc[3]
+df.loc[1:3]            # 문자형 범위 지정 시 마지막 포함
+
+# [행, 렬] 인덱싱 -----
+df.loc[1, 'total']
+df.loc[1:4, 'food':'total']
+df.iloc[:, 2]
+df.iloc[:, :1]         # 정수형 범위 지정 시 마지막 미포함
+
+# 팬시 인덱싱 [리스트] -----
+df[['food', 'total']]
+
+df.loc[[3]]
+df.loc[[1, 5]]
+
+df.loc[[1, 5], ['total', 'year']]
+df.iloc[:, [2]]
+df.iloc[:, [0, 2, 1]]
+
+# 순차 인덱싱 [전][후] -----
+df['total'][3]
+df.loc[3][2]
+df.iloc[3][2]
+
+# 불린 인덱싱 -----
+df[df['food'].isna()]
 df[df['food'].notna()]
 df[(400 < df.total) & (df.total < 700)]
-
 df[df['food'].isin(['melon', 'peach'])]
-
-df['food'].str.contains('aPPle', case=False)  # 대소문자를 불문
+df['food'].str.contains('aPPle', case=False)  # case=False 대소문자를 불문
 df['food'].str.contains('aPPle|melon', case=False, regex=True)
-
-# >>> 판다스 인덱서 -----
-
-# loc[행,열]: 라벨형
-df.loc[3]                    # Series 반환
-df.loc[1:3]                  # 마지막 범위 포함 !!
-df.loc[1, 'total']
-df.loc[2:4, 'food':'total']  # 연속범위 가능
-
-df.loc[[3]]                  # DataFrame 반환
-df.loc[[1, 5]]               # 리스트색인은 연속범위 불가
-df.loc[[1, 5], :]
-df.loc[[1, 5], ['total', 'year']]
-
-# iloc[행,열]: 정수형
-df.iloc[:, 2]                # Series 반환
-df.iloc[:, :1]               # 마지막 정수범위 미포함 !!
-df.iloc[:, [2]]              # DataFrame 반환
-df.iloc[:, [0, 2, 1]]
 
 # >>> View -----
 
 df = pd.DataFrame(np.arange(1,16).reshape(3,5), index=list('abc'), columns=list('ABCDE'))
 
-view = df.loc['a':,'D':]         # 슬라이싱한 데이터프레임은 뷰일 뿐이다
-view.loc['b','D'] = 900          # 뷰의 일부 값을 바꾸면 원본도 바뀜 !!
+view = df.loc['a':,'D':]         # 슬라이싱한 데이터프레임은 뷰
+view.loc['b','D'] = 900          # 뷰의 일부 값을 바꾸면 원본도 바뀜
 print(df, view, sep='\n\n')
 
-view['E'] = 400                  # 뷰의 열을 전부 바꾸면 "해당 열"은 원본에서 독립
+view['E'] = 400                  # 뷰의 컬럼을 전부 바꾸면 "해당 컬럼"은 원본에서 독립
 print(df, view, sep='\n\n')
 
-view.loc['c','D'] = 500          # 뷰의 일부 값을 바꾸면 독립된 열을 제외하곤 원본에 영향을 줌
+view.loc['c','D'] = 500          # 뷰의 일부 값을 바꾸면 독립된 열을 제외하곤 원본에 영향
 view.loc['c','E'] = 500
 print(df, view, sep='\n\n')
 
 
 # --------------------
-# 데이터프레임 메서드
+# df.str 메서드 
 # --------------------
-
-# >>> str 메서드 -----
-# 판다스에서 문자열 관련 함수를 사용하거나 전처리를 하기 위해서는 함수 및 명령어 앞에 str을 붙여주어야 한다
-
-# 인덱싱 .str[] -----
-# 앞 5자리까지만 추출
-df['법정동명'].str[:5].head()
-# 마지막 한글자만 추출
-df['법정동명'].str[-1].head()
-
-# 분할 .str.split() -----
-# 공백(" ")으로 분리
-df['법정동명'].str.split(" ").head()
-# 분할된 개별 리스트를 바로 데이터 프레임으로 생성
-df['법정동명'].str.split(" ", expand=True).head()
-
-# 시작글자 인식 .str.startswith() -----
-df['법정동명'].str.startswith("서울").head()
-# 서울로 시작하는 데이터만 필터링
-df[df['법정동명'].str.startswith("서울")].head()
-
-# 끝글자 인식 .str.endswith() -----
-# 동으로 끝나는 데이터만 필터링
-df[df['법정동명'].str.endswith("동")].head()
-
-# 포함글자 인식 .str.contains() -----
-# 강서구가 들어간 데이터만 필터링
-df[df['법정동명'].str.contains("강서구")].head()
-df[df['법정동명'].str.contains("강서구|강남구", regex=True)].head()
-
-# 문자 위치찾기 -----
-# 왼쪽부터 검색후 위치반환 없으면 -1
-df['법정동명'].str.find(' ').head()
-# 오른쪽부터 sub값 검색후 위치반환
-df['법정동명'].str.rfind(sub=' ').head()
-# 찾은 모든 값 반환(정규식)
-df['법정동명'].str.findall('\w+동').head()
-
-# 문자 대체 .str.replace() -----
-# 공백을 "_"로 대체
-df['법정동명'].str.replace(" ", "_").head()
-
-# 원하는 문자열 추출 str.extract() -----
-# 그룹 ()을 꼭 지정해서 패턴을 입력해야 하며, 패턴에 맞는 단어가 없을 시 NaN이 출력된다.
-# 추출그룹이 많을 땐 자동으로 데이터프레임 처리
-df['법정동명'].str.extract('( \w*시 )|( \w*군 )|( \w*구 )')
-df['법정동명'].str.extract('( \w*읍)|( \w*면)|( \w*동)|(\w*\d+가)').dropna(how='all')
-
-# 문자열 패딩 -----
-# 문자열 길이 20자, 왼쪽부터 "_"로 채우기
-df['법정동명'].str.pad(width=20, side='left', fillchar='_').head(10)
-# 문자열 길이 20자, 오른쪽부터 "_"로 채우기
-df['법정동명'].str.pad(width=20, side='right', fillchar='_').head(10)
-# 문자열 길이 20자, 좌우로 "_"로 채우기
-df['법정동명'].str.center(width=20, fillchar='_').head(10)
-# 왼쪽부터 0으로 채우기
-df['법정동명'].str.zfill(width=20).head(10)
-
-# 공백제거 strip() -----
-df['col1'].str.strip()   # 앞 뒤 공백을 제거
-df['col1'].str.lstrip()  # 앞 공백을 제거
-df['col1'].str.rstrip()  # 뒤 공백을 제거
- 
-# 대소문자 변경 -----
-df['col1'].str.lower()      # 모두 소문자로 변경
-df['col1'].str.upper()      # 모두 대문자로 변경
-df['col1'].str.swapcase()   # 소문자는 대문자, 대문자는 소문자로 변경 
-
-import pandas as pd
-df = pd.DataFrame({'city':['seoul_junggu', 'masan', 'jinju', 'wooljin'],
-                   'year':[2018, 2019, 2018, 2019],
-                   'quantity':[490, 512, 478, 325]})
-
-# str.contains(): 정규표현식으로 조건 만족 여부를 반환
-df['city'].str.contains('S|j', na=False, regex=True)  # 결측값은 'False'로 반환
-df[~df.city.str.contains('(S|j)', na=False)]          # 불포함(결측값이 있는 경우 'na=False')
-
-# 정규표현식으로 선택한 문자를 독립된 열로 분할
-df.city.str.extract(r'(.*)_(.*)')
-
-# str.split() : 옵션에 expand=True를 넣으면 데이터프레임으로 반환
-df['city'].str.split('_').str[0]
-df['city'].str.split('_').str[1]
-
-df['city'].str.split('_').str.get(0)
-df['city'].str.split('_').str[0].get(0)
-
-# str.slice()
-df['city'].str.slice(2, 3)
-
-# >>> replace 와 str.replace 차이 -----
 
 import pandas as pd
 import seaborn as sns
 
 titanic = sns.load_dataset('titanic')
 df = titanic.loc[:, ['age', 'fare', 'class', 'who', 'embark_town', 'alive']]
+df['embark_town'] = df['embark_town'].str.replace('o', ' ')
 
-# replace()     : 문자열이 완벽하게 일치하는 경우
-df.replace('Third', '3rd')                  # '정상'이라는 단어를 '양품'을 대체
-df.replace({'Third':'3rd', 'man':'human'})  # 복수단어의 대체가 모든 컬럼에 적용
-df.replace({'alive': {'yes': 'ok'}})        # 지정 컬럼에만 적용
+# >>> 검색 -----
 
-# str.replace() : 문자열의 일부라도 일치하는 경우
-df['embark_town'].str.replace('am', 'AM')
+# man 들어간 데이터만 필터링
+df[df['who'].str.contains('man')].head()
 
-# >>> map(), apply() 메서드 -----
+# 정규표현식 
+df[df['class'].str.contains(r'.+ir.+', regex=True)].tail()
+
+# 서울로 시작하는 데이터만 필터링
+df[df['embark_town'].str.startswith('Queen', na=True)].head()
+
+# 끝 글자 인식 .str.endswith()
+df[df['embark_town'].str.endswith('urg', na=True)].head()
+
+# 찾은 모든 값만을 리스트 반환 (정규표현식)
+df['embark_town'].str.findall(r't|r').head()
+
+# 왼쪽부터 검색후 인덱스 번호 반환 (위치반환 없으면 -1)
+df['embark_town'].str.find(' ').head()
+
+# 오른쪽부터 검색후 인덱스 번호 반환
+df['embark_town'].str.rfind(' ').head()
+
+# >>> 인덱싱 -----
+
+# 앞 5자리까지만 추출
+df['embark_town'].str[:5].head()
+
+# 마지막 한 글자만 추출
+df['embark_town'].str[-1:].head()
+df['class'].str[1:3].head()
+
+# 슬라이싱
+df['class'].str.slice(1, 3)
+
+# >>> 추출 -----
+
+# 그룹 ()을 꼭 지정해서 패턴을 입력해야 하며, 패턴에 맞는 단어가 없을 시 NaN 출력
+# 추출그룹이 많을 때는 자동으로 데이터프레임 처리
+df['embark_town'].str.extract('(\w*urg)').dropna(how='all')
+
+# 정규표현식으로 선택한 문자를 독립된 열로 분할
+df['embark_town'].str.extract(r'(.*) (.*)')
+
+# >>> 분할 -----
+
+# 공백(" ")으로 분할
+df['embark_town'].str.split(' ').head()
+
+df['embark_town'].str.split(' ').str[0]
+df['embark_town'].str.split(' ').str[1]
+df['embark_town'].str.split(' ').str.get(1)
+
+df['embark_town'].str.split(' ').str[0].get(890)
+
+# 옵션에 expand=True를 넣으면 데이터프레임으로 반환
+df['embark_town'].str.split(' ', expand=True).head()
+
+# >>> 대체 -----
+
+# df.str.replace() : 문자열의 일부라도 일치하는 경우
+df['embark_town'].str.replace(" ", "_").head()
+
+# df.replace()     : 문자열이 완벽하게 일치하는 경우
+df.replace('Third', '3rd')
+df.replace({'Third':'3rd', 'man':'human'})
+df.replace({'alive': {'yes': 'ok'}})
+
+# >>> 공백 제거 -----
+
+df['col1'].str.strip()   # 앞 뒤 공백을 제거
+df['col1'].str.lstrip()  # 앞 공백을 제거
+df['col1'].str.rstrip()  # 뒤 공백을 제거
+
+# >>> 대소문자 변경 -----
+
+df['col1'].str.lower()      # 모두 소문자로 변경
+df['col1'].str.upper()      # 모두 대문자로 변경
+df['col1'].str.swapcase()   # 소문자는 대문자, 대문자는 소문자로 변경
+
+# >>> 패딩 -----
+
+# 문자열 길이 20자, 왼쪽부터 "_"로 채우기
+df['embark_town'].str.pad(width=20, side='left', fillchar='_').head(10)
+
+# 문자열 길이 20자, 오른쪽부터 "_"로 채우기
+df['embark_town'].str.pad(width=20, side='right', fillchar='_').head(10)
+
+# 문자열 길이 20자, 좌우로 "_"로 채우기
+df['embark_town'].str.center(width=20, fillchar='_').head(10)
+
+# 왼쪽부터 0으로 채우기
+df['embark_town'].str.zfill(width=20).head(10)
+
+
+# --------------------
+# map(), apply(), pipe() 메서드
+# --------------------
 
 def summation(x):
     return x + 100
@@ -1145,11 +1149,11 @@ df2 = pd.DataFrame({"salary":['200원','300원','400원','500원'], "bonus":['10
 series1 = pd.Series(index = ["철수","영호","민수"], data = ["빨간공","파란공","노란공"])
 series2 = pd.Series(index = ["파란공","노란공","빨간공"], data = ["2만원","3만원","4만원"])
 
-# '원소별'로 메서드 적용 : 시리즈
+# '요소별'로 메서드 적용 : 시리즈
 df1["salary"].map(summation)
 df1["salary"].apply(summation)
 
-# '원소별'로 메서드 적용 : 데이터프레임
+# '요소별'로 메서드 적용 : 데이터프레임
 df2.map(lambda x : x[:3])    # 모든 요소 값에서 3글자 추출('원' 삭제)
 
 # '행별 또는 열별'로 메서드 적용
@@ -1167,77 +1171,69 @@ df2.pipe(lambda x: x.dropna(axis=0)).pipe(lambda x: x.sum())
 # groupby()
 # --------------------
 
+# >>> DataFrameGroupBy 객체 생성 -----
+
+# df.groupby(by=None, axis=0, level=None, as_index=True, sort=True, group_keys=True, observed=False, dropna=True)
+#    by : 그룹화할 내용(함수, 축, 리스트 등등)
+#    axis : 그룹화를 적용할 축
+#    level : 멀티 인덱스의 경우 레벨을 지정
+#    as_index : 그룹화할 내용을 인덱스로 할지 여부(False이면 기존 인덱스가 유지)
+#    sort : 그룹key를 정렬할지 여부
+#    group_keys : apply메서드 사용시 결과에따라 그룹화 대상인 열이 인덱스와 중복(group key)이 될 수 있음(group_keys=False로 인덱스를 기본값으로 지정)
+#    observed : Categorical로 그룹화 할 경우 Categorical 그룹퍼에 의해 관찰된 값만 표시할 지 여부
+#    dropna : 결측값을 계산에서 제외할지 여부
+
 import pandas as pd
 import numpy as np
 import seaborn as sns
 
 titanic = sns.load_dataset('titanic')
 df = titanic.loc[:, ['survived', 'age', 'fare', 'class', 'who', 'embark_town']]
-print(df)
+df
 
-# >>> DataFrameGroupBy 객체 생성 -----
-
-# df.groupby(by=None, axis=0, level=None, as_index=True, sort=True, group_keys=True, observed=False, dropna=True)
-#  by : 그룹화할 내용(함수, 축, 리스트 등등)
-#  axis : 그룹화를 적용할 축
-#  level : 멀티 인덱스의 경우 레벨을 지정
-#  as_index : 그룹화할 내용을 인덱스로 할지 여부(False이면 기존 인덱스가 유지)
-#  sort : 그룹key를 정렬할지 여부
-#  group_keys : apply메서드 사용시 결과에따라 그룹화 대상인 열이 인덱스와 중복(group key)이 될 수 있음(group_keys=False로 인덱스를 기본값으로 지정)
-#  observed : Categorical로 그룹화 할 경우 Categorical 그룹퍼에 의해 관찰된 값만 표시할 지 여부
-#  dropna : 결측값을 계산에서 제외할지 여부
-
-# 라벨명으로 그룹핑
+# 컬럼 기준 그룹핑 -----
 df.groupby('class').sum()
 df.groupby(['who', 'class']).sum()
 
-# 행인덱스를 기준으로 새로운 행 그룹핑
+# 인덱스를 지정 기준으로 변경하여 그룹핑 -----
 mapping_dct_row = {0: 'row_g1',
                    2: 'row_g1',
                    4: 'row_g2'}
 
 df[['age', 'fare']].groupby(mapping_dct_row).sum()
 
-# 컬럼라벨을 기준으로 새로운 열 그룹핑
+# 컬럼을 지정 기준으로 변경하여 그룹핑 -----
 mapping_dct_col = {'survived': 'num1',
                    'age': 'num2',
                    'fare': 'num2'}
 
 df.groupby(mapping_dct_col, axis=1).sum()
 
-# >>> 그룹 인덱싱 -----
+# >>> 그룹 객체 인덱싱 -----
 
 gdf = df.groupby(['who', 'class'])
 gdf.get_group(('man', 'First'))
 
-# filter 메서드 : 조건을 충족하는 데이터만 추출
-gdf.filter(lambda x: len(x) >= 200)
-
-# 그룹별 데이터 확인
+# 그룹별 데이터 확인 -----
 for key, group in gdf:
     print('* key : ', key)
     print(group.head())
 
-# >>> 기술통계량 연산 메서드 -----
+# >>> 기술 통계량 -----
 
 # [nan 포함]   size
 # [nan 미포함] count, sum, min, max, mean, median, std, var, first, last 등
 
-gdf['age'].mean()                         # Series
+gdf['age'].mean()
+gdf[['age']].mean().reset_index()
+gdf[['age','fare']].mean().reset_index().sort_values('fare', ascending=False)
 
-pd.DataFrame(gdf['age'].mean())           # DataFrame
+# agg : 빠른 수치 연산을 목적으로 하는 apply()의 특수 형태로 MultiColumns 형태로 반환 -----
+gdf['age'].agg(['min', 'max'])
+gdf[['age', 'fare']].agg(['min', 'max'])
+gdf.agg({'fare': ['min', 'max'], 'age': 'mean'})
 
-gdf[['age']].mean().reset_index()         # 인덱스를 열로 이동(계층 라벨이 모두 채워짐)
-gdf[['age','fare']].mean().reset_index().sort_values('fare', ascending=False)   # 순서정렬까지 한번에
-
-# >>> agg 메서드 : 빠른 수치 연산을 목적으로 하는 apply()의 특수 형태로 MultiColumns 형태로 반환 -----
-
-gdf['age'].agg(['min', 'max'])                    # 단일 열에 다수의 함수를 매핑
-gdf[['age', 'fare']].agg(['min', 'max'])          # 다수 열에 다수의 함수를 매핑(멀티 컬럼으로 결과 반환)
-gdf.agg({'fare': ['min', 'max'], 'age': 'mean'})  # 각 열별로 각각의 함수 매핑
-
-# >>> apply 메서드 : 그룹별 & 열별로 함수 매핑 -----
-
+# apply : 그룹별 & 열별로 함수 매핑 -----
 def func(x):
     d = {}
     d['fare_mean'] = x['fare'].mean()
@@ -1246,16 +1242,14 @@ def func(x):
     d['age_min'] = x['age'].min()
     return pd.Series(d)
 
-df[(df['who'] == 'woman') & (df['class'] == 'Third')]
-
 gdf.apply(func)
 gdf.apply(lambda x: x.describe())
 gdf.apply(lambda x: len(x) >= 90)
 
-gdf['age'].apply(lambda x: x.fillna(x.mean()))                           # 평균값 대체
-gdf['embark_town'].apply(lambda x: x.fillna(x.value_counts().idxmax()))  # 최빈값 대체
+gdf['age'].apply(lambda x: x.fillna(x.mean()))
+gdf['embark_town'].apply(lambda x: x.fillna(x.value_counts().idxmax()))
 
-# >>> transform 메서드 : 원본 데이터프레임 형상을 유지하며 결과만을 개별 원소값으로 대체 -----
+# >>> transform 메서드 : 원본 데이터프레임의 개별 요소에 결과를 대체 -----
 
 gdf['age'].transform(np.mean)
 
@@ -1272,50 +1266,50 @@ df = titanic.loc[:, ['age', 'fare', 'class', 'who', 'embark_town', 'alive']]
 
 # >>> 멀티 라벨 -----
 
-# 멀티 라벨 설정
+# 멀티 라벨 설정 -----
 df.columns = pd.MultiIndex.from_arrays([['num','num','object','object','object','object'], list(df.columns)], names=("col1", "col2"))
 mdf = df.set_index([('object','class'), ('object','who')], drop = True)
 print(mdf)
 
-# 멀티 라벨명 변경
+# 멀티 라벨명 변경 -----
 mdf.rename_axis(['분류1', '분류2'], axis=1)    # 컬럼라벨구분 변경
 mdf.rename_axis(['선실등급', '성별'], axis=0)  # 인덱스라벨구분 변경
 
-# 멀티 라벨 수준 변경
+# 멀티 라벨 수준 변경 -----
 mdf.reorder_levels(['col2', 'col1'], axis=1)
 mdf.reorder_levels([1, 0], axis=0)
 
-# 멀티 라벨 정렬
+# 멀티 라벨 정렬 -----
 mdf.sort_index(level=0, axis=1, ascending=False)
 mdf.sort_index(level=1, axis=1)
 
-# 멀티 라벨 groupby() 합산
+# 멀티 라벨 groupby() 합산 -----
 mdf.groupby(level='col1', axis=1).sum()
 mdf.groupby(level=1, axis=0).apply('sum')
 
-# 멀티 라벨 삭제
+# 멀티 라벨 삭제 -----
 mdf.droplevel(1, axis=0)   # (level, axis=0)
 
 # >>> 멀티 인덱스 행 or 열 삭제 -----
 
-# 멀티 인덱스 행 삭제
+# 멀티 인덱스 행 삭제 -----
 mdf.drop(['woman'], axis = 0, level = 1, inplace = False)
 mdf.drop(mdf.index[1], axis = 0, inplace = False)
 
-# 멀티 인덱스 열 삭제
+# 멀티 인덱스 열 삭제 -----
 mdf.drop(['fare'], axis = 1, level = 1, inplace = False)
 mdf.drop(mdf.columns[1], axis = 1, inplace = False)
 
 # >>> xs 인덱서 -----
 
-# 행: axis=0
+# 행: axis=0 -----
 mdf.xs('First')
 mdf.xs('man', level=1, drop_level=True)
 mdf.xs('man', level=1, drop_level=False)
 mdf.xs(('man', slice(None)), level=[1, 0])
 mdf.xs(('First', 'man'))
 
-# 열: axis=1
+# 열: axis=1 -----
 mdf.xs('object', axis=1)
 mdf.xs('fare', level=1, axis=1)
 mdf.xs(('num', 'age'), axis=1)
@@ -1331,7 +1325,7 @@ import pandas as pd
 import seaborn as sns
 
 titanic = sns.load_dataset('titanic')
-df = titanic.loc[:, ['age', 'fare', 'class', 'who', 'embark_town', 'alive']]
+df = titanic[['age', 'fare', 'class', 'who', 'embark_town', 'alive']]
 
 # >>> 피벗테이블 생성 -----
 
@@ -1350,14 +1344,14 @@ print(pv_df)
 
 # >>> xs 인덱서 -----
 
-# 행: axis=0
+# 행: axis=0 -----
 pv_df.xs('First')
 pv_df.xs('man', level=1, drop_level=True)
 pv_df.xs('man', level=1, drop_level=False)
 pv_df.xs(('man', slice(None)), level=[1, 0])
 pv_df.xs(('First', 'man'))
 
-# 열: axis=1
+# 열: axis=1 -----
 pv_df.xs('max', axis=1)
 pv_df.xs('fare', level=1, axis=1)
 pv_df.xs(('max', 'age'), axis=1)
@@ -1383,7 +1377,7 @@ pd.date_range(start='2019-01-01',   # 날짜 범위의 시작
               freq='3MS',           # 시간 간격 (MS: 월의 시작일)
               tz='Asia/Seoul')      # 시간대(timezone)
 
-# 텍스트를 Timestamp로 변환
+# 텍스트를 Timestamp로 변환 -----
 tsp = pd.to_datetime(['200101', '220104', '241210'], format='%y%m%d')
 
 # >>> Period 생성 -----
@@ -1393,7 +1387,7 @@ pd.period_range(start='2019-01-01',  # 날짜 범위의 시작
                 periods=3,           # 생성할 Period 개수
                 freq='H')            # 기간의 길이 (H: 시간)
 
-# Timestamp 를 Period 객체로 변환(D, B, W, W-MON, M, MS, Q, QS, A, AS, H, T, S)
+# Timestamp 를 Period 객체로 변환(D, B, W, W-MON, M, MS, Q, QS, A, AS, H, T, S) -----
 tsp.to_period(freq='A')
 tsp.to_period(freq='M')
 tsp.to_period(freq='D')
@@ -1403,10 +1397,10 @@ tsp.to_period(freq='D')
 tdf = pd.DataFrame(np.random.randn(100), columns=['value'],
                    index=pd.date_range('2018-1-1', periods=100, freq='D'))
 
-# 업-샘플링은 시간 간격이 좁아지면서 빈 데이터 원소에 Nan 이 추가되므로 채워야 함(ffill, bfill)
+# 업-샘플링은 시간 간격이 좁아지면서 빈 데이터 요소에 Nan 이 추가되므로 채워야 함(ffill, bfill) -----
 tdf['value'].resample('10H').ffill()
 
-# 다운-샘플링은 시간 간격이 넓어지므로 기간의 대표값을 구해야 함
+# 다운-샘플링은 시간 간격이 넓어지므로 기간의 대표값을 구해야 함 -----
 tdf['value'].resample('M').first()
 
 # >>> 기간의 시고저종(open, high, low, close) -----
@@ -1416,7 +1410,7 @@ tdf.head(7)
 
 # >>> 기간 집계 함수 -----
 
-# resample(): 등간격 데이터 집계
+# resample(): 등간격 데이터 집계 -----
 tdf['value'].resample('6M').sum()
 tdf['value'].resample('6M').sum().cumsum()
 tdf['value'].resample('6M').max()
@@ -1428,16 +1422,16 @@ tdf['value'].resample('6M').last()
 tdf['value'].resample('6M').var().fillna(0)
 np.sqrt(tdf['value'].resample('6M').var())  # 표준편차
 
-# 선형 기간 집계
+# 선형 기간 집계 -----
 tdf['value'].resample('M').count()
 
-# 순환 기간 집계 (시간, 요일 등 반복개념)
+# 순환 기간 집계 (시간, 요일 등 반복개념) -----
 tdf.index.day_name().value_counts()
 tdf.index.day.value_counts().sort_index()
 
 # >>> dt 활용 -----
 
-# 날짜 데이터 분리
+# 날짜 데이터 분리 -----
 pd.DataFrame(tdf.index)[0].dt.date              # YYYY-MM-DD(문자)
 pd.DataFrame(tdf.index)[0].dt.year              # 연(4자리숫자)
 pd.DataFrame(tdf.index)[0].dt.month             # 월(숫자)
@@ -1455,17 +1449,17 @@ pd.DataFrame(tdf.index)[0].dt.dayofyear         # 연 기준 몇일째(숫자)
 pd.DataFrame(tdf.index)[0].dt.days_in_month     # 월 일수(숫자) (=daysinmonth)
 pd.DataFrame(tdf.index)[0].dt.is_leap_year      # 윤년 여부
 
-# Period 객체로 만들어서 '년, 년-월' 분리
+# Period 객체로 만들어서 '년, 년-월' 분리 -----
 pd.DataFrame(tdf.index)[0].dt.to_period(freq='A')
 pd.DataFrame(tdf.index)[0].dt.to_period(freq='M')
 
-# 문자열 변환
+# 문자열 변환 -----
 pd.DataFrame(tdf.index)[0].dt.strftime("%Y년 %m월 %d일")
 
 # >>> 시계열 인덱싱 -----
 
-tdf['2018-03-28':'2018-04-05']
 tdf.loc['2018']
+tdf.loc['2018-03-28':'2018-04-05']
 tdf.loc['2018-03':]
 
 # >>> 시간대 설정 -----
@@ -1480,7 +1474,7 @@ ts_UTC = ts_seoul.tz_convert('UTC')
 
 # >>> csv -----
 
-# 읽기
+# 읽기 -----
 df_csv = pd.read_csv("./stats.csv",
                      # index_col=0,          # 행 인덱스가 되는 열 지정(None..)
                      # header=0,             # 열명으로 사용할 행 지정(None..)
@@ -1493,7 +1487,7 @@ df_csv = pd.read_csv("./stats.csv",
                      # sep=",",              # txt파일은 "\t"
                      )
 
-# 쓰기
+# 쓰기 -----
 df.to_csv("./sample.csv",
           # columns = ['날짜', '국적', '계'],  # 저장할 열 지정
           # index = False,                     # 행 인덱스 삭제
@@ -1503,14 +1497,14 @@ df.to_csv("./sample.csv",
 
 # >>> excel -----
 
-# 읽기
+# 읽기 -----
 df_xl = pd.read_excel('./stats.xlsx',
                       # sheet_major='prod',
                       # index_col="A",       # 행 인덱스가 되는 열 지정(숫자, 열명, None..)
                       # usecols='B:D, H, j',
                       )
 
-# 쓰기
+# 쓰기 -----
 pd.DataFrame(df_csv, index=range(1, len(df_csv) + 1), columns=['column_name']) \
     .to_excel('./sample.xlsx ')
 
@@ -1552,8 +1546,8 @@ xl.Quit()
 # =====================
 
 # 옵션 확인: pd.get_option('~~')
-# 옵션 설정: pd.set_option('~~')
 # 옵션 초기화: pd.reset_option('~~')
+# 옵션 설정: pd.set_option('~~')
 pd.set_option('display.max_rows', None)                  # 행 개수
 pd.set_option('display.max_columns', 10)                 # 열 개수
 pd.set_option('display.max_colwidth', 20)                # 열 너비

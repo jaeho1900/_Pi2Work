@@ -61,20 +61,90 @@ print('열 번호 16에 해당하는 엑셀 열 이름', get_column_letter(index
 print('열 이름 "AB"에 해당하는 열 번호', column_index_from_string('AB'))  # 28
 
 
+>>> 열 단위로 데이터 입력하기
+엑셀에 열 단위로 한 번에 데이터를 입력하는 방법을 알아보겠습니다. 열 단위로 데이터를 입력하는 방법은 행 단위로 입력할 수 있는 append와 같은 함수는 없습니다. 따라서 열 단위로 입력할 때는 주로 셀에 하나씩 접근해서 입력하게 하는 방법을 사용합니다. 여기서는 열 단위로 입력할 수 있는 몇 가지 방법을 소개합니다.
 
 
+1) 'cell' 메서드 사용
 
-# SELECT building.*, codetable."short_지명"
-# FROM building
-# LEFT JOIN codetable
-# ON building."시군구_코드" = codetable."시군구_코드"
+from openpyxl import Workbook
 
+wb = Workbook()
+ws = wb.active
+ws.title = "수강생_정보"
 
+# 열로 입력할 데이터를 리스트로 만들어 'data'에 저장
+data = [ '이철수', '김미소', '최학준' ]
 
+# for문으로 'A'열의 각 셀에 순서대로 접근하여 데이터를 입력
+for i, value in enumerate(data):
+    ws.cell(row=i+1, column=1, value=value)
 
+wb.save("수강생_리스트.xlsx")
 
+2) 셀 주소 지정 방식 활용
 
+from openpyxl import Workbook
+from openpyxl.utils import get_column_letter
 
+wb = Workbook()
+ws = wb.active
+ws.title = "수강생_정보"
+
+# 열로 입력할 데이터를 리스트로 만들어 'data'에 저장
+data = [ '이철수', '김미소', '최학준' ]
+
+# 입력할 열의 인덱스 번호를 열이름으로 변환하여 'column_name'에 저장
+column_name = get_column_letter(2)
+
+for i, value in enumerate(data):
+    # f-string을 사용하여 셀 주소를 지정하고 값을 할당
+    ws[f"{column_name}{i+1}"] = value
+
+wb.save("수강생_리스트.xlsx")
+
+3) iter_cols() 함수 사용
+
+from openpyxl import Workbook
+
+wb = Workbook()
+ws = wb.active
+ws.title = "수강생_정보"
+
+# 열로 입력할 데이터를 리스트로 만들어 'data'에 저장
+data = [ '이철수', '김미소', '최학준' ]
+
+# C열의 셀을 순회할 수 있는 iterator를 가져오는데, 여기서 최대 행을 'data'의 원소 갯수로 지정
+col_cells = ws.iter_cols(min_col=3, max_col=3, max_row=len(data))    # 열 단위로 셀을 순회, min_col(시작 열의 인덱스 번호)', 'max_col(종료 열의 인덱스 번호) , max_row 행의 범위도 지정
+
+# 이중for문으로 C열의 각 셀을 순환하며 'data' 리스트의 원소를 차례대로 입력
+for col in col_cells:
+    for i, cell in enumerate(col):
+        cell.value = data[i]
+
+wb.save("수강생_리스트.xlsx")
+
+4) 행과 열의 인덱스 번호로 데이터 입력
+
+from openpyxl import Workbook
+
+wb = Workbook()
+ws = wb.active
+ws.title = "수강생_정보"
+
+# A열과 B열에 입력할 데이터를 이중리스트로 만들어 'data'에 저장
+data = [
+    [ '이철수', '김미소', '최학준' ], [ '수학', '영어', '컴퓨터' ]
+]
+
+# 이중for문으로 열의 인덱스 번호와 행의 인덱스 번호로 셀에 데이터를 입력
+for col_idx, col_data in enumerate(data, start=1): 
+    for row_idx, row_data in enumerate(col_data):
+        ws.cell(row=row_idx+1, column=col_idx, value=row_data)
+
+wb.save("수강생_리스트.xlsx")
+
+팁.데이터를 입력할 열과 열 사이에 공백을 넣고자 한다면, 이중리스트에서 각 리스트 사이에 원하는 공백 열의 갯수만큼 빈 리스트 '[]' 넣어주면 그만큼 열을 건너뛰고 그 다음 열에 데이터를 입력합니다.
 
 
 
