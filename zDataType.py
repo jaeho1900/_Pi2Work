@@ -66,7 +66,7 @@ lst[3::2]
 lst1 = [1, 2, 3]; lst2 = [1, 2, 3]; lst3 = [1, 2, 3]
 lst4 = ('lion', 'tiger', 'hippo')
 
-# insert(삽입위치인덱스, 요소) : 지정된 인덱스 위치에 요소를 삽입 ----- 
+# insert(삽입위치인덱스, 요소) : 지정된 인덱스 위치에 요소를 삽입 -----
 lst1.insert(0, [10, 20])       # [[10, 20], 1, 2, 3]
 lst1.insert(-1, 100)           # [[10, 20], 1, 2, 100, 3]          -2번째 위치에 추가
 lst1.insert(len(lst1), 'end')  # [[10, 20], 1, 2, 100, 3, 'end']   -1번째 위치에 추가
@@ -775,6 +775,7 @@ df.index                    # 인덱스명
 df.columns                  # 컬럼명
 df.dtypes                   # 자료형
 df.isna().sum()             # 결측값
+df.notna().sum()            # 결측값
 df.describe(include='all')  # 통계정보(옵션 all은 문자형자료의 원솟수, 카테고리수, 최빈값, 최빈값사용빈도수 제공)
 df['age'].idxmax()          # 최대값을 갖는 행의 index 반환
 df['age'].idxmin()          # 최소값을 갖는 행의 index 반환
@@ -798,12 +799,12 @@ df['man'] = 10  # 컬럼의 모든 요소에 동일 값을 추가
 
 # >>> 인덱스 또는 컬럼 삭제 -----
 
-# 인덱스 (axis=0) -----
+# 인덱스 삭제 (axis=0) -----
 df.drop([1, 6, 2], inplace=False)   # 다수의 인덱스 삭제, 범위(:) 지정불가
 df.drop(df.index[[1, 4]])           # 다수의 인덱스 삭제, 범위(:) 지정불가
 df.drop(df.index[1:4])              # 하나 또는 범위(:)를 지정, 다수 인덱스 사용불가
 
-# 컬럼 (axis=1) -----
+# 컬럼 삭제 (axis=1) -----
 df.drop(['who', 'man'], axis=1, inplace=False)  # 다수의 컬럼 삭제, 범위(:) 지정불가
 df.drop(df.columns[[1, 4, 3]], axis=1)          # 다수의 컬럼 삭제, 범위(:) 지정불가
 df.drop(df.columns[3:], axis=1)                 # 하나 또는 범위(:)를 지정, 다수 컬럼 사용불가
@@ -860,13 +861,6 @@ df['age'].fillna(method='ffill', inplace=False)
 # 보간 대체(linear 선형보간, time 시간보간: 시간형 인덱스이어야 함) -----
 df.age.interpolate(method='linear')
 
-# S.where(), DF.where(): 조건이 true면 원래값 유지, false면 명시된 값 또는 NaN으로 대체 -----
-df['age'].where(df['alive'] == 'yes', df['fare'] + 10, axis=0)
-
-# np.where(조건문, true 일때 값, false 일때 값) 대체 -----
-np.where(pd.notnull(df['age']), df['age'], df['fare'] + 10)
-np.where(df['age'] > 30, "Big", "Small")
-
 # >>> 카테고리화 -----
 
 # 컬럼 자료 확인 -----
@@ -904,23 +898,6 @@ df['fare_condition'] = np.where(df['age'] > 30, "Big", "Small")
 pd.get_dummies(df['fare_cnt'])
 pd.get_dummies(df['fare_bin'])
 pd.get_dummies(df['fare_condition'])
-
-# >>> 정규화(Normalization) -----
-
-# 정규화 (Normalization) -----
-# [산출]   데이터에서 열최솟값을 뺀 값을 분자로 하고, 열최댓값-열최솟값을 분모로 산출
-# [스케일] 데이터의 스케일을 0과 1 사이로 조정
-# [유용성] 데이터가 정규 분포를 따르지 않거나, 거리 기반 알고리즘(예: k-최근접 이웃, k-평균 군집화)에 적합
-
-min_x = df['fare'] - df['fare'].min()
-min_max = df['fare'].max() - df['fare'].min()
-df['fare_normalization'] = min_x / min_max
-df['fare_normalization'].describe()
-
-# 표준화 (Standardization) -----
-# [산출 ]  데이터에서 평균을 빼고, 그 결과를 표준편차로 나누어 산출
-# [스케일] 데이터의 평균을 0으로, 표준편차를 1로 조정
-# [유용성] 데이터가 정규 분포를 따르거나, 머신 러닝 알고리즘(예: 선형 회귀, 로지스틱 회귀, 서포트 벡터 머신)에 적합
 
 # >>> 데이터프레임 병합 -----
 
@@ -1032,7 +1009,7 @@ print(df, view, sep='\n\n')
 
 
 # --------------------
-# df.str 메서드 
+# df.str 메서드
 # --------------------
 
 import pandas as pd
@@ -1047,7 +1024,7 @@ df['embark_town'] = df['embark_town'].str.replace('o', ' ')
 # man 들어간 데이터만 필터링
 df[df['who'].str.contains('man')].head()
 
-# 정규표현식 
+# 정규표현식
 df[df['class'].str.contains(r'.+ir.+', regex=True)].tail()
 
 # 서울로 시작하는 데이터만 필터링
@@ -1141,54 +1118,79 @@ df['embark_town'].str.zfill(width=20).head(10)
 # map(), apply(), pipe() 메서드
 # --------------------
 
-def summation(x):
-    return x + 100
+# map()      : 시리즈 또는 데이터프레임의 개별 원소에 접근, key 기준으로 시리즈간 매핑
+# apply()    : 시리즈 또는 데이터프레임 객체에 함수 적용
+# pipe()     : 데이터프레임 객체에 함수 적용
 
-df1 = pd.DataFrame({"salary":[200,300,400,500], "bonus":[100,200,300,400], "incentive":[80,20,1000,50]})
-df2 = pd.DataFrame({"salary":['200원','300원','400원','500원'], "bonus":['100원','200원','300원','400원']})
-series1 = pd.Series(index = ["철수","영호","민수"], data = ["빨간공","파란공","노란공"])
-series2 = pd.Series(index = ["파란공","노란공","빨간공"], data = ["2만원","3만원","4만원"])
+import pandas as pd
 
-# '요소별'로 메서드 적용 : 시리즈
-df1["salary"].map(summation)
-df1["salary"].apply(summation)
+srs = pd.Series(['빨간공', '파란공', '노란공', '2만원','3만원','4만원'])
 
-# '요소별'로 메서드 적용 : 데이터프레임
-df2.map(lambda x : x[:3])    # 모든 요소 값에서 3글자 추출('원' 삭제)
+df = pd.DataFrame({'salary':[200,300,400,500], 'bonus':['100원','200원','300원','400원'], 'incentive':[80,20,1000,50]})
 
-# '행별 또는 열별'로 메서드 적용
-df2.apply(lambda x : x[:3])  # 1열의 3개요소와 2열의 3개요소를 반환
+
+dict_num = {'형진':10025,'배민':12055,'진수':20336,'철수':55633,'창호':10800}
+df_name = pd.DataFrame({'name':['철수','영희','진수','형진','순정','정미'],'class':['영어','국어','수학','영어','수학','국어'],'score':[55,77,100,95,80,89]})
+
+# >>> map() : 시리즈의 각 값을 다른 값으로 대체 처리에 사용 -----
+
+# key를 기준으로 시리즈간 매핑, 누락된 값은 NaN 처리
+df_name['no'] = df_name['name'].map(dict_num)
+
+# 시리즈 요소별 매핑
+df_name['cap'] = df_name['class'].map({'영어':'문과', '국어':'문과', '수학':'이과'})
+df_name['grade'] = df_name['score'].map(lambda x: 'A' if x>80 else 'B')
+
+# 데이터프레임 요소별 매핑
+df_name[['grade','비고']] = df_name[['grade','비고']].map(lambda x: x.lower())
+
+# >>> apply() : 여러 행 또는 열에 복잡한 처리에 사용 -----
+
+# 데이터프레임에 적용
+df_name['비고'] = df_name.apply(lambda x: f"{x['name']}의 {x['class']} 등급은 {x['grade']}입니다", axis=1)
+df_name['덧셈'] = df_name.apply(lambda x: x['score'] + x['no'], axis=1)
+df_name.apply(lambda x: x.upper() if isinstance(x, str) else x)
+
+# 시리즈에 적용
+df_name['장학금'] = df_name['score'].apply(lambda x: '대상' if x >= 90 else '비대상')
+
+
+srs.map(lambda x: x[:-2])
+df.map(lambda x: x[:-2])
+
+
+df1['salary'].map(summation)
+
+df['salary'].apply(summation)
+
+df.apply(summation)
+
+df2.map(lambda x : x[:3])
+
+df2.apply(lambda x : x[:3])
 
 df1.apply(lambda x: [x[x > 200].sum(), len(x[x > 200])])   # 열별로 조건을 만족하는 요소의 합과 갯수 반환
+
 df1.apply(lambda x: pd.Series([x[x > 200].sum(), len(x[x > 200])], index=['sum', 'count']))
 
-# >>> 데이터프레임 객체에 함수 적용 -----
-
 df2.pipe(lambda x: x.dropna(axis=0)).pipe(lambda x: x.sum())
-
-# >>> 데이터프레임 요소에 함수 적용 -----
 
 df2.applymap(lambda x: x[:-1])
 
 
-# INPUT	USE	RETURN
+# >>> transform 메서드 : 원본 데이터프레임의 개별 요소에 결과를 대체 -----
 
-# 시리즈의 개별 원소의 값을 변경할 때 사용 : map : 시리즈
-
-# 시리즈 또는 데이터프레임 객체에 함수 적용 : apply	: 시리즈, 데이터프레임
-
-# 데이터프레임의 개별 원소에 함수 적용  : 	applymap	: 데이터프레임
-
-# 데이터프레임 객체에 함수 적용	: pipe	:단일 값, 시리즈, 데이터프레임
+gdf['age'].transform(np.mean)
 
 
+# >>> 조건에 따른 결과 반환 -----
 
+# S.where(), DF.where(): 조건이 true면 원래값 유지, false면 명시된 값 또는 NaN으로 대체 -----
+df['age'].where(df['alive'] == 'yes', df['fare'] + 10, axis=0)
 
-
-
-
-
-
+# np.where(조건문, true 일때 값, false 일때 값) 대체 -----
+np.where(pd.notna(df['age']), df['age'], df['fare'] + 10)
+np.where(df['age'] > 30, "Big", "Small")
 
 
 # --------------------
@@ -1276,9 +1278,33 @@ gdf.apply(lambda x: len(x) >= 90)
 gdf['age'].apply(lambda x: x.fillna(x.mean()))
 gdf['embark_town'].apply(lambda x: x.fillna(x.value_counts().idxmax()))
 
-# >>> transform 메서드 : 원본 데이터프레임의 개별 요소에 결과를 대체 -----
+# >>> 정규화(Normalization) -----
 
-gdf['age'].transform(np.mean)
+# 정규화 (Normalization) -----
+# [산출]   데이터에서 열최솟값을 뺀 값을 분자로 하고, 열최댓값-열최솟값을 분모로 산출
+# [스케일] 데이터의 스케일을 0과 1 사이로 조정
+# [유용성] 데이터가 정규 분포를 따르지 않거나, 거리 기반 알고리즘(예: k-최근접 이웃, k-평균 군집화)에 적합
+min_x = df['fare'] - df['fare'].min()
+min_max = df['fare'].max() - df['fare'].min()
+df['fare_normalization'] = min_x / min_max
+df['fare_normalization'].describe()
+sns.displot(df['fare_normalization'], bins=10, element='step')
+
+# >>> 표준화 (Standardization) -----
+
+# [산출 ]  데이터에서 평균을 빼고, 그 결과를 표준편차로 나누어 산출
+# [스케일] 데이터의 평균을 0으로, 표준편차를 1로 조정
+# [유용성] 데이터가 정규 분포를 따르거나, 머신 러닝 알고리즘(예: 선형 회귀, 로지스틱 회귀, 서포트 벡터 머신)에 적합
+
+# 표준화 산식 이용
+df['fare_std'] = (df['fare'] - df['fare'].mean()) / df['fare'].std(ddof=0)  # 자유도 0이면 모표준편차, 1(default)이면 표본표준편차
+df['fare_std'].describe()
+sns.displot(df['fare_std'], bins=10, element='step')
+
+# numpy를 이용한 표준화 -----
+df['fare_std'] = (df['fare'] - np.mean(df['fare'])) / np.std(df['fare'])    # default 모표준편차
+df['fare_std'].describe()
+sns.displot(df['fare_std'], bins=10, element='step')
 
 
 # --------------------

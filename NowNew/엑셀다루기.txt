@@ -147,19 +147,52 @@ wb.save("수강생_리스트.xlsx")
 팁.데이터를 입력할 열과 열 사이에 공백을 넣고자 한다면, 이중리스트에서 각 리스트 사이에 원하는 공백 열의 갯수만큼 빈 리스트 '[]' 넣어주면 그만큼 열을 건너뛰고 그 다음 열에 데이터를 입력합니다.
 
 
+생성된 엑셀 파일 불러오기
+엑셀 파일을 불러와 작업을 한 후 저장할 때는 기존 파일명이 아닌 다른 이름으로 저장하여 기존 엑셀 파일의 이미지나 차트가 지워지지 않도록 유의해야합니다.
+
+# openpyxl라이브러리에서 load_workbook을 import 
+from openpyxl import load_workbook
+
+# '월별구매고객리스트.xlsx' 엑셀 파일 불러오기
+wb = load_workbook(filename='월별구매고객리스트.xlsx')
+
+# 첫 번째 시트 불러오기
+ws = wb.active
+
+## 지정 시트 불러오기
+#ws = wb['10월']                     
+
+# 시트의 제목을 출력
+print(ws.title)
 
 
+>>> 시트이름을 모를때 확인하는 방법
 
+# 시트 이름들을 가져오기
+sheet_names = wb.sheetnames
 
+# 시트 이름들 출력
+print(sheet_names)
 
+>>> 시트 전체 데이터 가져오기
+# 전체 데이터를 순회하며 읽기
+for row in ws.rows:
+    row_values = [cell.value for cell in row]
+    print(row_values)
 
+>>> 특정 행을 기준으로 데이터 가져오기
+# rows()로 데이터 가져오기
+# 첫번째(빈행)와 두번째 행(제목줄행)을 제외하고 나머지 행을 리스트로 변환
+new_rows = list(ws.rows)[2:]
+# 1)나머지 행을 순회하며 읽기
+for row in new_rows:
+    row_values = [cell.value for cell in row]
+    print(row_values)
 
-
-
-
-
-
-
+# 2)iter_rows로 데이터 가져오기
+# 3번째 행부터 마지막 행까지를 순회하며 값을 읽기 (min_row =3)
+for row in ws.iter_rows(min_row=3, values_only=True):   # values_only는 각 셀 객체 대신 셀의 값만 반환할지 여부를 설정할 수 있는 매개변수
+    print(row)
 
 
 
