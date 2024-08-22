@@ -719,15 +719,15 @@ pd.DataFrame(df, index=[2, 3, 4], columns=['food', 'man', 'quantity'])
 # 라벨 관리
 # --------------------
 
-# 일괄 라벨명 생성 또는 덮어쓰기 -----
+# 일괄 라벨 생성 또는 덮어쓰기 -----
 df.index = ['a', 'b', 'c', 'd']
 df.columns = ['food', 'year', 'quantity']
 
-# 부분 라벨명 변경 -----
+# 부분 라벨 변경 -----
 df.rename(index={'a': 'no_1', 'b': 'no_2'}, inplace=False)
 df.rename(columns={'food': 'Fruit'}, inplace=False)
 
-# 라벨 제목 설정 -----
+# 라벨 타이틀 설정 -----
 df.index.name = 'No.'
 df.columns.name = 'multi1'
 
@@ -781,17 +781,43 @@ df['age'].idxmax()          # 최대값을 갖는 행의 index 반환
 df['age'].idxmin()          # 최소값을 갖는 행의 index 반환
 df['embark_town'].value_counts()    # 시리즈의 유일값별 소계
 
-# >>> 자료형 변경 -----
+# >>> 데이터프레임 병합 -----
 
-# 형 변경을 위해서는 Nan, 문자, 수치간 변경제약사항 전처리 필요
-df['age'].replace(np.nan, 0).astype('int')
-df.replace(np.nan, 0).astype({'who':str, 'age':int})
+df1 = pd.DataFrame({'lkey': ['foo', 'bar', 'all', 'foo'],
+                    'value': [1, 2, 3, 5]}, index=[2018, 2019, 2020, 2021])
+df2 = pd.DataFrame({'rkey': ['foo', 'bar', 'foo', 'sel'],
+                    'value': [6, 3, 2, 5],
+                    'year': [1999, 2021, 2018, 2019]})
 
-# >>> 수치 자료형 양식 변경 -----
+# 병합 -----
+# key  : 열명(on, left_on, right_on) 또는 인덱스(left_index, right_index)
+# 방식: inner, outer, left, right
+df1.merge(df2)                                     # 공통된 기준으로 교집합으로 병합 (예제에선 value)
+df1.merge(df2, left_index=True, right_on='year')
+df1.merge(df2, left_on=['lkey'], right_on=['rkey'], how='inner')  # 병합되는 데이터프레임은 중복 가능
+df1.merge(df2, left_on=['lkey'], right_on=['rkey'], how='outer')  # 양쪽 df에서 NaN 발생 가능
+df1.merge(df2, left_on=['lkey'], right_on=['rkey'], how='left')   # 오른쪽 df에서 NaN 발생 가능
+df1.merge(df2, left_on=['lkey'], right_on=['rkey'], how='right')  # 왼쪽 df에서 NaN 발생 가능
 
-df['fare'] = df['fare'].apply(lambda x: format(x, ','))              # 천단위 콤마 추가 (object로 자동 형변경)
-df['fare'] = df['fare'].str.replace(',', '').astype('float32')       # 천단위 콤마 삭제 (자동형변경 안됨)
-df['fare'].astype('float32').apply(lambda x: '{:,.2f}'.format(x))    # 소수점 자릿수 변경
+# 연결 -----
+df1 = pd.DataFrame({'A': [1, 2, 3],
+                    'B': [4, 5, 6],
+                    'C': [7, 8, 9]}, index=[0,1,10])
+df2 = pd.DataFrame({'A': [4, 5, 6],
+                    'D': [10, 11, 12],
+                    'E': [13, 14, 15]}, index=[0,2,10])
+
+# join='outer'으로 설정하여 모든 열을 유지
+pd.concat([df1, df2])   # 행기준(axis=0), 합집합(join='outer'), 새로운 정수인덱스(ignore_index=False)
+
+# join='outer'으로 설정하여 모든 행을 유지
+pd.concat([df1, df2], axis=1, join='outer')
+
+# join='inner'으로 설정하면 공통된 행만 유지
+pd.concat([df1, df2], axis=1, join='inner')
+
+# 행과 열 바꾸기(Transpose) -----
+df1.T
 
 # >>> 컬럼 추가 -----
 
@@ -821,13 +847,6 @@ df['class'].duplicated()
 # 중복값 삭제 -----
 df.drop_duplicates()
 df.drop_duplicates(subset=['class'], keep='last')
-
-# >>> Whitespace 처리 -----
-
-df[df['컬럼명'] == ' ']
-df['컬럼명'] = df['컬럼명'].replace(' ', None)
-df.dropna(inplace=True)
-df.reset_index(drop=True, inplace=True)
 
 # >>> 결측값 처리 -----
 
@@ -860,6 +879,25 @@ df['age'].fillna(method='ffill', inplace=False)
 
 # 보간 대체(linear 선형보간, time 시간보간: 시간형 인덱스이어야 함) -----
 df.age.interpolate(method='linear')
+
+# >>> 자료형 변경 -----
+
+# 형 변경을 위해서는 Nan, 문자, 수치간 변경제약사항 전처리 필요
+df['age'].replace(np.nan, 0).astype('int')
+df.replace(np.nan, 0).astype({'who':str, 'age':int})
+
+# >>> 수치 자료형 포멧 변경 -----
+
+df['fare'] = df['fare'].apply(lambda x: format(x, ','))              # 천단위 콤마 추가 (object로 자동 형변경)
+df['fare'] = df['fare'].str.replace(',', '').astype('float32')       # 천단위 콤마 삭제 (자동형변경 안됨)
+df['fare'].astype('float32').apply(lambda x: '{:,.2f}'.format(x))    # 소수점 자릿수 변경
+
+# >>> Whitespace 처리 -----
+
+df[df['컬럼명'] == ' ']
+df['컬럼명'] = df['컬럼명'].replace(' ', None)
+df.dropna(inplace=True)
+df.reset_index(drop=True, inplace=True)
 
 # >>> 카테고리화 -----
 
@@ -898,44 +936,6 @@ df['fare_condition'] = np.where(df['age'] > 30, "Big", "Small")
 pd.get_dummies(df['fare_cnt'])
 pd.get_dummies(df['fare_bin'])
 pd.get_dummies(df['fare_condition'])
-
-# >>> 데이터프레임 병합 -----
-
-df1 = pd.DataFrame({'lkey': ['foo', 'bar', 'all', 'foo'],
-                    'value': [1, 2, 3, 5]}, index=[2018, 2019, 2020, 2021])
-df2 = pd.DataFrame({'rkey': ['foo', 'bar', 'foo', 'sel'],
-                    'value': [6, 3, 2, 5],
-                    'year': [1999, 2021, 2018, 2019]})
-
-# 병합 -----
-# key  : 열명(on, left_on, right_on) 또는 인덱스(left_index, right_index)
-# 방식: inner, outer, left, right
-df1.merge(df2)                                     # 공통된 기준으로 교집합으로 병합 (예제에선 value)
-df1.merge(df2, left_index=True, right_on='year')
-df1.merge(df2, left_on=['lkey'], right_on=['rkey'], how='inner')  # 병합되는 데이터프레임은 중복 가능
-df1.merge(df2, left_on=['lkey'], right_on=['rkey'], how='outer')  # 양쪽 df에서 NaN 발생 가능
-df1.merge(df2, left_on=['lkey'], right_on=['rkey'], how='left')   # 오른쪽 df에서 NaN 발생 가능
-df1.merge(df2, left_on=['lkey'], right_on=['rkey'], how='right')  # 왼쪽 df에서 NaN 발생 가능
-
-# 연결 -----
-df1 = pd.DataFrame({'A': [1, 2, 3],
-                    'B': [4, 5, 6],
-                    'C': [7, 8, 9]}, index=[0,1,10])
-df2 = pd.DataFrame({'A': [4, 5, 6],
-                    'D': [10, 11, 12],
-                    'E': [13, 14, 15]}, index=[0,2,10])
-
-# join='outer'으로 설정하여 모든 열을 유지
-pd.concat([df1, df2])   # 행기준(axis=0), 합집합(join='outer'), 새로운 정수인덱스(ignore_index=False)
-
-# join='outer'으로 설정하여 모든 행을 유지
-pd.concat([df1, df2], axis=1, join='outer')
-
-# join='inner'으로 설정하면 공통된 행만 유지
-pd.concat([df1, df2], axis=1, join='inner')
-
-# 행과 열 바꾸기(Transpose) -----
-df1.T
 
 
 # --------------------
@@ -1009,133 +1009,29 @@ print(df, view, sep='\n\n')
 
 
 # --------------------
-# df.str 메서드
-# --------------------
-
-import pandas as pd
-import seaborn as sns
-
-titanic = sns.load_dataset('titanic')
-df = titanic.loc[:, ['age', 'fare', 'class', 'who', 'embark_town', 'alive']]
-df['embark_town'] = df['embark_town'].str.replace('o', ' ')
-
-# >>> 검색 -----
-
-# man 들어간 데이터만 필터링
-df[df['who'].str.contains('man')].head()
-
-# 정규표현식
-df[df['class'].str.contains(r'.+ir.+', regex=True)].tail()
-
-# 서울로 시작하는 데이터만 필터링
-df[df['embark_town'].str.startswith('Queen', na=True)].head()
-
-# 끝 글자 인식 .str.endswith()
-df[df['embark_town'].str.endswith('urg', na=True)].head()
-
-# 찾은 모든 값만을 리스트 반환 (정규표현식)
-df['embark_town'].str.findall(r't|r').head()
-
-# 왼쪽부터 검색후 인덱스 번호 반환 (위치반환 없으면 -1)
-df['embark_town'].str.find(' ').head()
-
-# 오른쪽부터 검색후 인덱스 번호 반환
-df['embark_town'].str.rfind(' ').head()
-
-# >>> 인덱싱 -----
-
-# 앞 5자리까지만 추출
-df['embark_town'].str[:5].head()
-
-# 마지막 한 글자만 추출
-df['embark_town'].str[-1:].head()
-df['class'].str[1:3].head()
-
-# 슬라이싱
-df['class'].str.slice(1, 3)
-
-# >>> 추출 -----
-
-# 그룹 ()을 꼭 지정해서 패턴을 입력해야 하며, 패턴에 맞는 단어가 없을 시 NaN 출력
-# 추출그룹이 많을 때는 자동으로 데이터프레임 처리
-df['embark_town'].str.extract('(\w*urg)').dropna(how='all')
-
-# 정규표현식으로 선택한 문자를 독립된 열로 분할
-df['embark_town'].str.extract(r'(.*) (.*)')
-
-# >>> 분할 -----
-
-# 공백(" ")으로 분할
-df['embark_town'].str.split(' ').head()
-
-df['embark_town'].str.split(' ').str[0]
-df['embark_town'].str.split(' ').str[1]
-df['embark_town'].str.split(' ').str.get(1)
-
-df['embark_town'].str.split(' ').str[0].get(890)
-
-# 옵션에 expand=True를 넣으면 데이터프레임으로 반환
-df['embark_town'].str.split(' ', expand=True).head()
-
-# >>> 대체 -----
-
-# df.str.replace() : 문자열의 일부라도 일치하는 경우
-df['embark_town'].str.replace(" ", "_").head()
-
-# df.replace()     : 문자열이 완벽하게 일치하는 경우
-df.replace('Third', '3rd')
-df.replace({'Third':'3rd', 'man':'human'})
-df.replace({'alive': {'yes': 'ok'}})
-
-# >>> 공백 제거 -----
-
-df['col1'].str.strip()   # 앞 뒤 공백을 제거
-df['col1'].str.lstrip()  # 앞 공백을 제거
-df['col1'].str.rstrip()  # 뒤 공백을 제거
-
-# >>> 대소문자 변경 -----
-
-df['col1'].str.lower()      # 모두 소문자로 변경
-df['col1'].str.upper()      # 모두 대문자로 변경
-df['col1'].str.swapcase()   # 소문자는 대문자, 대문자는 소문자로 변경
-
-# >>> 패딩 -----
-
-# 문자열 길이 20자, 왼쪽부터 "_"로 채우기
-df['embark_town'].str.pad(width=20, side='left', fillchar='_').head(10)
-
-# 문자열 길이 20자, 오른쪽부터 "_"로 채우기
-df['embark_town'].str.pad(width=20, side='right', fillchar='_').head(10)
-
-# 문자열 길이 20자, 좌우로 "_"로 채우기
-df['embark_town'].str.center(width=20, fillchar='_').head(10)
-
-# 왼쪽부터 0으로 채우기
-df['embark_town'].str.zfill(width=20).head(10)
-
-
-# --------------------
-# map(), apply(), pipe() 메서드
+# 시리즈 및 데이터프레임 적용 메서드
 # --------------------
 
 # map()      : 시리즈 또는 데이터프레임의 개별 원소에 접근, key 기준으로 시리즈간 매핑
 # apply()    : 시리즈 또는 데이터프레임 객체에 함수 적용
 # pipe()     : 데이터프레임 객체에 함수 적용
+# transform()
+# S.where(), DF.where()
+# np.where()
 
 import pandas as pd
 
-srs = pd.Series(['빨간공', '파란공', '노란공', '2만원','3만원','4만원'])
+df1 = pd.DataFrame({'name':['철수','영희','진수','형진','순정','정미'],'class':['영어','국어','수학','영어','수학','국어'],'score':[55,77,100,95,80,89]})
+srs1 = {'형진':10025,'배민':12055,'진수':20336,'철수':55633,'창호':10800}
+
+srs = pd.Series(['빨간공','파란공','노란공','2만원','3만원','4만원'])
 
 df = pd.DataFrame({'salary':[200,300,400,500], 'bonus':['100원','200원','300원','400원'], 'incentive':[80,20,1000,50]})
 
-
-dict_num = {'형진':10025,'배민':12055,'진수':20336,'철수':55633,'창호':10800}
-df_name = pd.DataFrame({'name':['철수','영희','진수','형진','순정','정미'],'class':['영어','국어','수학','영어','수학','국어'],'score':[55,77,100,95,80,89]})
-
-# >>> map() : 시리즈의 각 값을 다른 값으로 대체 처리에 사용 -----
+# >>> map() -----
 
 # key를 기준으로 시리즈간 매핑, 누락된 값은 NaN 처리
-df_name['no'] = df_name['name'].map(dict_num)
+df1['no'] = df1['name'].map(srs1)
 
 # 시리즈 요소별 매핑
 df_name['cap'] = df_name['class'].map({'영어':'문과', '국어':'문과', '수학':'이과'})
@@ -1411,6 +1307,112 @@ pv_df.xs(('max', 'age'), axis=1)
 pv_df.xs(('max', 'age', 'yes'), axis=1)
 pv_df.xs(('max', 'age', 'yes'), axis=1).to_frame()
 pv_df.xs(('age', 'mean'), level=[1, 0], axis=1)
+
+
+# --------------------
+# df.str 메서드
+# --------------------
+
+import pandas as pd
+import seaborn as sns
+
+titanic = sns.load_dataset('titanic')
+df = titanic.loc[:, ['age', 'fare', 'class', 'who', 'embark_town', 'alive']]
+df['embark_town'] = df['embark_town'].str.replace('o', ' ')
+
+# >>> 검색 -----
+
+# man 들어간 데이터만 필터링
+df[df['who'].str.contains('man')].head()
+
+# 정규표현식
+df[df['class'].str.contains(r'.+ir.+', regex=True)].tail()
+
+# 서울로 시작하는 데이터만 필터링
+df[df['embark_town'].str.startswith('Queen', na=True)].head()
+
+# 끝 글자 인식 .str.endswith()
+df[df['embark_town'].str.endswith('urg', na=True)].head()
+
+# 찾은 모든 값만을 리스트 반환 (정규표현식)
+df['embark_town'].str.findall(r't|r').head()
+
+# 왼쪽부터 검색후 인덱스 번호 반환 (위치반환 없으면 -1)
+df['embark_town'].str.find(' ').head()
+
+# 오른쪽부터 검색후 인덱스 번호 반환
+df['embark_town'].str.rfind(' ').head()
+
+# >>> 인덱싱 -----
+
+# 앞 5자리까지만 추출
+df['embark_town'].str[:5].head()
+
+# 마지막 한 글자만 추출
+df['embark_town'].str[-1:].head()
+df['class'].str[1:3].head()
+
+# 슬라이싱
+df['class'].str.slice(1, 3)
+
+# >>> 추출 -----
+
+# 그룹 ()을 꼭 지정해서 패턴을 입력해야 하며, 패턴에 맞는 단어가 없을 시 NaN 출력
+# 추출그룹이 많을 때는 자동으로 데이터프레임 처리
+df['embark_town'].str.extract('(\w*urg)').dropna(how='all')
+
+# 정규표현식으로 선택한 문자를 독립된 열로 분할
+df['embark_town'].str.extract(r'(.*) (.*)')
+
+# >>> 분할 -----
+
+# 공백(" ")으로 분할
+df['embark_town'].str.split(' ').head()
+
+df['embark_town'].str.split(' ').str[0]
+df['embark_town'].str.split(' ').str[1]
+df['embark_town'].str.split(' ').str.get(1)
+
+df['embark_town'].str.split(' ').str[0].get(890)
+
+# 옵션에 expand=True를 넣으면 데이터프레임으로 반환
+df['embark_town'].str.split(' ', expand=True).head()
+
+# >>> 대체 -----
+
+# df.str.replace() : 문자열의 일부라도 일치하는 경우
+df['embark_town'].str.replace(" ", "_").head()
+
+# df.replace()     : 문자열이 완벽하게 일치하는 경우
+df.replace('Third', '3rd')
+df.replace({'Third':'3rd', 'man':'human'})
+df.replace({'alive': {'yes': 'ok'}})
+
+# >>> 공백 제거 -----
+
+df['col1'].str.strip()   # 앞 뒤 공백을 제거
+df['col1'].str.lstrip()  # 앞 공백을 제거
+df['col1'].str.rstrip()  # 뒤 공백을 제거
+
+# >>> 대소문자 변경 -----
+
+df['col1'].str.lower()      # 모두 소문자로 변경
+df['col1'].str.upper()      # 모두 대문자로 변경
+df['col1'].str.swapcase()   # 소문자는 대문자, 대문자는 소문자로 변경
+
+# >>> 패딩 -----
+
+# 문자열 길이 20자, 왼쪽부터 "_"로 채우기
+df['embark_town'].str.pad(width=20, side='left', fillchar='_').head(10)
+
+# 문자열 길이 20자, 오른쪽부터 "_"로 채우기
+df['embark_town'].str.pad(width=20, side='right', fillchar='_').head(10)
+
+# 문자열 길이 20자, 좌우로 "_"로 채우기
+df['embark_town'].str.center(width=20, fillchar='_').head(10)
+
+# 왼쪽부터 0으로 채우기
+df['embark_town'].str.zfill(width=20).head(10)
 
 
 # --------------------
