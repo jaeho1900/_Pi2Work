@@ -195,17 +195,59 @@ for row in ws.iter_rows(min_row=3, values_only=True):   # values_only는 각 셀
     print(row)
 
 
+수식을 계산하여 데이터 가져오기
+파이썬에서 데이터를 불러올 때 별도의 설정을 하지 않으면 계산된 결과가 아닌 수식 자체를 가지고 옵니다. 수식 자체가 아닌 계산된 결과값이 필요하다면 load_workbook()으로 데이터를 가져올 때 'data_only = True'를 추가해주어야 합니다. 
+
+# 엑셀 파일 불러오기 (수식이 계산된 결과값을 가져오도록 인수 설정)
+wb = load_workbook(filename='월별구매고객리스트.xlsx', data_only = True)  # 작업 완료 후 기존 엑셀 파일과 동일한 파일명으로 덮어쓰면 기존파일에 있던 수식이 지워지므로 주의
+
+>>> 열을 지정하여 데이터 가져오기
+
+rows()로 데이터 가져오기
+# 나머지 행을 순회하며 B열과 C열의 데이터만 읽기
+for row in new_rows:
+    print(row[1].value, row[2].value)
+
+iter_cols로 데이터 가져오기 : 열단위로 작업을 처리
+# B열과 C열 데이터만 순회하기 (인덱스는 1부터 시작하므로 B열은 2, C열은 3입니다)
+for col in ws.iter_cols(min_col=2, max_col=3, min_row=3):
+    for cell in col:
+        print(cell.value)
 
 
+특정 조건을 기준으로(필터링) 데이터 가져오기
 
+# 나머지 행을 순회하며 읽기
+for row in new_rows:
+    if row[2].value >= 2:
+        print(row[1].value, row[2].value)
 
+암호화된 엑셀 파일 다루기
+openpyxl 라이브러리는 엑셀 파일을 불러 올 때 암호화된 파일은 지원하지 않습니다
+pip install msoffcrypto-tool openpyxl
 
+import msoffcrypto
+from openpyxl import load_workbook
 
+# 암호화된 엑셀 파일을 바이너리 읽기 모드로 열고 msoffcrypto.OfficeFile 객체 생성
+file = msoffcrypto.OfficeFile(open("월별구매고객리스트_잠김.xlsx", "rb"))
 
+# 파일의 암호 설정. '1234'는 암호화된 파일의 비밀번호
+file.load_key(password="1234")
 
+# 암호화된 파일을 해제하고 새로운 파일로 저장
+with open("월별구매고객리스트_잠김해제.xlsx", "wb") as f:
+    file.decrypt(f)
 
+# 암호 해제된 파일 열기
+wb = load_workbook("월별구매고객리스트_잠김해제.xlsx")
+ws = wb.active
 
+# 엑셀 시트의 모든 행을 순회하며 값을 출력
+for row in ws.iter_rows(values_only=True):
+    print(row)
 
-
-
+# 암호 해제된 임시 파일 삭제
+import os
+os.remove("월별구매고객리스트_잠김해제.xlsx")
 

@@ -476,7 +476,7 @@ print(re.findall(pattern, txt))
 # >>> [-] 범위 -----
 
 text = 'my.name@localhost.com'
-# pattern = re.compile(r'[a-zA-Z0-9-.]+@[\w-.]+.com')  # '-'이 짝을 이루면 '범위'로 해석되어 bad character 에러 발생
+# pattern = re.compile(r'[a-zA-Z0-9-.]+@[\w-.]+.com')  # '-'이 짝을 이루면 '범위'로 해석되어 bad character error 발생
 pattern = re.compile(r'[a-zA-Z0-9-.]+@[\w-]+.com')     # '-' 앞뒤의 짝을 깨서 해결
 pattern = re.compile(r'[a-zA-Z0-9-.]+@[\w\-.]+.com')   # '-' 앞에 \ 추가해서 해결
 rst_findLst = re.findall(pattern, text)
@@ -691,12 +691,12 @@ b >= c
 # 데이터프레임
 # =====================
 
-# 1) Series:    '라벨 + 1차원 배열' 형상
-# 2) DataFrame: '라벨 + 2차원 배열' 형상
-
 # --------------------
 # 데이터프레임 생성
 # --------------------
+
+# 1) Series:    '라벨 + 1차원 배열' 형상
+# 2) DataFrame: '라벨 + 2차원 배열' 형상
 
 import pandas as pd
 import numpy as np
@@ -755,7 +755,70 @@ df.sort_values(by=['year', 'food'],      # 기준열
 
 
 # --------------------
-# 데이터 분석 전처리
+# 멀티 인덱스
+# --------------------
+
+import pandas as pd
+import seaborn as sns
+
+titanic = sns.load_dataset('titanic')
+df = titanic.loc[:, ['age', 'fare', 'class', 'who', 'embark_town', 'alive']]
+
+# >>> 멀티 라벨 -----
+
+# 멀티 라벨 설정 -----
+df.columns = pd.MultiIndex.from_arrays([['num','num','object','object','object','object'], list(df.columns)], names=("col1", "col2"))
+mdf = df.set_index([('object','class'), ('object','who')], drop = True)
+print(mdf)
+
+# 멀티 라벨명 변경 -----
+mdf.rename_axis(['분류1', '분류2'], axis=1)    # 컬럼라벨구분 변경
+mdf.rename_axis(['선실등급', '성별'], axis=0)  # 인덱스라벨구분 변경
+
+# 멀티 라벨 수준 변경 -----
+mdf.reorder_levels(['col2', 'col1'], axis=1)
+mdf.reorder_levels([1, 0], axis=0)
+
+# 멀티 라벨 정렬 -----
+mdf.sort_index(level=0, axis=1, ascending=False)
+mdf.sort_index(level=1, axis=1)
+
+# 멀티 라벨 groupby() 합산 -----
+mdf.groupby(level='col1', axis=1).sum()
+mdf.groupby(level=1, axis=0).apply('sum')
+
+# 멀티 라벨 삭제 -----
+mdf.droplevel(1, axis=0)   # (level, axis=0)
+
+# >>> 멀티 인덱스 행 or 열 삭제 -----
+
+# 멀티 인덱스 행 삭제 -----
+mdf.drop(['woman'], axis = 0, level = 1, inplace = False)
+mdf.drop(mdf.index[1], axis = 0, inplace = False)
+
+# 멀티 인덱스 열 삭제 -----
+mdf.drop(['fare'], axis = 1, level = 1, inplace = False)
+mdf.drop(mdf.columns[1], axis = 1, inplace = False)
+
+# >>> xs 인덱서 -----
+
+# 행: axis=0 -----
+mdf.xs('First')
+mdf.xs('man', level=1, drop_level=True)
+mdf.xs('man', level=1, drop_level=False)
+mdf.xs(('man', slice(None)), level=[1, 0])
+mdf.xs(('First', 'man'))
+
+# 열: axis=1 -----
+mdf.xs('object', axis=1)
+mdf.xs('fare', level=1, axis=1)
+mdf.xs(('num', 'age'), axis=1)
+mdf.xs(('num', 'age'), axis=1).to_frame()
+mdf.xs(('age', 'num'), level=[1, 0], axis=1)
+
+
+# --------------------
+# 데이터 전처리
 # --------------------
 
 import pandas as pd
@@ -939,7 +1002,7 @@ pd.get_dummies(df['fare_condition'])
 
 
 # --------------------
-# 데이터프레임 인덱싱 & 슬라이싱
+# 판다스 인덱싱과 슬라이싱
 # --------------------
 
 import pandas as pd
@@ -1009,77 +1072,80 @@ print(df, view, sep='\n\n')
 
 
 # --------------------
-# 시리즈 및 데이터프레임 적용 메서드
+# 판다스 매핑
 # --------------------
 
-# map()      : 시리즈 또는 데이터프레임의 개별 원소에 접근, key 기준으로 시리즈간 매핑
-# apply()    : 시리즈 또는 데이터프레임 객체에 함수 적용
-# pipe()     : 데이터프레임 객체에 함수 적용
-# transform()
-# S.where(), DF.where()
-# np.where()
-
 import pandas as pd
+import numpy as np
 
-df1 = pd.DataFrame({'지명':['서울','안양','광주','부산','제주','대전'],'행정구역':['특별','시도','광역','광역','특별','광역'],'만족도':[55,77,100,95,80,89]})
-srs1 = {'대전':10025,'부산':12055,'대구':20336,'서울':55633,'광주':10800}
+df_int = pd.DataFrame(np.array([[0, 1, 1, 0], [0, 1, 0, 1], [1, 2, 3, 4]]), columns=['a', 'b', 'c', 'd'])
+dic = {'대전':10025,'부산':12055,'대구':20336,'서울':55633,'광주':10800}
+ser = pd.Series(dic)
+df = pd.DataFrame({'지명':['서울','안양','광주','부산','제주','대전'],'행정구역':['특별','시도','광역','광역','특별','광역'],'만족도':[55,77,100,95,80,89]})
+
+# >>> 대상에 따른 매핑 가능 여부 -----
+
+# 개별 요소에 매핑 -----
+print(df_int.map(lambda x: x + 10))
+print(df_int.apply(lambda x: x + 10))
+print(df_int.pipe(lambda x: x + 10))
+print(df_int.transform(lambda x: x + 10))
+
+# 시리즈에 매핑 -----
+print(df_int.map(lambda x: x[:2]))          # error
+print(df_int.apply(lambda x: x[:2]))     
+print(df_int.pipe(lambda x: x[:2]))
+print(df_int.transform(lambda x: x[:2]))    # error
+
+# 데이터프레임(다중 컬럼 복합 적용)에 매핑 -----
+df.map(lambda x: x['만족도'] + x['인구'])            # error
+df.apply(lambda x: x['만족도'] + x['인구'], axis=1)
+df.pipe(lambda x: x['만족도'] + x['인구'])  
 
 # >>> map() -----
 
-# key를 기준으로 시리즈간 매핑, 누락된 값은 NaN 처리
-df1['인구'] = df1['지명'].map(srs1)
+# key를 기준으로 시리즈간 매핑 (누락된 값은 NaN 처리) -----
+df['인구'] = df['지명'].map(ser)
+
+# 개별 요소에 매핑 -----
+df['규모'] = df['행정구역'].map({'특별':'대규모', '시도':'중소규모', '광역':'대규모'})
+df[['행정구역','규모']].map(lambda x: x[:1])
+df.map(lambda x: x[:1] if isinstance(x, str) else x)
+
+# 데이터프레임에 매핑 -----
+
+# >>> apply() -----
 
 # 시리즈 요소별 매핑
-df1['규모'] = df1['행정구역'].map({'특별':'대규모', '시도':'중소규모', '광역':'대규모'})
-df1['삷의질'] = df1['만족도'].map(lambda x: '만족' if x>80 else '불만')
+df['삶의질2'] = df['만족도'].apply(lambda x: '만족' if x>80 else '불만')
+ser.apply(lambda x: str(x)[:-1])
 
-# 데이터프레임 요소별 매핑
-df1[['기타1','기타2']] = df1[['행정구역','규모']].map(lambda x: x[:1])
+# 데이터프레임의 매핑은 열을 하나씩 분리하여 매핑 인자로 전달, 요소대상 함수는 요소로 시리즈대상 함수는 시리즈별로 적용 후 각각 시리즈와 데이터프레임으로 반환
+df['덧셈'] = df.apply(lambda x: x['만족도']*1000 + x['인구'], axis=1)
+df['비고'] = df.apply(lambda x: f"{x['지명']}의 {x['규모']} 등급은 {x['행정구역']}입니다", axis=1)
+df.apply(lambda x: x[:-1])
 
+df = pd.DataFrame(np.arange(1, 10).reshape(3, 3), columns=list('abc'))
+df['계'] = df.apply(lambda x: x.a + x.b + x.c, axis=1)
 
+# >>> pipe() -----
 
-# df = pd.DataFrame({'salary':[200,300,400,500], 'bonus':['100원','200원','300원','400원'], 'incentive':[80,20,1000,50]})
+df.pipe(lambda x: x.dropna(axis=0)).pipe(lambda x: x.sum(axis=0))
 
-# >>> apply() : 여러 행 또는 열에 복잡한 처리에 사용 -----
-# 시리즈 객체에 apply () 메소드를 적용하면 인자로 전달하는 매핑 함수에 시리즈의 모든 원소를 하나씩 입력하고 함수의 리턴값을 돌려받는다,시리즈 객체로 반환
-# 데이터프레임에 apply (axis = 0) 메소드를 적용하면 모든 열을 하나씩 분리하여 매핑 함수의 인자로 각 열 (시리즈)이 전달된다,시리즈를 입력받고 시리즈를 반환하는 함수를 매핑하면, 데이터프레임을 반환
+# >>> transform() : 기존 인덱스 유지 -----
 
+import seaborn as sns
+titanic = sns.load_dataset('titanic')
+df = titanic.loc[:, ['survived', 'age', 'fare', 'class', 'who', 'embark_town']]
 
-# 데이터프레임에 적용
-df_name['비고'] = df_name.apply(lambda x: f"{x['name']}의 {x['class']} 등급은 {x['grade']}입니다", axis=1)
-df_name['덧셈'] = df_name.apply(lambda x: x['score'] + x['no'], axis=1)
-df_name.apply(lambda x: x.upper() if isinstance(x, str) else x)
+# groupby로 연산된 컬럼 추가
+df['tf_mean'] = df.groupby('class',observed=False)['fare'].transform('mean')
 
-# 시리즈에 적용
-df_name['장학금'] = df_name['score'].apply(lambda x: '대상' if x >= 90 else '비대상')
-
-
-srs.map(lambda x: x[:-2])
-df.map(lambda x: x[:-2])
-
-
-df1['salary'].map(summation)
-
-df['salary'].apply(summation)
-
-df.apply(summation)
-
-df2.map(lambda x : x[:3])
-
-df2.apply(lambda x : x[:3])
-
-df1.apply(lambda x: [x[x > 200].sum(), len(x[x > 200])])   # 열별로 조건을 만족하는 요소의 합과 갯수 반환
-
-df1.apply(lambda x: pd.Series([x[x > 200].sum(), len(x[x > 200])], index=['sum', 'count']))
-
-df2.pipe(lambda x: x.dropna(axis=0)).pipe(lambda x: x.sum())
-
-df2.applymap(lambda x: x[:-1])
+# groupby() + merge()
+mean_class = df.groupby('class',observed=False)['fare'].mean().rename('class_mean').reset_index()
+df = df.merge(mean_class)
 
 
-# >>> transform 메서드 : 원본 데이터프레임의 개별 요소에 결과를 대체 -----
-
-gdf['age'].transform(np.mean)
 
 
 # >>> 조건에 따른 결과 반환 -----
@@ -1112,7 +1178,6 @@ np.where(df['age'] > 30, "Big", "Small")
 #    dropna : 결측값을 계산에서 제외할지 여부
 
 import pandas as pd
-import numpy as np
 import seaborn as sns
 
 titanic = sns.load_dataset('titanic')
@@ -1177,100 +1242,9 @@ gdf.apply(lambda x: len(x) >= 90)
 gdf['age'].apply(lambda x: x.fillna(x.mean()))
 gdf['embark_town'].apply(lambda x: x.fillna(x.value_counts().idxmax()))
 
-# >>> 정규화(Normalization) -----
-
-# 정규화 (Normalization) -----
-# [산출]   데이터에서 열최솟값을 뺀 값을 분자로 하고, 열최댓값-열최솟값을 분모로 산출
-# [스케일] 데이터의 스케일을 0과 1 사이로 조정
-# [유용성] 데이터가 정규 분포를 따르지 않거나, 거리 기반 알고리즘(예: k-최근접 이웃, k-평균 군집화)에 적합
-min_x = df['fare'] - df['fare'].min()
-min_max = df['fare'].max() - df['fare'].min()
-df['fare_normalization'] = min_x / min_max
-df['fare_normalization'].describe()
-sns.displot(df['fare_normalization'], bins=10, element='step')
-
-# >>> 표준화 (Standardization) -----
-
-# [산출 ]  데이터에서 평균을 빼고, 그 결과를 표준편차로 나누어 산출
-# [스케일] 데이터의 평균을 0으로, 표준편차를 1로 조정
-# [유용성] 데이터가 정규 분포를 따르거나, 머신 러닝 알고리즘(예: 선형 회귀, 로지스틱 회귀, 서포트 벡터 머신)에 적합
-
-# 표준화 산식 이용
-df['fare_std'] = (df['fare'] - df['fare'].mean()) / df['fare'].std(ddof=0)  # 자유도 0이면 모표준편차, 1(default)이면 표본표준편차
-df['fare_std'].describe()
-sns.displot(df['fare_std'], bins=10, element='step')
-
-# numpy를 이용한 표준화 -----
-df['fare_std'] = (df['fare'] - np.mean(df['fare'])) / np.std(df['fare'])    # default 모표준편차
-df['fare_std'].describe()
-sns.displot(df['fare_std'], bins=10, element='step')
-
 
 # --------------------
-# 멀티 인덱스 그룹화
-# --------------------
-
-import pandas as pd
-import seaborn as sns
-
-titanic = sns.load_dataset('titanic')
-df = titanic.loc[:, ['age', 'fare', 'class', 'who', 'embark_town', 'alive']]
-
-# >>> 멀티 라벨 -----
-
-# 멀티 라벨 설정 -----
-df.columns = pd.MultiIndex.from_arrays([['num','num','object','object','object','object'], list(df.columns)], names=("col1", "col2"))
-mdf = df.set_index([('object','class'), ('object','who')], drop = True)
-print(mdf)
-
-# 멀티 라벨명 변경 -----
-mdf.rename_axis(['분류1', '분류2'], axis=1)    # 컬럼라벨구분 변경
-mdf.rename_axis(['선실등급', '성별'], axis=0)  # 인덱스라벨구분 변경
-
-# 멀티 라벨 수준 변경 -----
-mdf.reorder_levels(['col2', 'col1'], axis=1)
-mdf.reorder_levels([1, 0], axis=0)
-
-# 멀티 라벨 정렬 -----
-mdf.sort_index(level=0, axis=1, ascending=False)
-mdf.sort_index(level=1, axis=1)
-
-# 멀티 라벨 groupby() 합산 -----
-mdf.groupby(level='col1', axis=1).sum()
-mdf.groupby(level=1, axis=0).apply('sum')
-
-# 멀티 라벨 삭제 -----
-mdf.droplevel(1, axis=0)   # (level, axis=0)
-
-# >>> 멀티 인덱스 행 or 열 삭제 -----
-
-# 멀티 인덱스 행 삭제 -----
-mdf.drop(['woman'], axis = 0, level = 1, inplace = False)
-mdf.drop(mdf.index[1], axis = 0, inplace = False)
-
-# 멀티 인덱스 열 삭제 -----
-mdf.drop(['fare'], axis = 1, level = 1, inplace = False)
-mdf.drop(mdf.columns[1], axis = 1, inplace = False)
-
-# >>> xs 인덱서 -----
-
-# 행: axis=0 -----
-mdf.xs('First')
-mdf.xs('man', level=1, drop_level=True)
-mdf.xs('man', level=1, drop_level=False)
-mdf.xs(('man', slice(None)), level=[1, 0])
-mdf.xs(('First', 'man'))
-
-# 열: axis=1 -----
-mdf.xs('object', axis=1)
-mdf.xs('fare', level=1, axis=1)
-mdf.xs(('num', 'age'), axis=1)
-mdf.xs(('num', 'age'), axis=1).to_frame()
-mdf.xs(('age', 'num'), level=[1, 0], axis=1)
-
-
-# --------------------
-# 피벗테이블 그룹화
+# 피벗테이블
 # --------------------
 
 import pandas as pd
@@ -1282,7 +1256,7 @@ df = titanic[['age', 'fare', 'class', 'who', 'embark_town', 'alive']]
 # >>> 피벗테이블 생성 -----
 
 # 피벗테이블은 컬럼의 피라미드 밑에서부터 columns->values->aggfunc 순으로 쌓임
-# 인덱스와 컬럼의 조건을 만족하는 데이터가 2개 이상인 경우는 에러가 발생
+# 인덱스와 컬럼의 조건을 만족하는 데이터가 2개 이상인 경우는 error가 발생
 pv_df = pd.pivot_table(df,                       # 피벗할 데이터프레임
                        index=['class', 'who'],   # 행구분에 들어갈 열
                        columns='alive',          # 열구분에 들어갈 열
@@ -1313,7 +1287,7 @@ pv_df.xs(('age', 'mean'), level=[1, 0], axis=1)
 
 
 # --------------------
-# df.str 메서드
+# 판다스 문자열
 # --------------------
 
 import pandas as pd
@@ -1419,7 +1393,7 @@ df['embark_town'].str.zfill(width=20).head(10)
 
 
 # --------------------
-# 시계열
+# 판다스 시계열
 # --------------------
 
 # >>> Timestamp 생성 -----
@@ -1524,6 +1498,45 @@ tdf.loc['2018-03':]
 
 ts_seoul = pd.DataFrame(tdf.index)[0][0].tz_localize('Asia/Seoul')
 ts_UTC = ts_seoul.tz_convert('UTC')
+
+
+# --------------------
+# 정규화, 표준화
+# --------------------
+
+import pandas as pd
+import seaborn as sns
+
+titanic = sns.load_dataset('titanic')
+df = titanic.loc[:, ['age', 'fare', 'class', 'who', 'embark_town', 'alive']]
+
+# >>> 정규화 (Normalization) -----
+
+# [산출]   데이터에서 열최솟값을 뺀 값을 분자로 하고, 열최댓값-열최솟값을 분모로 산출
+# [스케일] 데이터의 스케일을 0과 1 사이로 조정
+# [유용성] 데이터가 정규 분포를 따르지 않거나, 거리 기반 알고리즘(예: k-최근접 이웃, k-평균 군집화)에 적합
+
+min_x = df['fare'] - df['fare'].min()
+min_max = df['fare'].max() - df['fare'].min()
+df['fare_normalization'] = min_x / min_max
+df['fare_normalization'].describe()
+sns.displot(df['fare_normalization'], bins=10, element='step')
+
+# >>> 표준화 (Standardization) -----
+
+# [산출 ]  데이터에서 평균을 빼고, 그 결과를 표준편차로 나누어 산출
+# [스케일] 데이터의 평균을 0으로, 표준편차를 1로 조정
+# [유용성] 데이터가 정규 분포를 따르거나, 머신 러닝 알고리즘(예: 선형 회귀, 로지스틱 회귀, 서포트 벡터 머신)에 적합
+
+# 표준화 산식 이용
+df['fare_std'] = (df['fare'] - df['fare'].mean()) / df['fare'].std(ddof=0)  # 자유도 0이면 모표준편차, 1(default)이면 표본표준편차
+df['fare_std'].describe()
+sns.displot(df['fare_std'], bins=10, element='step')
+
+# numpy를 이용한 표준화 -----
+df['fare_std'] = (df['fare'] - np.mean(df['fare'])) / np.std(df['fare'])    # default 모표준편차
+df['fare_std'].describe()
+sns.displot(df['fare_std'], bins=10, element='step')
 
 
 # --------------------
