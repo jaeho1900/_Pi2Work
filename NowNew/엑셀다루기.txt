@@ -251,3 +251,82 @@ for row in ws.iter_rows(values_only=True):
 import os
 os.remove("월별구매고객리스트_잠김해제.xlsx")
 
+글꼴과 셀 스타일 설정
+
+from openpyxl import Workbook
+from openpyxl.styles import Font
+from openpyxl.styles import PatternFill, Border, Side, Alignment
+
+wb = Workbook()
+ws = wb.active
+
+cell = ws['A1']
+cell.value = 'Hello World'
+
+# 글꼴 속성을 인자로 전달하여 Font 클래스의 객체를 생성
+# 생성된 Font 객체를 셀의 font 속성에 할당하여 셀에 글꼴 적용
+# name으로 글꼴의 종류를 지정하거나 underline으로 밑줄 스타일을 설정하는 등 다양한 속성을 사용해 글꼴을 설정할 수 있습니다.
+cell.font = Font(color='FF0000', 
+         italic=True, 
+         bold=True, 
+         size=20)
+
+# 셀 너비 설정 (A 열의 너비를 50으로 설정)
+#  ColumnDimension객체들이 있고 각각의 열 객체는 width(너비), hidden(숨김) 등 여러 속성을 갖습니다.
+# 엑셀의 기본 너비와 높이 단위가 다르다. 행 높이 단위는 1pt(0.035cm), 열 너비는 문자 1너비(표준 글꼴 서식의 한 글자)
+ws.column_dimensions['A'].width = 50
+
+# 셀 높이 설정 (1 행의 높이를 50으로 설정)
+ws.row_dimensions[1].height = 50
+
+# 셀 배경색 설정 (노란색, 색상 코드 'FFFF00')
+yellow_fill = PatternFill(start_color='FFFF00', end_color='FFFF00', fill_type='solid')
+cell.fill = yellow_fill
+
+# 셀 테두리 설정: 모든 사이드에 얇은 테두리 스타일 적용
+thin_side = Side(style='thin')
+cell.border = Border(left=thin_side, 
+           right=thin_side, 
+           top=thin_side, 
+           bottom=thin_side)
+
+# 셀 정렬 설정: 셀 내용을 수평 및 수직 중앙 정렬
+cell.alignment = Alignment(horizontal='center', vertical='center')
+
+wb.save('엑셀 서식.xlsx')
+
+
+표시 형식 설정
+
+소수점 자릿수와 천 단위 구분 기호 서식 설정
+
+ws['A1'] = 1234567.890123
+
+# 천 단위 구분 기호와 소수점 자릿수 지정
+ws['A1'].number_format = '#,##0.00'
+
+날짜와 시간 서식 설정
+# datetime 모듈을 사용
+ws['C1'] = datetime(2023, 9, 7)
+
+# 날짜 서식 설정
+ws['C1'].number_format = 'MM-DD-YYYY'
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
