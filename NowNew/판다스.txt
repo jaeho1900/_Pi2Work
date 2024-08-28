@@ -1,0 +1,154 @@
+엑셀 역순 찾기 기능이 있습니다. 다만 사용자가 알아차리기 힘들뿐....
+찾기화면에서 "다음 찾기"버튼을 누를때 Shift키 를 누르고 버튼을 클릭하세요.
+
+시리즈
+데이터프레임
+데이터프레임 구조 파악하기
+데이터프레임 정보 파악하기
+
+
+
+시리즈의 인덱스, 값, 그리고 데이터 타입을 각각 분리해서 가지고 올 수도 있습니다. 시리즈 데이터에서 인덱스는 s.index로, 값은 s.values로, 마지막으로 데이터 타입은 s.dtype으로 가지고 옵니다. 위에서 만든 시리즈 데이터s에 대해 print로 각각 인덱스, 값, 데이터 타입을 출력해보겠습니다.
+print(s.index)
+print(s.values)
+print(s.dtype)
+
+시리즈의 인덱스를 활용하여 특정 위치의 값을 가져올 수도 있습니다.
+s = pd.Series([1, 2, 3, 4], index=['a', 'b', 'c', 'd'])  # 고유 인덱스를 가진 1차원 배열 형태의 데이터 구조
+print(s['c'])          # 인덱스
+print(s[['b', 'c']])   # 리스트 형태
+print(s[s > 2])     # 조건
+
+데이터프레임은 행과 열이 있는 2차원 테이블 형태의 데이터 구조
+df = pd.DataFrame(data, index = index_data, columns = columns_data)
+
+index 행 이름, columns 열 이름
+
+# 딕셔너리로 생성
+data_dict = {
+    '이름': ['소라', '창훈', '영미'],
+    '나이': [25, 30, 35],
+    '거주지': ['인천', '순천', '동해']
+}
+
+# 이중 리스트로 생성
+data_list = [
+    ['소라', 25, '인천'],
+    ['창훈', 30, '순천'],
+    ['영미', 35, '동해']
+]
+
+데이터프레임(df)에서 인덱스는 df.index로, 열 이름은 df.columns, 데이터의 값은 df.values로 접근합니다.
+데이터프레임의 데이터 타입은 dtypes()으로 조회
+print(df_list.index)
+print(df_list.columns)
+print(df_list.values)
+print(df_list.dtypes)
+
+데이터 파일을 데이터프레임으로 가져오기
+1) CSV 파일 읽기와 쓰기
+df = pd.read_csv(filepath, 
+                 sep=',', 
+                 header='infer', 
+                 names=None, 
+                 index_col=None, 
+                 usecols=None, 
+                 dtype=None, 
+                 skiprows=None, 
+                 nrows=None, 
+                 encoding=None, ...)
+CSV 파일 쓰기
+df.to_csv(file_name, 
+          sep=',', 
+          na_rep='',     # 결측치를 대체할 문자열을 지정하는 매개변수
+          columns=None, 
+          header=True, 
+          index=True, 
+          encoding=None, ...)
+
+2) Excel 파일 읽기와 쓰기
+
+엑셀 파일 읽기
+df = pd.read_excel(excel_file, 
+                   sheet_name='Sheet1', 
+                   header=None,
+                   names=None,
+                   index_col=None,
+                   usecols=None,
+                   skiprows=None,
+                   nrows=None, ...)
+
+엑셀 파일 쓰기
+df.to_excel(excel_file,
+            index=True,
+            header=True,
+            sheet_name='Sheet1',
+            startrow=0,   # 몇 번째 행부터 데이터를 작성할지를 지정
+            startcol=0,...)
+
+여러개의 데이터프레임 데이터를 엑셀의 여러 시트에 각각 저장
+with pd.ExcelWriter(excel_file) as writer:
+    df1.to_excel(writer, sheet_name='Sheet1', index=False)
+    df2.to_excel(writer, sheet_name='Sheet2', index=False)
+    df3.to_excel(writer, sheet_name='Sheet3', index=False)
+
+ 3개의 데이터 프레임을 모두 하나의 워크시트에 저장
+# books_df, members_df, borrow_df를 excel파일 각각의 시트에 저장
+with pd.ExcelWriter(excel_file) as writer:
+    books_df.to_excel(writer, sheet_name='도서데이터', index=False)
+    members_df.to_excel(writer, sheet_name='도서데이터', startrow=0, startcol=5, index=False)
+    borrow_df.to_excel(writer, sheet_name='도서데이터', startrow=6, startcol=0, index=False)
+
+데이터프레임의 정보 파악하기
+1) shape 와 columns 속성 활용하기
+2) info(), describe()  # 데이터프레임의 수치 데이터에 대한 간단한 통계 정보
+
+특정 데이터 선택하기
+
+열 데이터 선택하기
+'열 이름'을 직접 지정하는 방식
+데이터프레임명['열 이름']  # 단일 열(시리즈 반환), 단일 열 선택시에도 대괄호를 두 번 사용하면 데이터프레임으로 반환
+df[['도시', '이름']]  # 복수 열(리스트에 전달, 데이터프레임으로 반환)
+
+.iloc[] 메서드나 .loc[] 메서드를 사용
+.loc[] 메서드로 열 데이터에 접근하는 것도 가능합니다. [행, 열] 형식의 인덱싱을 사용하여 특정 행과 열을 선택할 수 있습니다. 먼저 단일 열을 선택하기 위해서는 행 부분에서 모든 행(:)을 선택하고, 두 번째 인자로 열 이름을 제공합니다.
+df.loc[:, ['도시', '이름']]   # 여러 행을 선택했을 때는 열의 이름을 리스트로 전달
+df.loc[:, '나이':'도시']
+.loc[행, 열]  # 행의 인덱스와 열 이름을 전달하여 특정 위치의 값을 선택
+
+
+행 데이터 선택하기
+1) .head()와 .tail()
+
+option_context()  # 데이터프레임의 출력되는 행/열의 갯수를 원하는 양만큼 볼 수 있도록 일시적으로 설정
+with 문과 함께 사용되어 해당 코드 블록 내에서만 옵션을 일시적으로 변경하는 함수
+with pd.option_context('display.max_rows', 출력할 행의 수, 'display.max_columns', 출력할 열의 수):
+    pd.set_option("show_dimensions", False)
+    display(데이터프레임명)
+
+2) .loc[]  # 행의 이름(인덱스)을 이용해 행 데이터를 선택
+
+df.loc[[0, 2]]  # 리스트로 여러 행 선택
+df.loc[1:2] # 연속된 여러 행을 선택할 때는 슬라이스를 .loc[] 메서드에 전달
+
+3) .iloc[]  # 위치 기반 인덱싱을 사용하여 데이터프레임의 특정 행이나 열에 접근, 위치 기반 인덱싱이란 정수 인덱스를 의미
+
+마지막으로 비연속적인 행이나 열을 선택할 때는 리스트를 사용합니다.
+
+4) 슬라이싱(Slicing)
+파이썬 리스트 슬라이싱과 유사하게 판다스 데이터프레임에서도 슬라이싱으로 범위를 지정하여 행 데이터를 선택할 수 있습니다.
+
+5) 조건을 사용한 선택 
+데이터프레임명[조건]의 형식으로 조건을 지정
+& (AND), | ( OR), ~ (NOT) 기호를 이용
+df[(df['나이'] > 20 ) & (df['도시'] != '서울' )]
+
+불 인덱싱에 판다스의 isin() 메서드를 사용하면 지정한 리스트나 시리즈를 포함하는 행/열의 데이터를 찾아 필터링합니다
+df[df['도시'].isin(['대구','부산'])]
+
+
+
+
+
+
+
