@@ -17,10 +17,10 @@
 
 import pandas as pd
 import numpy as np
-import matplotlib.pyplot as plt
 import seaborn as sns
+import matplotlib.pyplot as plt
 
-df = pd.read_csv ('./trainingdata/machine/ auto-mpg.csv ', header=None)
+df = pd.read_csv ('./trainingdata/machine/auto-mpg.csv', header=None)
 df.columns = ['mpg', 'cylinders', 'displacement', 'horsepower', 'weight',
 'acceleration', 'model year', 'origin', 'name']
 print( df.head ())
