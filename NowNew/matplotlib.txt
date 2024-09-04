@@ -120,14 +120,99 @@ plt.show()
 2) 하나의 창에 여러 개의 서브플롯 그리기
 Matplotlib을 사용하여 하나의 창에 각각의 좌표평면을 가지는 여러 그래프(서브플롯)를 그리는 방법에는 몇가지가 있는데, 여기서는 subplot() 함수를 사용하는 방법을 학습해보겠습니다.
 
+subplot() 함수를 사용하면 여러 개의 서브플롯을 하나의 창에 그릴 수 있습니다. subplot() 함수는 창을 행(nrows)과 열(ncols)로 분할하고, index로 지정된 위치에 서브플롯을 생성합니다. 따라서 3개의 주요 인자(nrows, ncols, index)를 받아야하는데, nrows와 ncols는 각각 행과 열의 수를 나타내어 전체 그리드의 형태를 결정합니다. index는 현재 작업하고 있는 서브플롯의 위치를 나타냅니다. 이 값은 1부터 시작하여 행을 따라 왼쪽에서 오른쪽으로, 그리고 위에서 아래로 증가합니다. 예를 들어, subplot(2, 3, 4)는 2행 3열의 그리드에서 4번째 위치(두 번째 행의 첫 번째 열)에 서브플롯을 생성하라는 의미입니다.
+
+# 첫 번째 서브플롯
+plt.subplot(1, 3, 1) # (rows, columns, subplot_number)
+plt.plot(x1, y1, 'r-') # 'r-'는 빨간색 선을 의미
+plt.title('서브플롯 1')
+
+# 두 번째 서브플롯
+plt.subplot(1, 3, 2)
+plt.plot(x2, y2, 'g--') # 'g--'는 초록색 점선을 의미
+plt.title('서브플롯 2')
+
+# 세 번째 서브플롯
+plt.subplot(1, 3, 3)
+plt.plot(x3, y3, 'b--') # 'b--'는 파란색 점선을 의미
+plt.title('서브플롯 3')
+
+# 레이아웃 조정 및 보여주기
+plt.tight_layout()
+plt.show()
 
 
+1) 산점도(Scatter Plot)
+두 변수 간의 관계를 점을 사용해 시각적으로 표현하는 그래프
+산점도는 scatter() 함수를 사용하여 plt.scatter(x, y)로 그래프를 그릴 수 있습니다.
+marker: 점의 모양을 지정합니다. 'o'는 원형, 's'는 사각형, '^'는 삼각형, 'x'는 가위표를 의미합니다. 예시) marker='o'
+alpha: 0~1사이의 숫자로 점의 투명도를 지정합니다. 0은 완전히 투명을 의미하고, 1은 완전히 불투명을 의미합니다. 예시) alpha = 0.5
+linewidth 또는 lw: 점의 테두리의 너비를 지정합니다. 이 옵션을 사용하면 각 점의 시각적 명확성을 높일 수 있습니다. 예시) linewidth=1.5
+edgecolor: 점의 테두리의 색을 지정합니다. 예시) edgecolor='black'
+
+2) 막대 그래프(Bar Plot)
+카테고리별 데이터의 크기를 직관적으로 비교
+Matplotlib의 bar() 함수를 사용하여 막대그래프를 생성
+color: 막대의 채우기 색상을 설정합니다. 색상 이름, HEX 코드, RGB 튜플 등을 사용할 수 있습니다. 예시) color='lightblue'
+edgecolor: 막대의 테두리 색상을 설정합니다. 예시) edgecolor='black'
+linewidth: 막대 테두리의 너비를 설정합니다. 기본값은 None이며, 이 경우 기본 너비를 사용합니다. 예시) linewidth=2
+linestyle: 막대 테두리의 스타일을 설정합니다. 예를 들어, -, --, -., : 등이 있습니다. 예시) linestyle='--'
+hatch: 막대 내부에 패턴을 적용합니다. 예를 들어, /, \, |, -, +, x, o, O, . 등이 있습니다. 예시) hatch='//'
+alpha: 막대의 투명도를 설정합니다. 0.0(완전 투명)부터 1.0(완전 불투명) 사이의 값을 가집니다. 예시) alpha=0.5
+width: 막대의 너비를 설정합니다. 기본값은 0.8이며, 1은 막대가 x축 눈금 사이의 전체 공간을 차지하게 합니다. 예시) width=0.5
+
+3) 히스토그램(Histogram)
+데이터의 분포를 시각화
+ Matplotlib에서 hist() 함수를 사용
+bins: 막대의 개수를 지정하거나, 구체적인 막대 경계를 나타내는 시퀀스를 전달할 수 있습니다. 막대의 개수가 많을수록 더 세밀한 분포를 확인할 수 있습니다. 예시) bins=20
+range: 히스토그램을 그릴 데이터의 범위를 (min, max) 형태로 지정할 수 있습니다. 지정하지 않으면 데이터의 최솟값과 최댓값을 기준으로 합니다. 예시) range=(-3, 3)
+alpha: 막대의 투명도를 설정합니다. 0.0에서 1.0 사이의 값으로, 0은 완전 투명, 1은 완전 불투명을 의미합니다. 예시) alpha=0.5
+color: 막대의 색상을 지정합니다. 예시) color='skyblue'
+edgecolor: 막대의 테두리 색상을 지정합니다. 예시) edgecolor='darkblue'
+
+4) 파이 차트(Pie Chart)
+전체에 대한 각 부분의 비율을 시각화
+Matplotlib에서는 pie() 함수를 사용
+colors: 각 섹션의 색상을 지정합니다. 예시) colors=['gold', 'lightblue', 'lightgreen', 'lavender']
+startangle: 파이 차트의 시작 각도를 지정합니다. 기본값은 0도입니다. 예시) startangle=90
+explode: 파이의 각 조각이 중심에서 벗어나는 정도를 설정하여, 특정 섹션을 강조할 수 있습니다. 예시) explode=(0, 0.1, 0, 0)
+autopct: 각 섹션의 비율을 텍스트 형태로 표시하는 방법을 지정합니다. 예를 들어, '%1.1f%%'는 소수점 아래 한 자리까지 표시합니다. 예시) autopct='%1.1f%%'
+shadow: 파이 차트에 그림자를 추가하여 3D 효과를 줄 수 있습니다. 예시) shadow=True
 
 
+help(plt.plot), help(plt.scatter) 등)을 통해 더 많은 옵션을 확인할 수 있습니다. 
 
 
+판다스와의 통합 사용
+판다스 데이터프레임에서 .plot() 메서드를 사용하면, 내부적으로 Matplotlib를 호출하여 간단하게 차트를 그릴 수 있습니다. 
 
+판다스의 .plot() 메서드는 내부적으로 Matplotlib를 사용하기 때문에, 추가적인 커스터마이징 등 Matplotlib의 고급 기능을 사용하기 위해서는 Matplotlib의 함수와 속성들을 직접 사용해야 합니다.
+df_graph = pd.DataFrame({
+    'x': [1, 2, 3, 4],
+    'y': [1, 4, 9, 16]
+})
 
+# 그래프 스타일 'ggplot' 적용
+plt.style.use('ggplot')
+
+# 데이터프레임으로 선 그래프 그리고 Matplotlib으로 세부 설정
+ax = df_graph.plot(x='x', y='y', kind='line', title='데이터프레임 선 그래프 커스터마이징')
+
+ax.set_ylabel('X축')
+ax.set_xlabel('Y축')
+ax.grid(True)
+ax.legend(['그래프A'], loc='upper right') 
+
+plt.show()
+
+그래프 저장
+
+저장할 때는 Matplotlib의 savefig() 함수를 사용하며 다양한 형식(PNG, PDF, SVG, JPG 등)으로 저장할 수 있습니다. savefig()의 주요 파라미터로는 파일 경로와 이름, dpi(해상도), 투명도 설정 등이 있습니다.
+
+# 그래프 저장하기
+plt.savefig('my_figure.png')  # PNG 형식으로 저장
+plt.savefig('my_figure_300dpi.png', dpi=300)  # 해상도 조정
+plt.savefig('my_figure_transparent.png', transparent=True)  # 배경 투명
 
 
 
