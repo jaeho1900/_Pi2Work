@@ -20,6 +20,10 @@ import numpy as np
 import seaborn as sns
 import matplotlib.pyplot as plt
 
+
+# Seaborn 데이터셋 목록
+sns.get_dataset_names()
+
 df = pd.read_csv ('./trainingdata/machine/auto-mpg.csv', header=None)
 df.columns = ['mpg', 'cylinders', 'displacement', 'horsepower', 'weight',
 'acceleration', 'model year', 'origin', 'name']
