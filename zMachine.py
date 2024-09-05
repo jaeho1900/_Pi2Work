@@ -26,19 +26,16 @@ sns.get_dataset_names()
 
 df = sns.load_dataset('mpg')
 # df = pd.read_csv ('./trainingdata/machine/auto-mpg.csv', header=None)
-df.columns = ['mpg', 'cylinders', 'displacement', 'horsepower', 'weight',
-'acceleration', 'model year', 'origin', 'name']
-print( df.head ())
-print( df.info ())
-print( df.describe ())
+print(df.head())
+print(df.info())
+print(df.describe())
 
 # # 전처리
-# horsepower 열의 자료형 변경 (문자열 ->숫자)
-print(df['horsepower'].unique()) # horsepower 열의 고유값 확인
-df['horsepower'].replace('?', np.nan , inplace=True) # '?'을 np.nan 으로 변경
+print(df['horsepower'].unique())                        # horsepower 열의 고유값 확인
+df['horsepower'].replace('?', np.nan , inplace=True)    # '?'을 np.nan 으로 변경
 df.dropna (subset=['horsepower'], axis=0, inplace=True) # 누락데이터 행을 삭제
-df['horsepower'] = df['horsepower'].astype('float') # 문자열을 실수형으로 변환
-print( df.describe ()) # 데이터 통계 요약정보 확인
+df['horsepower'] = df['horsepower'].astype('float')     # 문자열을 실수형으로 변환
+print(df.describe())                                    # 데이터 통계 요약정보 확인
 
 # # 종속변수(mpg)와 독립변수후보군(cylinders, horsepower, weight) 선정
 ndf = df[['mpg', 'cylinders', 'horsepower', 'weight']]
