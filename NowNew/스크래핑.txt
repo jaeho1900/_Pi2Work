@@ -231,7 +231,10 @@ soup.a.find_previous_sibling('span', class_='number')
 # 첫 번째 a태그의 이전에 있는 형제태그 중 속성값이 number인 형제태그의 텍스트만 추출
 soup.a.find_previous_sibling('span', class_='number').get_text(strip=True)
 
+
+
 실전! BeautifulSoup을 이용해 뉴스 기사 크롤링하기
+newspaper3k 사용하기
 뉴스기사를 추출할 때는 조금 더 편리하게 가져올 수 있도록 도와주는newspaper3k라는 패키지가 있습니다. newspaper3k는 인터넷 기사의 url만 전달해주면, 이로부터 기사의 제목과 내용을 추출해주는 크롤링 패키지입니다. 
 
 conda install newspaper3k
@@ -245,10 +248,40 @@ url = 'https://v.daum.net/v/20230211141701492'
 article = Article(url, language='ko')
 
 # 지정된 웹 페이지를 다운로드
-article.download()
+article.download()  # 이 과정은 인터넷에 접속해 해당 URL의 서버에 요청하고 응답을 받아 HTML 데이터를 가져오는 작업을 포함합니다.
 
 # 다운로드한 웹 페이지를 분석하고 필요한 정보를 추출
 article.parse()
+
+# 기사 제목 출력
+print('기사 제목 :',article.title)
+print('')
+
+# 기사 내용 출력 
+print('기사 내용 :') 
+print(article.text)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
