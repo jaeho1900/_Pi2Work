@@ -262,26 +262,155 @@ print('기사 내용 :')
 print(article.text)
 
 
+Selenium 환경 설정
+웹 드라이버(Web Driver)를 다운로드합니다. 셀레니움은 웹 드라이버를 통해  브라우저를 제어합니다.
+예를 들어, 크롬 브라우저를 자동화하려면 구글에서 제공하는 크롬드라이버(ChromeDriver)를 설치해야 하며, 파이어폭스를 사용하려면 모질라에서 제공하는 게코드라이버(GeckoDriver)를 설치해야 합니다.
+
+웹 드라이버를 다운로드하는 방법은 크게 3가지입니다.
+
+첫번째는 자동으로 웹 드라이버를 설치하고 업데이트를 관리 해주는 webdriver-manager라는 외부 패키지를 이용하는 것입니다. 셀레니움에 포함되어 있지 않은 외부 패키지이기 때문에 별도로 패키지를 설치해주어야 사용이 가능합니다.
+pip install webdriver-manager
+
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.chrome.webdriver import WebDriver as ChromeDriver
+from webdriver_manager.chrome import ChromeDriverManager
+
+# webdriver_manager를 사용하여 크롬 드라이버의 실행 경로 설정
+# service 객체는 Selenium 4.0 이상에서 웹드라이버를 관리하는 새로운 방법 중 하나
+service = Service(executable_path=ChromeDriverManager().install())
+# 설정된 service를 사용하여 크롬 드라이버 인스턴스 생성
+driver = ChromeDriver(service=service)
+
+# 테스트하려는 웹사이트 열기
+driver.get("http://www.example.com")
+
+# 필요한 작업 수행 후 드라이버 종료
+driver.quit()
+
+두번째는 최신 버전의 셀레니움에 포함되어 있는 Selenium Manager를 이용하는 방법입니다. Selenium Manager는 자동으로 웹드라이버를 관리하는 셀레니움의 공식 드라이버 관리자로, 셀레니움 버전 4.6부터는 각 셀레니움 릴리스에 Selenium Manager도 포함되어 제공됩니다.
+Selenium Manager는 4.6버전 이상의 셀레니움 설치 시 자동으로 함께 포함
+from selenium import webdriver
+
+# 웹드라이버 자동 관리를 통해 크롬 드라이버 사용
+driver = webdriver.Chrome()
+
+마지막 세번째는 과거에 주로 사용하던 방식으로 드라이버 파일을 수동으로 다운로드한 후, 이 파일을 시스템의 PATH에 추가하거나, 스크립트에서 직접 경로를 지정하여 웹 드라이버가 브라우저를 제어할 수 있도록 설정하는 방법입니다.
+
+XPath 이해하기
+
+XPath란 웹 문서의 특정 요소나 속성에 접근하는 경로를 지정하는 언어입니다.
+
+<회사 이름="우리회사">
+  <본부 이름="A본부">
+    <팀 이름="1팀">
+      <직원 직급="부장" 사번"0100">정우성</직원>
+      <직원 직급="과장" 사번"0150">이지은</직원>
+      <직원 직급="대리" 사번"0200">차은우</직원>
+      <직원 직급="사원" 사번"0400">박은빈</직원>
+      <직원 직급="인턴" 사번"0500">박보영</직원>
+    </팀>
+    <팀 이름="2팀"/>
+    <팀 이름="3팀"/>
+    ...
+  </본부>
+  <본부 이름="B본부"/>
+  ...
+</회사>
+
+ "차은우"는 "우리회사" 안의 "A본부" 안의 "1팀"에서 3번째에 위치하고 있습니다. 이를 XPath의 절대 경로로 나타내면, /회사/본부[1]/팀[1]/직원[3]로 표시할 수 있습니다.
+사번을 이용해 "차은우"의 위치를 가리킬 수도 있을 것입니다. 이 구조에서 사번은 모두 고유한 번호이기 때문에 사번이 "0200"인 직원의 위치를 통해 "차은우"를 찾을 수 있습니다. XPath에는 //[@사번="0200"]으로 표현합니다. 여기서 //는 문서의 어떤 위치에서나 조건에 맞는 요소를 찾을 수 있다는 것을 의미하고, [@사번="0200"]는 사번 속성이 "0200"인 요소를 선택한다는 뜻입니다.
+
+XPath 기본규칙
+<html>
+    <head>
+        <title>업무자동화 공부하기</title>
+    </head>
+    <body>
+        <input type="text" value="아이디를 입력하세요.">
+        <input type="password">
+        <input type="button" value="로그인">
+        <a href="http://naver.com"> 네이버로 이동하기</a>
+        <div id="content">
+            <h1 id="title" class="about">웹스크래핑 알아보기</h1>
+            <p>Beautiful Soup을 공부해보자</p>
+        </div>
+    </body>
+</html>
+XPath 경로는 다음의 규칙으로 표시합니다.
+
+1) 슬래시(/)는 한 단계 아래 요소(element)를 의미합니다.
+/html/body/div/h1
+
+2) 슬래쉬 두 개(//)는 여러 단계를 생략하여 표시합니다. 이렇게 사용할 경우 하위 모든 요소에 대해 다 찾아보게 됩니다.
+//h1[@class='about']
+
+3) 별표(*)는 요소의 이름과 상관없이 모든 요소에서 해당 속성을 갖고 있는 요소가 있는지를 찾습니다.
+//*[@id="title"]
+이 경우, id가 title인 요소를 모든 문서에서 찾게 됩니다.
+
+XPath 확인하기
+
+브라우저의 개발자 도구에서 XPath를 찾고자하는 HTML요소에서 마우스 오른쪽 클릭 후,
+복사(Copy) → XPath 복사(Copy XPath) 또는, 전체 XPath 복사(Copy full XPath)를 클릭합니다.
+XPath 복사(Copy XPath)는 축약된 경로가 표시되고, 전체 XPath 복사(Copy full XPath)는 전체 경로를 다 표시합니다.
+
+웹 브라우저 제어하기
+셀레니움 매니저로 자동으로 웹 드라이버를 다운받아 크롬 브라우저를 시작하고 종료하는 예제 코드입니다.
+from selenium import webdriver
+
+# 웹드라이버 자동 관리를 통해 크롬 드라이버 객체 생성
+driver = webdriver.Chrome()
+
+# 웹 브라우저를 실행하여 지정한 url에 접속
+driver.get("http://www.google.com")
+
+# 브라우저 창의 크기를 너비 800픽셀, 높이 600픽셀로 설정
+driver.set_window_size(800, 600)
+
+# # 브라우저 창을 최대화
+# driver.maximize_window()
+
+# 작업 완료 후 브라우저 종료
+driver.quit()
+
+위의 두 가지 방법은 먼저 크롬 브라우저를 열고 나서 크기를 변경한다는 특징이 있는데, 그렇지 않고 브라우저를 열 때 창의 크기도 미리 설정한 값으로 열고 싶다면 크롬 옵션(ChromeOptions)을 사용해야 합니다. 크롬 옵션을 사용하면 브라우저 시작 시 창 크기나 다른 옵션을 설정할 수 있습니다. 다음은 크롬 옵션으로 브라우저 크기를 너비 800픽셀, 높이 600픽셀로 설정하는 예제 코드입니다.
+
+from selenium import webdriver
+
+# 옵션 설정을 위해 option 객체 생성
+options = webdriver.ChromeOptions()
+
+# 창 크기를 너비 800픽셀, 높이 600픽셀로 설정 
+options.add_argument("window-size=800,600")
+
+# # 전체 화면으로 실행
+# options.add_argument("--start-fullscreen")
+
+# 옵션을 적용하여 드라이버 객체 생성
+driver = webdriver.Chrome(options=options)
+
+driver.get("http://www.google.com")
+
+driver.quit()
 
 
+time.sleep() 함수
+time.sleep() 함수는 파이썬의 time 모듈에 포함된 함수로, 프로그램 실행을 지정된 시간 동안 일시 중지할 수 있게 해줍니다. 이 함수는 주로 스크립트의 실행을 잠시 멈추게 하여, 네트워크 요청이 완료되기를 기다리거나 사용자 입력을 받기 전에 일시적으로 대기하는 등의 목적으로 사용됩니다. 
+웹에서 데이터를 가져오거나 웹 작업을 자동화할 때 페이지가 완전히 로드되거나 특정 요소가 화면에 나타날 때까지 기다려야하는 경우가 많이 있는데, 이럴 때 time.sleep()을 사용하여 일정 시간을 기다린 다음 이후의 작업을 진행하도록 할 수 있습니다.
 
+from selenium import webdriver
+import time  # 시간 관련 함수를 사용하기 위해 time 모듈을 임포트
 
+driver = webdriver.Chrome()
+driver.get("http://www.google.com")
 
+# 브라우저 창의 크기를 너비 800픽셀, 높이 600픽셀로 설정
+driver.set_window_size(800, 600)
 
+time.sleep(5)  # 5초 동안 대기
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+driver.quit()
 
 
 
