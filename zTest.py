@@ -1,9 +1,14 @@
-import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-df = pd.read_csv(r'C:\Users\Administrator\Desktop\customer.csv')
+df = pd.read_csv(r'C:\Users\Administrator\Desktop\customer.csv', encoding='CP949')
+
+df['잠재고객'] = df[df.columns[0]].str.split('\t').str[0]
+df['보유면수'] = df[df.columns[0]].str.split('\t').str[1]
+df = df[['잠재고객', '보유면수']]
+df['보유면수'] = df['보유면수'].astype(int)
+df.info()
 
 def assign_group(pages):
     if pages == 2:
@@ -27,10 +32,8 @@ gdf['no'] = [5,1,2,6,3,4]
 gdf = gdf.sort_values(by='no', axis=0)
 gdf = gdf.droplevel(0, axis=1)
 gdf = gdf[['count', 'min', '50%','max']]
-
 gdf
 
-import matplotlib.pyplot as plt
 plt.rc('font', family='Malgun Gothic')
 plt.rcParams['axes.unicode_minus'] = False
 
