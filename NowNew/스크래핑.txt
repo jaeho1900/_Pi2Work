@@ -413,6 +413,136 @@ time.sleep(5)  # 5초 동안 대기
 driver.quit()
 
 
+웹 페이지 내 요소 선택하기
+셀레니움에서도 특정 요소를 찾는 find_element와 find_elements 메서드를 제공하고 있습니다.
+
+find_element 메서드는 주어진 검색 기준(예: ID, 클래스 이름, 태그 이름 등)에 해당하는 첫 번째 요소를 반환합니다. 요소가 존재하지 않을 경우 NoSuchElementException 예외가 발생합니다. find_element를 사용할 때는 find_element(By.속성, "속성값")의 형태로 찾고자하는 기준 속성과 조건에 해당하는 속성값을 전달합니다
+By. 뒤에 찾고자하는 속성명을 넣고, 그 다음 인자로 요소의 식별값을 전달합니다.
+
+find_element 대신 find_elements 메서드를 사용하면 조건을 만족하는 모든 요소를 찾아 리스트로 반환합니다. 요소가 없는 경우에는 빈 리스트를 반환하기 때문에 find_element 메서드와 달리 find_elements 메서드는 요소가 없어도 오류가 발생하지 않아 스크립트가 중단되지 않고 계속 실행될 수 있습니다.
+
+속성	방법	예시
+ID	페이지 내 고유한 ID로 요소를 찾습니다.	find_element(By.ID, "login-form")
+CLASS_NAME	CSS 클래스 이름으로 요소를 찾습니다.	find_element(By.CLASS_NAME, "navigation-menu")
+NAME	요소의 name 속성으로 요소를 찾습니다.	find_element(By.NAME, "email")
+TAG_NAME	태그 이름으로 요소를 찾습니다.	find_element(By.TAG_NAME, "a")
+LINK_TEXT	a 태그 안의 링크 문자열이 전체 일치하는 요소를 찾습니다.	find_element(By.LINK_TEXT, "Click Here")
+PARTIAL_LINK_TEXT	a 태그 안의 링크 문자열이 부분적으로 일치하는 요소를 찾습니다.	find_element(By.PARTIAL_LINK_TEXT, "More Info")
+XPATH	XPath 표현을 사용하여 요소를 찾습니다.	find_element(By.XPATH, "//div[@class='container']")
+CSS_SELECTOR	CSS 선택자를 사용하여 요소를 찾습니다.	예) find_element(By.CSS_SELECTOR, "button.submit")
+
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+
+driver = webdriver.Chrome()
+driver.get("http://www.google.com")
+
+# class 이름이 "gb_d"인 첫번째 요소 찾기
+driver.find_element(By.CLASS_NAME, "gb_d")
+
+driver.quit()
+
+웹 페이지 로드하기
+
+셀레니움은 요소가 로드될 때까지 대기하는 명시적 대기(Explicit Wait)와 암시적 대기(Implicit Wait) 메커니즘이 있습니다.
+
+1) 명시적 대기(Explicit Wait)
+
+명시적 대기는 특정 요소가 특정 조건(예: 요소가 클릭 가능해짐, 요소의 로딩이 완료됨 등)을 충족할 때까지 대기하도록 설정합니다. 
+WebDriverWait 클래스와 expected_conditions 모듈을 함께 사용하여 구현되며, 특정 요소에 대한 대기 시간을 세밀하게 조절할 수 있습니다.
+
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.by import By
+
+# WebDriverWait 객체 생성 및 최대 대기 시간 설정
+# until 메서드는 expected_conditions 모듈에서 제공하는 다양한 메서드 중 하나를 매개변수로 받아 해당 조건이 충족될 때까지 대기합니다. 조건이 충족되면 대기가 중단되고, 다음 코드 라인으로 넘어갑니다. 
+# '메서드명' 부분에 조건을 정의할 메서드를 넣어주고, 웹 요소를 찾는 기준 속성과 값을 (By.속성, "값")의 형태로 전달합니다.
+
+WebDriverWait(driver, 10).until(EC.메서드명((By.속성, "속성값")))
+
+
+대기할 조건을 지정하는 주요 메서드는 다음과 같습니다.
+
+presence_of_element_located
+: 웹 페이지에 해당 요소가 존재하는지 확인할 때까지 대기합니다. HTML에 요소의 존재가 확인되어 다음의 작업으로 진행되더라도 해당 요소가 우리의 눈에는 보이지 않을 수도 있습니다. 요소가 HTML에는 존재하더라도 실제로 사용자에게 보이는지는 별개의 문제이며, CSS 스타일이나 JavaScript로 인해 보이지 않을 수도 있기 때문입니다.
+
+visibility_of_element_located
+: 해당 요소가 사용자에게 보이고, 실제로 클릭 가능하거나 상호작용 가능할 때까지 기다립니다.
+
+element_to_be_clickable
+: 해당 요소가 클릭 가능한 상태가 될 때까지 기다립니다. 클릭 가능한 상태란 요소가 화면에 보이고, 활성화되며, 클릭을 수신할 수 있는 상태일 때를 의미합니다.
+
+2) 암시적 대기(Implicit Wait)
+
+암시적 대기(implicit wait)는 셀레니움에서 웹 드라이버가 웹 요소를 찾을 수 없을 때, 지정된 시간 동안 자동으로 요소가 나타날 때까지 대기하도록 설정하는 방법입니다. 
+요소가 지정된 시간 내에 발견되면 대기를 중단하고 실행을 계속하며, 요소가 발견되지 않으면 예외를 발생시킵니다. 암시적 대기는 전역 설정으로, 한 번 암시적 대기를 설정하면 드라이버 세션이 종료될 때까지 적용됩니다. 또한 코드 내의 모든 요소 검색에 적용됩니다. 즉, 코드 전체에서 요소 검색에 대해서 모두 일관된 대기 시간이 적용됩니다.
+
+from selenium import webdriver
+
+driver = webdriver.Chrome()
+driver.implicitly_wait(10)  # 최대 10초 동안 대기
+
+ implicitly_wait(10)는 전체 코드 내에서 요소를 검색할 때마다 드라이버가 요소를 찾을 수 없을 때 최대 10초까지 기다리라는 명령입니다. 요소가 10초 내에 발견되면 즉시 다음 코드로 진행하며, 10초 동안 발견되지 않으면 NoSuchElementException 오류가 발생합니다.
+
+
+웹 요소와 상호작용하기
+
+키보드 입력하기
+1) 일반 텍스트 입력하기
+ send_keys() 메서드는 키보드 입력을 시뮬레이션하여 사용자가 직접 타이핑하는 것과 같은 효과를 낼 수 있습니다. send_keys()를 사용할 때는 먼저 find_element를 이용해 웹 페이지에서 텍스트를 입력할 텍스트 필드 요소를 찾은 다음, 요소에 send_keys() 메서드를 사용해 원하는 텍스트를 인자로 전달합니다.
+셀레니움에서는 특수 키인 Enter를 사용하거나 마우스를 클릭하는 것 외에도 submit() 메서드를 사용해 서버로 제출할 수도 있습니다. 즉, 위의 코드에서 마지막에 input_element.submit()을 추가하면 검색이 실행됩니다.
+
+2) 특수 키 사용하기
+셀레니움에서는 Keys 클래스를 통해 특수 키(Special Keys) 입력도 지원하고 있습니다. 
+특수 키를 입력할 때는 send_keys(Keys.키 값)과 같이 Keys 클래스에 정의된 키 값을 send_keys() 메서드와 함께 사용합니다.
+
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
+
+driver = webdriver.Chrome()
+driver.get("http://www.google.com")
+
+# 검색어 입력 필드 찾기
+input_element = driver.find_element(By.CLASS_NAME, "gLFyf")
+
+# 입력 필드의 내용 모두 지우기
+input_element.clear()
+
+# 텍스트 입력
+input_element.send_keys("서울 날씨")
+
+# Enter 키 사용하기
+input_element.send_keys(Keys.ENTER)
+
+특수 키와 문자키를 조합하여 사용하는 조합 키(Combination Keys)도 셀레니움으로 실행가능합니다.
+예를 들어, 조합 키 Ctrl+C로 텍스트를 복사하려고 한다면 send_keys(Keys.CONTROL, 'c')와 같이 사용할 수 있습니다.
+
+Keys클래스에 포함된 주요 키 값들은 다음과 같습니다.
+
+ALT: Alt 키
+BACKSPACE: 백스페이스 키
+CANCEL: Cancel 키
+CLEAR: Clear 키
+COMMAND: Command 키 (Mac)
+CONTROL: Ctrl 키
+DELETE: Delete 키
+DOWN: 아래쪽 화살표 키
+END: End 키
+ENTER: Enter 키
+INSERT: Insert 키
+LEFT: 왼쪽 화살표 키
+PAGE_DOWN: Page Down 키
+PAGE_UP: Page Up 키
+RIGHT: 오른쪽 화살표 키
+SHIFT: Shift 키
+SPACE: 스페이스 바
+TAB: Tab 키
+UP: 위쪽 화살표 키
+
+3) 콘솔에서 사용자의 입력 받기
+
 
 
 
