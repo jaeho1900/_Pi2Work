@@ -1,40 +1,27 @@
-import pandas as pd
+import numpy as np
 import matplotlib.pyplot as plt
+import pandas as pd
 
-# 데이터 정의
-data = {
-    '관심고객구분': [
-        'WTC', '오창에너지솔루션', 'BIFC', '한국타이어테크노링',
-        '카카오판교아지트', 'SK서린빌딩', 'KCC오토타워', '엘지가산디지털센터',
-        '강서사옥', '서울역빌딩', '인화원', '건양대학교',
-        '마포운영센터', '부산진구청', 'sk가스사옥', '메리츠화재',
-        '광화문빌딩', '금융투자협회', '상암CNS', 'JW과천',
-        '각화골드클래스', '대신증권(위례)'
-    ],
-    '보유주차면수': [
-        50, 50, 38, 30, 26, 17, 10, 10,
-        9, 9, 9, 8, 8, 8, 7, 6,
-        4, 4, 4, 3, 3, 2
-    ]
-}
+# 데이터
+data = pd.read_excel(r"c:\Users\Administrator\Desktop\123.xlsx",
+                     header=None,
+                     names=["x", "y"])
 
-# 데이터프레임 생성
-df = pd.DataFrame(data)
+# 기울기 계산
+data['slope'] = np.gradient(data['y'], data['x'])
 
-# 구간화 수행
-# df['구간_등간격'] = pd.cut(df['보유주차면수'], bins=7)
-df['구간_등빈도'] = pd.qcut(df['보유주차면수'], 7)
+# 기울기 변화량 계산
+data['slope_change'] = np.abs(np.gradient(data['slope'], data['x']))
+
+# 기울기 변화량이 가장 큰 지점 찾기
+top_changes = data.nlargest(7, 'slope_change')
 
 # 결과 출력
-print(df)
+print(top_changes[['x', 'y', 'slope', 'slope_change']])
 
-# 구간별 집계
-grouped = df.groupby('구간_등빈도').agg({'보유주차면수': 'count'}).reset_index()
-grouped.columns = ['구간', '고객 수']
-
-# 결과 출력
-print("\n구간별 집계:")
-print(grouped)
-
-plt.bar(grouped["구간"], grouped["고객 수"])
-plt.boxplot(df['보유주차면수'])
+# 그래프 그리기
+plt.figure(figsize=(12, 6))
+plt.plot(data.x, data.y, 'b-', label='데이터')
+plt.scatter(top_changes.x, top_changes.y, color='red', s=100, label='Top 5 변화 지점')
+plt.title('선형 그래프와 기울기 변화가 큰 지점')
+plt.show()
