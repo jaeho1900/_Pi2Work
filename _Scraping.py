@@ -65,10 +65,10 @@ import requests
 url = 'http://www.google.com'
 
 # headers 지정
-headers = {'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36'}
+headers = {'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36'}
 
 # headers 옵션을 설정하여 get()함수 실행
-response = requests.get(url, headers=headers) 
+response = requests.get(url, headers=headers, verify=False) 
 
 # raise_for_status() 함수는 마치 if문을 사용한 것처럼 정상적으로 HTML 파일을 가져왔을 때는 문제 없이
 # 코드가 진행되고, 에러가 났을 때는 코드를 진행하지 않고 오류를 표시하며 실행을 종료합니다.
@@ -87,7 +87,7 @@ response = requests.get(url)
 print(response.status_code) 
 
 # 결과값
-200
+# 200
 
 # 응답 코드는 세 자리의 숫자로 이루어져있는데, 숫자의 범위에 따라 응답 상태가 다르다고 생각하면 됩니다.
 # 100대의 숫자(100~199)는 임시 응답을 가리킵니다.
@@ -102,10 +102,11 @@ import requests
 from bs4 import BeautifulSoup as bs
 import urllib3
 import re
+import pandas as pd
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
-url = 'http://pythonscraping.com/pages/page1.html'
+url = 'https://pythonscraping.com/pages/page1.html'
 res = requests.get(url, verify=False).text
 soup = bs(res, 'lxml')
 rows = soup.select('div > ul > li')
