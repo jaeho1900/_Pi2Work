@@ -168,12 +168,34 @@ with open('downloaded_page.html', 'r', encoding='utf-8') as file:
     soup = BeautifulSoup(file, 'html.parser')
 soup
 
+# 검색 실행용 예제
+txt = """
+<body>
+ <h1> 장바구니
+       <p class="name" id="clothes" title="라운드티"> 라운드티 
+         <span class="number"> 25 </span>
+ <span class="price"> 29000 </span>
+ <span class="menu"> 의류</span>
+ <a href="http://www.naver.com"> 바로가기 </a>
+ </p>
+ <p class="name" id="watch" title="시계"> 시계 
+         <span class="number"> 28 </span>
+ <span class="price"> 32000 </span>
+ <span class="menu"> 액세서리 </span>
+ <a href="http://www.facebook.com"> 바로가기 </a>
+ </p>
+ </h1>
+</body>
+"""
+soup = BeautifulSoup(txt, 'html.parser')
+soup
+
 
 # ----------
 # find 메서드
 # ----------
 
-# find 함수는 조건에 부합하는 태그(이름(name), 속성(attribute), 속성값(value))를 찾아서 결과를 추출
+# find 함수는 조건에 맞는 태그(이름(name), 속성(attribute), 속성값(value))를 찾아서 결과를 추출
 # find()나 find_all()은 지정된 조건과 일치하는 태그와 그 태그 안에 포함된 모든 하위 요소들을 함께 반환
 # find_all()에만 설정할 수 있는 옵션으로, 반환할 결과의 최대 개수를 지정해주는 limit 존재
 
@@ -206,11 +228,6 @@ soup.find('span', class_='menu').get_text()
 soup.find_all('span', class_='menu')[0].get_text()
 
 
-
-
-
->>>> 여기서 재검토 필요 
-
 # ----------
 # select 메서드
 # ----------
@@ -218,44 +235,27 @@ soup.find_all('span', class_='menu')[0].get_text()
 # select 함수는 CSS 선택자(스타일 요소)를 사용해 태그를 찾습니다.
 
 # soup.select('태그명')                    태그명에 해당하는 모든 태그 추출
-# soup.select('.클래스 속성 값')           클래스 속성값이 일치하는 모든 태그 추출
-# soup.select('#아이디 속성 값')           아이디의 속성값이 일치하는 모든 태그 추출
-# soup.select('상위태그명 > 하위태그명')	상위태그에 포함된 태그들 중 하위태그명이 일치하는 모든 태그 추출(자식 관계)
-# soup.select('상위태그명 공백 하위태그명')	상위태그에 포함된 태그들 중 하위태그명이 일치하는 모든 태그 추출(자손 관계)
+# soup.select('.클래스속성값')             클래스 속성값이 일치하는 모든 태그 추출
+# soup.select('#아이디속성값')             아이디 속성값이 일치하는 모든 태그 추출
+# soup.select('상위태그명 > 하위태그명')    상위태그에 포함된 태그들 중 하위태그명이 일치하는 모든 태그 추출(자식관계)
+# soup.select('상위태그명 공백 하위태그명') 상위태그에 포함된 태그들 중 하위태그명이 일치하는 모든 태그 추출(자손관계)
 # soup.select('조건1, 조건2')	           태그명, 속성값 등 나열된 조건들 중 하나라도 일치하는 모든 태그 추출
-# soup.select('태그명. 클래스 속성 값')	    태그명과 클래스 속성값이 모두 일치하는 모든 태그 추출
-# soup.select('태그명[속성명="속성 값"]')   태그명과 속성명=속성값(아이디와 클래스 외 다른 속성)이 모두 일치하는 모든 태그 추출
+# soup.select('태그명.클래스속성값')        태그명과 클래스속성값이 모두 일치하는 모든 태그 추출
+# soup.select('태그명[속성명="속성값"]')    태그명과 속성명=속성값(클래스와 아이디 외 다른 속성)이 모두 일치하는 모든 태그 추출
 
-# <body>
-#  <h1> 장바구니
-#        <p class="name" id="clothes" title="라운드티"> 라운드티 
-#          <span class="number"> 25 </span>
-#  <span class="price"> 29000 </span>
-#  <span class="menu"> 의류</span>
-#  <a href="http://www.naver.com"> 바로가기 </a>
-#  </p>
-#  <p class="name" id="watch" title="시계"> 시계 
-#          <span class="number"> 28 </span>
-#  <span class="price"> 32000 </span>
-#  <span class="menu"> 액세서리 </span>
-#  <a href="http://www.facebook.com"> 바로가기 </a>
-#  </p>
-#  </h1>
-#  </body>
-
-# 태그 이름으로 특정 
+# 태그 이름으로 추출
 soup.select('body')
 
-# 아이디 속성 값으로 특정 
+# 아이디 속성 값으로 추출
 soup.select('#watch')
 
-# 자식 관계로 특정 : p태그 아래에 span 태그 중 클래스 속성 값이 menu인 것을 불러옵니다.
+# 자식 관계로 추출 : p태그 아래에 span 태그 중 클래스 속성 값이 menu인 것
 soup.select('p > .menu')
 
-# 자손 관계로 특정 : 손자관계(공백)
+# 자손 관계로 추출 : 손자관계(공백)
 soup.select('h1 .menu')
 
-# select 함수도 find 함수처럼 get_text()를 사용해 텍스트 부분만 추출할 수 있습니다.
+# select 함수도 find 함수처럼 get_text()를 사용해 텍스트 부분만 추출할 수 있다.
 # h1태그의 자손 중 클래스 속성 값이 menu인 태그의 텍스트 추출
 soup.select_one('h1 .menu').get_text()
 
@@ -267,17 +267,19 @@ soup.select('h1 .menu')[0].get_text()
 # 그외 탐색 방법
 # ----------
 
-# 특정 태그에 직접 접근해서 데이터를 추출하는 방법도 있습니다. 'soup.태그명'으로 태그에 접근할 수 있기 문법이 매우 간단합니다. 첫 번째 태그만 가져옵니다.
+# 특정 태그에 직접 접근하는 방법으로 'soup.태그명'으로 접근하여 첫 번째 태그만 가져온다.
 # soup.태그명                태그명에 해당하는 첫 번째 태그 추출
-# soup.태그명.get('속성명')   태그명에 해당하는 첫 번째 태그의 속성값을 반환
-# soup.태그명['속성명']       태그명에 해당하는 첫 번째 태그의 속성값을 반환
-# soup.태그명.attrs          태그명에 해당하는 첫 번째 태그의 모든 속성 정보를 딕셔너리로 반환
-# soup.상위태그명.하위태그명  상위태그명에 해당하는 첫 번째 태그의 하위태그 중 하위태그명과 일치하는 첫 번째 태그 추출(자식 관계)
+# soup.태그명['속성명']      태그명에 해당하는 첫 번째 태그의 속성값을 추출(에러발생시 실행중단)
+# soup.태그명.get('속성명')  태그명에 해당하는 첫 번째 태그의 속성값을 추출
+# soup.태그명.attrs          태그명에 해당하는 첫 번째 태그의 모든 속성 정보를 딕셔너리로 추출
+# soup.상위태그명.하위태그명  상위태그명에 해당하는 첫 번째 태그의 하위태그 중 하위태그명과 일치하는 첫 번째 태그 추출(자식관계)
 
 # 첫 번째 a태그를 추출
 soup.a
 
-# 속성명을 지정하는 방식은 soup.태그명['속성명']와 soup.태그명.get('속성명'), 이렇게 두 가지 방법이 있는데, soup.태그명['속성명'] 방식을 사용할 경우에는 해당 속성이 존재하지 않으면 에러가 발생해 코드 실행이 멈추게 됩니다. get() 함수를 사용해 속성명을 지정하는 방식은 지정한 속성이 존재하지 않으면 None을 반환하기 때문에 코드 실행이 중단되지 않아 안전하게 코드를 실행할 수 있습니다.
+# 속성명을 지정하는 방식은 soup.태그명['속성명']와 soup.태그명.get('속성명')
+# soup.태그명['속성명'] 방식을 사용할 경우에는 해당 속성이 존재하지 않으면 에러가 발생해 코드 실행이 멈추고
+# get() 함수를 사용하는 경우에는 지정한 속성이 존재하지 않으면 None을 반환하고 코드 실행은 중단되지 않는다.
 # 첫 번째 a태그의 href 속성값을 반환
 soup.a.get('href')
 
@@ -297,6 +299,10 @@ soup.p['title']
 soup.p.get_text()
 
 
+
+
+
+>>>> 여기서 계속
 # ----------
 # 부모태그 및 앞뒤의 형제태그로 추출하기
 # ----------
