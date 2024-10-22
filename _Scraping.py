@@ -299,18 +299,14 @@ soup.p['title']
 soup.p.get_text()
 
 
-
-
-
->>>> 여기서 계속
 # ----------
 # 부모태그 및 앞뒤의 형제태그로 추출하기
 # ----------
 
-# >>> 부모태그로 이동할 때는 find_parent()와 find_parents()를 사용 -----
+# >>> 부모태그로 이동 -----
 
-# find_parent()는 바로 위 직계 부모를 찾는 함수이고 find_parents()는 직계 부모를 넘어 조상들까지
-# 반환하는 함수입니다.
+# find_parent()는 바로 위 직계 부모를 찾는 함수
+# find_parents()는 직계 부모를 넘어 조상들까지 반환하는 함수
 
 # 첫 번째 a태그의 부모태그를 추출
 soup.a.find_parent()
@@ -318,23 +314,22 @@ soup.a.find_parent()
 # 첫 번째 a태그의 모든 조상태그를 리스트로 추출
 soup.a.find_parents()
 
-# >>> 형제 태그로 이동하는 방법 -----
+# >>> 형제 태그로 이동 -----
 
-# 형제 태그로 이동하는 방법으로는 find_next_sibling()함수와 find_previous_sibling()이 있습니다.
-# 이름에서도 알 수 있듯 find_next_sibling()은 지정한 태그의 다음 형제 태그로 이동하는 것이고
-# find_previous_sibling()은 이전 형제 태그로 이동하는 것을 의미합니다.
+# find_next_sibling()은 지정한 태그의 다음 형제 태그로 이동
+# find_previous_sibling()은 이전 형제 태그로 이동
 
 # 첫 번째 span 태그의 다음에 있는 형제태그 추출
 soup.span.find_next_sibling()
 
-# 다음 형제태그 모두를 가져올 때는 .find_next_siblings()를 사용합니다.
-# find_next_siblings()는 다음 형제태그 전체를 리스트로 반환합니다.
+# 다음 형제태그 모두를 가져올 때는 .find_next_siblings()를 사용
+# find_next_siblings()는 다음 형제태그 전체를 리스트로 반환
 
 # 첫 번째 span 태그의 다음에 있는 모든 형제태그 추출
 soup.span.find_next_siblings()
 
 # find_next_sibling('태그명', '속성값')의 형태로 괄호 안에 원하는 특정 태그명이나 속성값을 넣어주면
-# 다음에 있는 형제 태그 중에서 해당 태그명이나 속성값을 갖는 다음 형제를 찾을 수 있습니다.
+# 다음에 있는 형제 태그 중에서 해당 태그명이나 속성값을 갖는 다음 형제를 찾음
 
 # 첫 번째 span 태그의 다음에 있는 형제 태그 중 a 태그를 추출
 soup.span.find_next_sibling('a')
@@ -350,6 +345,12 @@ soup.a.find_previous_sibling('span', class_='number')
 
 # 첫 번째 a태그의 이전에 있는 형제태그 중 속성값이 number인 형제태그의 텍스트만 추출
 soup.a.find_previous_sibling('span', class_='number').get_text(strip=True)
+
+
+
+
+
+
 
 # >>> 정리 -----
 
