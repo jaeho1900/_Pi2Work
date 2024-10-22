@@ -150,7 +150,7 @@ with open(outfile_path_name, 'wb') as out_file:
 
 import requests
 import urllib3
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup as bs
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
@@ -165,7 +165,7 @@ with open('downloaded_page.html', 'w', encoding='utf-8') as file:
 
 # 저장된 HTML 파일을 열어 파싱해 BeautifulSoup 객체를 생성
 with open('downloaded_page.html', 'r', encoding='utf-8') as file:
-    soup = BeautifulSoup(file, 'html.parser')
+    soup = bs(file, 'html.parser')
 soup
 
 # 검색 실행용 예제
@@ -187,7 +187,7 @@ txt = """
  </h1>
 </body>
 """
-soup = BeautifulSoup(txt, 'html.parser')
+soup = bs(txt, 'html.parser')
 soup
 
 
@@ -350,16 +350,14 @@ soup.a.find_previous_sibling('span', class_='number').get_text(strip=True)
 
 
 
-
-
 # >>> 정리 -----
 
 from bs4 import BeautifulSoup as bs
-import re
 
-file = "D:/DeskTop/ctiger/Dropbox/Goodjob/Pi/trainingdata/html/TestHtml.html"
+file = "./ADP_ver01/TestHtml.html"
 f = open(file, 'r')
 soup = bs(f.read())
+soup
 
 # # 직접 태그 선택 -----
 soup.title
@@ -419,10 +417,12 @@ import copy
 test1 = soup.body                  # p태그 묶인 부분 가져오기
 test2 = copy.deepcopy(soup.body)   # 깊은 복사
 
-print(test1.p.extract())           # 지정 태그 잘라내기(하위태그 포함, 태그값반환)
+print(test1)
+print(test1.p.extract())           # 지정 태그 잘라내기(하위태그 포함, 제거하는 태그값반환)
 print(test1)
 
-print(test2.p.decompose())         # 지정 태그 잘라내기(하위태그 포함, None반환)
+print(test2)
+print(test2.p.decompose())         # 지정 태그 잘라내기(하위태그 포함, 제거하는 태그값반환없이 None반환)
 print(test2)
 
 # # 태그에서 불필요한 정보 제거(2): 정규표현식 -----
