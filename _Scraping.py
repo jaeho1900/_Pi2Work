@@ -168,7 +168,14 @@ with open('downloaded_page.html', 'r', encoding='utf-8') as file:
     soup = bs(file, 'html.parser')
 soup
 
+
+# ----------
 # 검색 실행용 예제
+# ----------
+
+import requests
+from bs4 import BeautifulSoup as bs
+
 txt = """
 <body>
  <h1> 장바구니
@@ -190,6 +197,14 @@ txt = """
 soup = bs(txt, 'html.parser')
 soup
 
+# >>> 심화 예제용 -----
+
+from bs4 import BeautifulSoup as bs
+
+file = "./ADP_ver01/TestHtml.html"
+f = open(file, 'r')
+soup2 = bs(f.read())
+soup2
 
 # ----------
 # find 메서드
@@ -227,6 +242,15 @@ soup.find('span', class_='menu').get_text()
 # span 태그 중 클래스가 menu인 첫 태그에서 텍스트 추출
 soup.find_all('span', class_='menu')[0].get_text()
 
+# >>> find 로 태그 선택: find(tag, {attribute}, text) -----
+
+soup2.findAll(['h1', 'h2', 'h3'])                       # 복수의 태그명 선택
+soup2.findAll('span', {'class': ['red', 'green']})      # 복수의 속성 선택
+soup2.findAll('span', text='the prince')                # 태그 사이의 텍스트로 선택
+soup2.findAll(lambda tag: len(tag.attrs) == 2)          # 속성이 2개인 태그 선택
+soup2.findAll(lambda tag: tag.text == 'Anna Pavlovna')  # 태그 사이의 텍스트로 선택
+soup2.findAll('img', {'src': re.compile(r"\.\/TestHtml_files\/img.*\.jpg")})
+
 
 # ----------
 # select 메서드
@@ -262,41 +286,21 @@ soup.select_one('h1 .menu').get_text()
 # h1태그의 자손 중 클래스 속성 값이 menu인 태그의 텍스트 추출
 soup.select('h1 .menu')[0].get_text()
 
+# >>> select 로 태그 선택 -----
 
-# ----------
-# 그외 탐색 방법
-# ----------
-
-# 특정 태그에 직접 접근하는 방법으로 'soup.태그명'으로 접근하여 첫 번째 태그만 가져온다.
-# soup.태그명                태그명에 해당하는 첫 번째 태그 추출
-# soup.태그명['속성명']      태그명에 해당하는 첫 번째 태그의 속성값을 추출(에러발생시 실행중단)
-# soup.태그명.get('속성명')  태그명에 해당하는 첫 번째 태그의 속성값을 추출
-# soup.태그명.attrs          태그명에 해당하는 첫 번째 태그의 모든 속성 정보를 딕셔너리로 추출
-# soup.상위태그명.하위태그명  상위태그명에 해당하는 첫 번째 태그의 하위태그 중 하위태그명과 일치하는 첫 번째 태그 추출(자식관계)
-
-# 첫 번째 a태그를 추출
-soup.a
-
-# 속성명을 지정하는 방식은 soup.태그명['속성명']와 soup.태그명.get('속성명')
-# soup.태그명['속성명'] 방식을 사용할 경우에는 해당 속성이 존재하지 않으면 에러가 발생해 코드 실행이 멈추고
-# get() 함수를 사용하는 경우에는 지정한 속성이 존재하지 않으면 None을 반환하고 코드 실행은 중단되지 않는다.
-# 첫 번째 a태그의 href 속성값을 반환
-soup.a.get('href')
-
-# 첫 번째 a태그의 속성 정보를 추출
-soup.a.attrs
-
-# 첫 번째 h1태그의 자식 태그 중 첫 번째 p태그 추출
-soup.h1.p
-
-# 첫 번째 h1태그의 자식 태그 중 첫 번째 p태그의 자식태그 중 첫 번째 span 태그 추출
-soup.h1.p.span
-
-# p태그의 title 속성값 추출
-soup.p['title']
-
-# 첫 번째 p 태그의 텍스트 추출
-soup.p.get_text()
+soup2.select('h1')                         # 태그명과 일치하는 태그 선택
+soup2.select('#footer')                    # id 가 ~~인 태그 선택
+soup2.select('.gift')                      # class가 ~~인 태그 선택
+soup2.select('tbody > tr.gift')            # 직계자손 태그 선택
+soup2.select('tbody  tr.gift')             # 모든 자손 태그 선택
+soup2.select('#giftList td:nth-child(3)')  # :nth-child(n) n번째 태그 선택
+soup2.select('tr[class = "gift"]')         # class속성 값이 ~~인 tr 태그 선택
+soup2.select('tr[class != "gift"]')        # class속성 값이 ~~가 아닌 tr 태그 선택
+soup2.select('img[src ^= "./"]')           # src속성 시작값이 ~~인 img 태그 선택
+soup2.select('img[src $= "jpg"]')          # src속성 끝값이 ~~인 img 태그 선택
+soup2.select('img[src *= "file"]')         # src속성 값이 ~~를 포함한 img 태그 선택
+soup2.select('img[src ~= "file"]')         # src속성 값이 독립단어 ~~를 포함한 img 태그 선택
+soup2.select(('img[type="hidden"][data-value="userValue"]'))  # and조건 img 태그 선택
 
 
 # ----------
@@ -347,47 +351,49 @@ soup.a.find_previous_sibling('span', class_='number')
 soup.a.find_previous_sibling('span', class_='number').get_text(strip=True)
 
 
+# ----------
+# 직접 태그 탐색 방법
+# ----------
 
+# 특정 태그에 직접 접근하는 방법으로 'soup.태그명'으로 접근하여 첫 번째 태그만 가져온다.
+# soup.태그명                태그명에 해당하는 첫 번째 태그 추출
+# soup.태그명['속성명']      태그명에 해당하는 첫 번째 태그의 속성값을 추출(에러발생시 실행중단)
+# soup.태그명.get('속성명')  태그명에 해당하는 첫 번째 태그의 속성값을 추출
+# soup.태그명.attrs          태그명에 해당하는 첫 번째 태그의 모든 속성 정보를 딕셔너리로 추출
+# soup.상위태그명.하위태그명  상위태그명에 해당하는 첫 번째 태그의 하위태그 중 하위태그명과 일치하는 첫 번째 태그 추출(자식관계)
 
+# 첫 번째 a태그를 추출
+soup.a
 
-# >>> 정리 -----
+# 속성명을 지정하는 방식은 soup.태그명['속성명']와 soup.태그명.get('속성명')
+# soup.태그명['속성명'] 방식을 사용할 경우에는 해당 속성이 존재하지 않으면 에러가 발생해 코드 실행이 멈추고
+# get() 함수를 사용하는 경우에는 지정한 속성이 존재하지 않으면 None을 반환하고 코드 실행은 중단되지 않는다.
+# 첫 번째 a태그의 href 속성값을 반환
+soup.a.get('href')
 
-from bs4 import BeautifulSoup as bs
+# 첫 번째 a태그의 속성 정보를 추출
+soup.a.attrs
 
-file = "./ADP_ver01/TestHtml.html"
-f = open(file, 'r')
-soup = bs(f.read())
-soup
+# 첫 번째 h1태그의 자식 태그 중 첫 번째 p태그 추출
+soup.h1.p
 
-# # 직접 태그 선택 -----
-soup.title
-soup.title.parent
+# 첫 번째 h1태그의 자식 태그 중 첫 번째 p태그의 자식태그 중 첫 번째 span 태그 추출
+soup.h1.p.span
 
-# # select 로 태그 선택 -----
-soup.select('h1')                         # 태그명과 일치하는 태그 선택
-soup.select('#footer')                    # id 가 ~~인 태그 선택
-soup.select('.gift')                      # class가 ~~인 태그 선택
-soup.select('tbody > tr.gift')            # 직계자손 태그 선택
-soup.select('tbody  tr.gift')             # 모든 자손 태그 선택
-soup.select('#giftList td:nth-child(3)')  # :nth-child(n) n번째 태그 선택
-soup.select('tr[class = "gift"]')         # class속성 값이 ~~인 tr 태그 선택
-soup.select('tr[class != "gift"]')        # class속성 값이 ~~가 아닌 tr 태그 선택
-soup.select('img[src ^= "./"]')           # src속성 시작값이 ~~인 img 태그 선택
-soup.select('img[src $= "jpg"]')          # src속성 끝값이 ~~인 img 태그 선택
-soup.select('img[src *= "file"]')         # src속성 값이 ~~를 포함한 img 태그 선택
-soup.select('img[src ~= "file"]')         # src속성 값이 독립단어 ~~를 포함한 img 태그 선택
-soup.select(('img[type="hidden"][data-value="userValue"]'))  # and조건 img 태그 선택
+# p태그의 title 속성값 추출
+soup.p['title']
 
-# # find 로 태그 선택: find(tag, {attribute}, text) -----
-soup.findAll(['h1', 'h2', 'h3'])                   # 복수의 태그명 선택
-soup.findAll('span', {'class': ['red', 'green']})  # 복수의 속성 선택
-soup.findAll('span', text='the prince')            # 태그 사이의 텍스트로 선택
-soup.findAll(lambda tag: len(tag.attrs) == 2)      # 속성이 2개인 태그 선택
-soup.findAll(lambda tag: tag.text == 'Anna Pavlovna')  # 태그 사이의 텍스트로 선택
-soup.findAll('img', {'src': re.compile(r"\.\/TestHtml_files\/img.*\.jpg")})
+# 첫 번째 p 태그의 텍스트 추출
+soup.p.get_text()
 
-# # 태그에서 필요 정보를 추출 -----
-tag = soup.select('tr')[1]
+# >>> 직접 태그 선택 -----
+
+soup2.title
+soup2.title.parent
+
+# >>> 태그에서 필요 정보를 추출 -----
+
+tag = soup2.select('tr')[1]
 
 tag.parent.name              # 태그명
 
@@ -402,7 +408,8 @@ tag.attrs['id']              # 태그 속성값
 tag.attrs                    # 태그 속성 목록 {속성1:속성값1, 속성2:속성값2, ...}
 tag.has_attr('id')           # 태그 속성값 존재 유무
 
-# # 태그에서 불필요한 정보 제거(1) -----
+# >>> 태그에서 불필요한 정보 제거(1) -----
+
 html = """
         <body>김딩코의 데이터세상
             <p>Great<b>Big</b>스토리</p>
@@ -425,7 +432,8 @@ print(test2)
 print(test2.p.decompose())         # 지정 태그 잘라내기(하위태그 포함, 제거하는 태그값반환없이 None반환)
 print(test2)
 
-# # 태그에서 불필요한 정보 제거(2): 정규표현식 -----
+# >>> 태그에서 불필요한 정보 제거(2): 정규표현식 -----
+
 import re
 html = "<html><head>some header information</head> \
         <Body>it's start. \
@@ -788,7 +796,6 @@ driver = webdriver.Chrome()
 driver.implicitly_wait(10)  # 최대 10초 동안 대기
 
 # implicitly_wait(10)는 전체 코드 내에서 요소를 검색할 때마다 드라이버가 요소를 찾을 수 없을 때 최대 10초까지 기다리라는 명령입니다. 요소가 10초 내에 발견되면 즉시 다음 코드로 진행하며, 10초 동안 발견되지 않으면 NoSuchElementException 오류가 발생합니다.
-
 
 
 # =====================
