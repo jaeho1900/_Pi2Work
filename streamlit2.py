@@ -19,8 +19,12 @@ def mapp_species(x):
 df['species'] = df['species'].apply(mapp_species)
 print(df)
 
-st.subheader('this is table')
-st.table(df.head())
+st.sidebar.title('Iris Species🌸')
 
-st.subheader('this is data frame')
-st.dataframe(df.head())
+select_multi_species = st.sidebar.multiselect(
+    '확인하고자 하는 종을 선택해 주세요. 복수선택가능',
+    ['setosa','versicolor','virginica']
+
+)
+tmp_df = df[df['species'].isin(select_multi_species)]
+st.table(tmp_df)
