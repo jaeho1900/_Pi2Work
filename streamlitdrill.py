@@ -1,8 +1,8 @@
 # =====================
-# Basic
+# 사용법
 # =====================
 
-# 웹 대시보드 개발 라이브러리인 스트림릿은 main 함수가 있어야 한다.
+# >>> main 함수 작성 -----
 
 import streamlit as st
 from PIL import Image
@@ -29,9 +29,17 @@ def main() :
 if __name__ == '__main__' :
     main()
 
+# >>> 실행 -----
+
+# 터미널에서 streamlit run 파일명.py
+
+# >>> 종료 -----
+
+# 터미널 창에서 Ctrl+C
+
 
 # --------------------
-# 문구
+# 텍스트 출력
 # --------------------
 
 import streamlit as st
@@ -39,6 +47,67 @@ import streamlit as st
 st.title('this is title')
 st.header('this is header')
 st.subheader('this is subheader')
+
+# 일반 텍스트
+st.title('타이틀 웹 대시보드')
+st.header('헤더 이 영역은 헤더')
+st.subheader('서브 헤더 이 영역은 서브헤더')
+st.text('텍스트 웹 대시보드 개발하기')
+
+# 안내 텍스트 박스
+st.success('작업이 성공 했을 때 사용하기')
+st.warning('경고 문구를 보여주고 싶을 때 사용하기')
+st.info('정보를 보여주고 싶을 때 사용하기')
+st.error('문제가 발생했을 때 사용하기')
+
+# 포맷팅 출력
+name = ['홍길동', '마징가']
+st.text('제 이름은 {}입니다.'.format(name))
+
+# 파이썬의 함수 사용법을 보여주고 싶을 때
+st.help(sum)
+st.help(len)
+
+
+# --------------------
+# 데이터프레임
+# --------------------
+
+import streamlit as st
+import seaborn as sns
+
+df = sns.load_dataset('iris')
+species = df['species'].unique()
+
+# 웹 대시보드에 출력(dataframe 또는 write) 
+st.dataframe(df.head())
+st.write(df.head())
+
+
+# --------------------
+# 상호작용 버튼
+# --------------------
+
+# >>> 버튼 -----
+
+# 버튼을 누를시 정해진 작업 수행
+# .button('버튼이름')
+
+if st.button('대문자') :
+    st.write(df['species'].str.upper().head(3))
+
+# >>> 라디오 버튼 -----
+
+# 여러 선택지 중에 하나를 선택하여 선택된 작업 수행
+# .radio('보여줄 메시지', '선택지1, 선택지2...')
+
+my_order = ['오름차순', '내림차순']         # 라디오 버튼에 보여줄 텍스트
+status = st.radio('정렬방법선택', my_order) # 라디오 버튼의 상태 변수화
+ 
+if status == my_order[0] :   # 첫번째 선택시 오름차순
+    st.write(df.sort_values('petal_length'))
+elif status == my_order[1] : # 두번째 선택시 내림차순
+    st.write(df.sort_values('petal_length', ascending=False))
 
 
 # --------------------
