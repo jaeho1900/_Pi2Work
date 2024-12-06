@@ -90,7 +90,7 @@ st.sidebar.checkbox('체크박스에 표시될 문구')
 import streamlit as st
 from PIL import Image
 
-#PIL 패키지에 이미지 모듈을 통해 이미지 열기 
+# PIL 패키지에 이미지 모듈을 통해 이미지 열기 
 img = Image.open('zarathu.png')
 st.image(img)
 
@@ -170,8 +170,8 @@ radio_select =st.sidebar.radio(
 # 선택한 컬럼의 값의 범위를 지정할 수 있는 slider를 만듭니다.
 slider_range = st.sidebar.slider(
     "choose range of key column",
-     0.0,      #시작 값 
-     10.0,     #끝 값  
+     0.0,      # 시작 값 
+     10.0,     # 끝 값  
     (2.5, 7.5) # 기본값, 앞 뒤로 2개 설정 /  하나만 하는 경우 value=2.5 이런 식으로 설정 가능
 )
 
@@ -187,7 +187,7 @@ start_button = st.sidebar.button(
 # slider_range[1] : 최댓값  
 if start_button:
     tmp_df = df[df['species'].isin(select_multi_species)]
-    #slider input으로 받은 값에 해당하는 값을 기준으로 데이터를 필터링합니다.
+    # slider input으로 받은 값에 해당하는 값을 기준으로 데이터를 필터링합니다.
     tmp_df= tmp_df[ (tmp_df[radio_select] >= slider_range[0]) & (tmp_df[radio_select] <= slider_range[1])]
     st.table(tmp_df)
     # 성공문구 + 풍선이 날리는 특수효과 
@@ -199,10 +199,149 @@ if start_button:
 # 시각화
 # =====================
 
+# 스트림릿에서는 bokeh, plotly, matplotlib 등의 패키지로 생성한 그림을 웹에 표시하는 기능 제공
 
 
 # --------------------
-# 
+# Plotly
 # --------------------
 
+# st.plotly_chart(figure_or_data, use_container_width=False, theme="streamlit", **kwargs)
+# figure_or_data : 그림의 이름이 들어가는 위치
+# use_container_width : 해상도를 조절 여부(True, False)
+# theme : 테마 설정(streamlit, None)
 
+import plotly.express as px
+import streamlit as st
+
+df = px.data.gapminder()
+
+fig = px.scatter(
+    df.query("year==2007"),
+    x="gdpPercap",
+    y="lifeExp",
+    size="pop",
+    color="continent",
+    hover_name="country",
+    log_x=True,
+    size_max=60,
+)
+fig.show()
+
+tab1, tab2 = st.tabs(["Streamlit theme (default)", "Plotly native theme"])
+with tab1:
+    # Use the Streamlit theme.(default, So you can also omit the theme argument)
+    st.plotly_chart(fig, theme="streamlit", use_container_width=True)
+with tab2:
+    # Use the native Plotly theme.
+    st.plotly_chart(fig, theme=None, use_container_width=True)
+
+
+# --------------------
+# 지도 표시
+# --------------------
+
+import numpy as np
+import pandas as pd 
+import streamlit as st
+
+#지도 위에 표시될 점 좌표 값을 위도경도에 담습니다 .
+#중심점의 위도, 경도 좌표를 리스트에 담습니다.
+base_position =  [37.5073423, 127.0572734]
+
+# base_position에, 랜덤으로 생성한 값을 더하여 5개의 좌표를 데이터 프레임으로 생성하였고,
+# 컬럼명은 위도 :lat  경도 lon으로 지정하였습니다. 
+map_data = pd.DataFrame(
+    np.random.randn(5, 1) / [20, 20] + base_position , 
+    columns=['lat', 'lon'])
+
+# map data 생성 : 위치와 경도 
+print(map_data)
+
+# 웹사이트에 어떤 코드인지 표시해주기 
+st.code('st.map(map_data)')
+# 제목 생성 
+st.subheader('Map of Data ')
+# 지도 생성 
+st.map(map_data)
+
+
+# --------------------
+# 세션 스테이트
+# --------------------
+
+# 상태가 자꾸 변하는 것들을 세션스테이트에 관리해두면 바뀌는 값에 따라 내용이 바뀌는 것들을 기록할 수 있다.
+
+# 세션스테이트에 초기값이 없으면, if문을 통해 초기값을 생성합니다.
+# 세션스테이트에 사용자가 입력한 인풋에 따라서 dataframe이 재가공 되는데 이 값이 interactive하게 지정되게 하기 위해 st.session_state값으로 사용합니다.
+
+# 예시코드 
+# import streamlit as st
+
+# if 'final_dataframe' not in st.session_state:
+#   # session state 에 final 이라는 값이 없으면, 초기값 데이터를 집어넣습니다.
+#   st.session_state['final_dataframe']= df
+
+# # 아래 코드는 df의 테이블 값이 바뀌더라도 interactive하게 연동되서 바뀌지 않습니다.
+# st.table(df)
+
+# #  아래 코드는  dataframe이 조작될 때 마다 session_state객체 안에 final_dataframe값을 변경하면,
+# #  수정 될 때  계속 바뀌어서 보여줍니다. 
+# st.table(st.session_state.final_dataframe)
+
+
+# --------------------
+# 캐쉬
+# --------------------
+
+# 시간이 오래걸리는 결과물을 미리 만들어두고, 보이지 않는 곳에 캐싱하여 필요할때 꺼내는 것을 cache기능이라고 할 수 있다.
+# 큰 데이터를 로드하거나, 실행이 오래걸리는 복잡한 연산을 해야할 때 cache기능을 이용
+
+import streamlit as st
+import pandas as pd 
+
+file_path = '~~~filepath'
+@st.cache
+def load_data():
+  data = pd.read_csv(file_path)
+  return data
+
+
+# --------------------
+# 로딩상태 구현
+# --------------------
+
+# >>> st.progress -----
+
+import time
+import streamlit as st
+
+latest_iteration = st.empty()
+bar = st.progress(0)
+
+# Update the progress bar with each iteration.
+for i in range(100):
+  latest_iteration.text(f'Iteration {i+1}')
+  bar.progress(i + 1)
+  # 0.05 초 마다 1씩증가
+  time.sleep(0.05)
+
+# 시간 다 되면 풍선 이펙트 보여주기 
+st.balloons()
+
+# >>> st.spinner -----
+
+import time 
+import streamlit as st
+
+with st.spinner('Wait for it...'):
+  time.sleep(5)
+  st.success('Done!') 
+
+
+# =====================
+# DBMS 연결 및 배포
+# =====================
+
+# DB연결 : https://docs.streamlit.io/develop/tutorials/databases
+# 링크배포 : https://docs.streamlit.io/deploy/tutorials
