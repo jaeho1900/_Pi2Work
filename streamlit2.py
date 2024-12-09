@@ -127,4 +127,36 @@ st.video('시연.mp4')
 # 텍스트 필드로 유저와 상호작용하기
 # --------------------
 
+# >>> 텍스트 필드에 값 입력 받기 (text_input) -----
 
+# .text_input('보여줄 메시지')
+# 입력 받은 데이터를 이용해 상호작용 
+# 옵션 > max_chars 를 사용하여 최대 길이 설정
+# 옵션 > type=password 을 사용하여 별표 처리
+
+import streamlit as st
+
+name = st.text_input('이름을 입력하세요 !', max_chars=10)
+if name != '' : # 입력시 출력
+    st.subheader(name + '님 안녕하세요.')
+
+pwd = st.text_input('비밀번호 입력', type='password')
+st.write(pwd)
+
+# >>> 텍스트 필드에 여러줄 입력받기 (text_area) -----
+
+# .text_area('보여줄 메시지') 
+# 옵션 > height 를 사용하여 칸 높이 설정, at least 68 pixels
+
+message = st.text_area('메세지를 입력하세요.', height = 68)
+st.text(message)
+
+# >>> 텍스트 필드에 숫자 데이터 입력받기 (number_input) -----
+
+# .number_input('보여줄 메시지', 시작값, 끝값)
+# 숫자 데이터는 정수와 실수로 받아서 처리 할 수 있다.
+
+# 정수 입력
+st.number_input('숫자 입력', 1, 100)
+# 실수 입력
+st.number_input('실수 입력', 1.0, 100.0)
