@@ -6,20 +6,12 @@ df = sns.load_dataset('iris')
 species = df['species'].unique()
 
 
-columns_list = df.columns
+video_file = open('시연.mp4', 'rb')
+st.video(video_file)
 
-choice_list = st.multiselect('컬럼을 선택하세요', columns_list)
-st.write( df[choice_list] )
+# >>> 비디오 파일의 경로를 그대로 넣어 다이렉트로 불러오기 -----
 
+# .video('경로와 파일이름', format='video/mp4')
 
-age = st.slider('나이', 1, 120, 30, 10)
-st.text('제가 선택한 나이는 {}입니다.'.format(age))
-
-
-st.sidebar.text('안녕하세요')
-st.sidebar.button('버튼')
-
-
-with st.expander('Hello') :
-    st.text('변경')
-    st.write(df)
+# 비디오 파일의 확장자만 잘 맞으면 format은 생략해도 된다.
+st.video('시연.mp4')

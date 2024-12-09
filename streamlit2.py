@@ -89,3 +89,42 @@ with st.expander('Hello') :
 # --------------------
 # 매체(이미지, 영상, 음악) 사용하기
 # --------------------
+
+import streamlit as st
+
+# >>> 내 서버(혹은 컴퓨터)에 있는 이미지 파일 불러오기 -----
+
+# 옵션 > use_column_width=True로 설정하면 현재 창을 기준으로 가로세로 너비가 조절
+st.image('pic.png')
+st.image('pic.png', use_container_width = True, caption = 'pic')
+
+# >>> 인터넷 URL을 이용하여 이미지 불러오기 -----
+
+# .image('경로와 파일이름')에는 경로가 URL도 포함되어 불러 올 수 있다.
+# 보통은 URL이 길기 때문에 가독성을 위해 변수로 저장해서 사용한다.
+img_url = 'https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FVF9W6%2FbtrCCFKYs6k%2FxMJQ2AfBtZRiEJlML71Lak%2Fimg.png'
+st.image(img_url)
+
+# >>> 비디오 파일의 경로와 모드가 포함 되어 있는 변수를 이용하여 불러오기 -----
+
+# 변수 = open('경로와 파일 이름', '모드')
+# .video(변수)
+# 여기서 모드란, 읽고 쓰기의 개념으로 무엇을 할지 정하는 것, rb를 사용한다. (read, 읽기)
+# rb는 이진 읽기라는 뜻이긴 한데, 쉽게 말해서 텍스트를 제외한 파일은 rb를 사용하면 된다.
+
+video_file = open('시연.mp4', 'rb')
+st.video(video_file)
+
+# >>> 비디오 파일의 경로를 그대로 넣어 다이렉트로 불러오기 -----
+
+# .video('경로와 파일이름', format='video/mp4')
+
+# 비디오 파일의 확장자만 잘 맞으면 format은 생략해도 된다.
+st.video('시연.mp4')
+
+
+# --------------------
+# 텍스트 필드로 유저와 상호작용하기
+# --------------------
+
+
