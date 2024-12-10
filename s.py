@@ -1,8 +1,13 @@
 import streamlit as st
+import test_home
+ 
+def main():
+    st.title(' 파일 분리 앱 ')
+    menu = ['Home', 'EDA', 'ML', 'About']
+    choice = st.sidebar.selectbox('메뉴', menu)
+ 
+    if choice == menu[0] :
+        test_home.run_home()
 
-message = st.text_area('메세지를 입력하세요.', height = 70)
-st.text(message)
-
-st.number_input('숫자 입력', 1, 100)
-# 실수 입력
-st.number_input('실수 입력', 1.000, 100.000)
+if __name__ == '__main__' :
+    main()

@@ -160,3 +160,122 @@ st.text(message)
 st.number_input('숫자 입력', 1, 100)
 # 실수 입력
 st.number_input('실수 입력', 1.0, 100.0)
+
+# >>> 텍스트 필드에 날짜/시간을 입력 받아 데이터 입력받기 (date/time_input) -----
+
+# 날짜 : .date_input('보여줄 메시지')
+# 입력 받은 날짜로 요일을 구할 수 있음
+# 요일 구하기 : 날짜데이터.weekday() / strftime('%A')
+# 시간 : .time_input('보여줄 메시지')
+
+my_date = st.date_input('약속 날짜')
+st.write(my_date)
+st.write(my_date.weekday())
+st.write(my_date.strftime('%A'))
+ 
+my_time = st.time_input('시간 입력')
+st.write(my_time)
+
+# >>> 사용자에게 색 입력 받기 (color_picker) -----
+
+# .color_picker('보여줄 메시지') : 컬러 팔레트에서 색을 선택
+
+my_color = st.color_picker('색 선택')
+st.write(my_color)
+
+
+# --------------------
+# GitHub에 업로드
+# --------------------
+
+import streamlit as st
+import os
+from datetime import datetime
+
+# >>> 파일 업로드 함수 -----
+
+# .file_uploader('보여줄 메시지', type= '업로드파일 확장자')
+# 옵션 > accept_multiple_files=True로 하면 여러 파일을 업로드
+
+# 업로드를 할 수 있게 해주는 기능이 사용자에게 나타나지만, 실제로 업로드가 되진 않는다.
+# 업로드한 파일의 정보를 담고 있으며 이 정보를 이용해 업로드를 진행해아한다.
+
+upload_file = st.file_uploader('이미지 파일 선택', type=['jpg', 'png', 'jpeg'])
+
+# >>> 파일이름 정의하기 -----
+
+# 업로드된 파일의 정보를 저장하기 위한 파일의 제목을 정해야 한다.
+
+current_time = datetime.now()
+upload_file.name = current_time.isoformat().replace(':', '_') + '.jpg'
+
+# >>> 파일 불러오기/저장 함수 -----
+
+# .open(파일이름, 모드)
+# .write(경로와 파일이름)
+# .close()
+
+# 업로드 파일을 가져오고 서버에 저장을 할 예정이기 때문에 wb(쓰기)를 사용
+# with를 사용해 close()를 사용할 필요가 없습니다.
+# getbuffer를 활용해 파일의 크기를 확인하고 알아서 저장하게 합니다.
+# 주의 사항 : getbuffer에는 반드시 파일의 데이터를 가지고 있는 변수여야 합니다.
+
+# 파일 쓰기(저장), 성공시 안내 문구 출력
+with open(upload_file.name, 'wb') as f:
+    f.write(upload_file.getbuffer())
+    st.success("Saved file : {}".format(upload_file.name))
+
+# >>> 전체 소스 코드 -----
+
+import streamlit as st
+import os
+from datetime import datetime
+ 
+def main() :
+    # 이미지 업로더, 이미지 파일만 업로드하게 설정
+    st.title('이미지 파일 업로드')
+    upload_file = st.file_uploader('이미지 파일 선택', type=['jpg', 'png', 'jpeg'])
+ 
+    # 지금 시간을 기준으로 업로드 파일 이름 설정
+    current_time = datetime.now()
+    upload_file.name = current_time.isoformat().replace(':', '_') + '.jpg'
+ 
+    # 파일 생성
+    with open(upload_file.name, 'wb') as f :
+        f.write(upload_file.getbuffer())
+        st.success("Saved file : {}".format(upload_file.name))
+ 
+if __name__ == '__main__' :
+    main()
+
+
+# --------------------
+# 라이브러리로 분리하여 작동하기
+# --------------------
+
+# >>> 메인 파일 'test.py' -----
+
+import streamlit as st
+import test_home
+ 
+def main():
+    st.title(' 파일 분리 앱 ')
+    menu = ['Home', 'EDA', 'ML', 'About']
+    choice = st.sidebar.selectbox('메뉴', menu)
+ 
+    if choice == menu[0] :
+        test_home.run_home()
+
+if __name__ == '__main__' :
+    main()
+
+# >>> 서브 파일 : 'test_home.py' -----
+
+import streamlit as st 
+
+def run_home():
+    st.subheader('홈 화면입니다')
+    st.text('파일 분리 앱 테스트')
+
+
+
