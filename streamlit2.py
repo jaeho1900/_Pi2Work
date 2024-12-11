@@ -278,4 +278,77 @@ def run_home():
     st.text('파일 분리 앱 테스트')
 
 
+# =====================
+# 웹 대시보드에 그래프 그리기
+# =====================
+
+# matplotlib/seaborn 라이브러리도 사용가능
+
+
+# --------------------
+# Streamlit 자체 제공 그래프
+# --------------------
+
+import streamlit as st
+import pandas as pd
+import seaborn as sns
+
+df = sns.load_dataset('iris')
+
+# >>> 선으로 표현된 그래프 그리기 (line_chart) -----
+
+# .line_chart(데이터) : 그래프를 꺾은 선으로 시각화
+st.line_chart(df)
+
+# >>> 영역으로 표현된 그래프 그리기 (area_chart) -----
+
+# .area_chart(데이터) : 그래프를 범위형으로 시각화
+st.area_chart(df)
+
+# >>> 막대으로 표현된 그래프 그리기 (bar_chart) -----
+
+# .bar_chart(데이터) : 그래프를 막대로 시각화
+st.bar_chart(df)
+
+# >>> 지도로 표현된 맵 그래프 그리기 (map) -----
+
+# .map(데이터) : 경도와 위도를 이용하여 지도의 해당 부분을 표시
+df2 = pd.DataFrame({'lat': [37.5684, 37.5701],'lon':[126.6762, 126.6820]})
+st.map(df2)
+
+
+# --------------------
+# altair 라이브러리를 이용
+# --------------------
+
+import streamlit as st
+import altair as alt
+import seaborn as sns
+
+df = sns.load_dataset('iris')
+
+# >>> 점으로 표현된 그래프 그리기 (mark_circle) -----
+
+# .Chart(데이터) .mark_circle() .encode(x=x축데이터, y=y축데이터, color=그룹별 색상)
+# streamlit.altair_chart(데이터) : 스트림릿을 이용하여 altair로 생성된 데이터만 사용 할 수 있다.
+
+alt_chart = alt.Chart(df).mark_circle().encode(x='petal_length',y='petal_width',color='species')
+st.altair_chart(alt_chart)
+
+
+# --------------------
+# plotly 라이브러리를 이용
+# --------------------
+
+import plotly.express as px
+
+# >>> 비율이 표시된 원형 그래프 그리기 (pie) -----
+
+# .pie(데이터, names='인덱스', values='값', title= '그래프에 표시될 제목')
+# streamlit.plotly_chart(데이터) : 스트림릿을 활용하여 plotly로 생성된 데이터만 사용 할 수 있다.
+
+fig = plotly.pie(df, names='lang', values='Sum', title='각 언어별 파이차트')
+st.plotly_chart(fig)
+
+
 
