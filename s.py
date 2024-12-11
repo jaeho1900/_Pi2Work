@@ -1,13 +1,21 @@
 import streamlit as st
-import altair as alt
-import seaborn as sns
+from streamlit_option_menu import option_menu
+import streamlit.components.v1 as html
+from  PIL import Image
+import numpy as np
+import pandas as pd
+import plotly.express as px
+import io
 
-df = sns.load_dataset('iris')
-
-# >>> 점으로 표현된 그래프 그리기 (mark_circle) -----
-
-# .Chart(데이터) .mark_circle() .encode(x=x축데이터, y=y축데이터, color=그룹별 색상)
-# streamlit.altair_chart(데이터) : 스트림릿을 이용하여 altair로 생성된 데이터만 사용 할 수 있다.
-
-alt_chart = alt.Chart(df).mark_circle().encode(x='petal_length',y='petal_width',color='species')
-st.altair_chart(alt_chart)
+with st.sidebar:
+    choose = option_menu("App Gallery", ["About", "Photo Editing", "Project Planning"],
+                         menu_icon="bi bi-airplane-engines", # "app-indicator",
+                         icons=['house', 'camera fill', 'kanban'],
+                         default_index=0,  # default_index = 처음에 보여줄 페이지 인덱스 번호
+                         styles={
+                                 "container": {"padding": "5!important", "background-color": "#D5D5D5"},
+                                 "icon": {"color": "orange", "font-size": "25px"}, 
+                                 "nav-link": {"font-size": "16px", "text-align": "left", "margin":"0px", "--hover-color": "#ABF200"},
+                                 "nav-link-selected": {"background-color": "#02ab21"},
+                                }
+                        )

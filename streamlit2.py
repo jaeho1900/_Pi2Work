@@ -326,6 +326,7 @@ import altair as alt
 import seaborn as sns
 
 df = sns.load_dataset('iris')
+k = df.groupby('species')['sepal_length'].sum()
 
 # >>> 점으로 표현된 그래프 그리기 (mark_circle) -----
 
@@ -340,15 +341,62 @@ st.altair_chart(alt_chart)
 # plotly 라이브러리를 이용
 # --------------------
 
+import streamlit as st
 import plotly.express as px
+import seaborn as sns
+
+df = sns.load_dataset('iris')
+df_k = df.groupby('species')['sepal_length'].sum()
 
 # >>> 비율이 표시된 원형 그래프 그리기 (pie) -----
 
 # .pie(데이터, names='인덱스', values='값', title= '그래프에 표시될 제목')
 # streamlit.plotly_chart(데이터) : 스트림릿을 활용하여 plotly로 생성된 데이터만 사용 할 수 있다.
 
-fig = plotly.pie(df, names='lang', values='Sum', title='각 언어별 파이차트')
+fig = px.pie(df_k, names='sepal_length', title='파이차트')
+st.plotly_chart(fig)
+
+# >>> 막대로 표현된 그래프 그리기 (bar) -----
+
+# .bar(데이터, x=x축데이터, y=y축데이터)
+# streamlit.plotly_chart(데이터)
+
+df_sorted = df_k.sort_values(ascending=False) # 합이 높은순 정렬
+fig = px.bar(df_sorted)
 st.plotly_chart(fig)
 
 
+# --------------------
+# 멀티 페이지 사이드바 메뉴 시각화하기(streamlit_option_menu)
+# --------------------
 
+# 스트림릿 옵션 메뉴 설치
+# pip install streamlit-option-menu
+
+import streamlit as st
+from streamlit_option_menu import option_menu
+import streamlit.components.v1 as html
+from  PIL import Image
+import numpy as np
+import pandas as pd
+import plotly.express as px
+import io
+
+with st.sidebar:
+    choose = option_menu("App Gallery", ["About", "Photo Editing", "Project Planning"],
+                         menu_icon="bi bi-airplane-engines", # "app-indicator",
+                         icons=['house', 'camera fill', 'kanban'],
+                         default_index=0,  # default_index = 처음에 보여줄 페이지 인덱스 번호
+                         styles={
+                                 "container": {"padding": "5!important", "background-color": "#D5D5D5"},
+                                 "icon": {"color": "orange", "font-size": "25px"}, 
+                                 "nav-link": {"font-size": "16px", "text-align": "left", "margin":"0px", "--hover-color": "#ABF200"},
+                                 "nav-link-selected": {"background-color": "#02ab21"},
+                                }
+                        )
+
+# >>> 메뉴 아이콘 바꾸기 -----
+
+# 메뉴 아이콘은 아래의 사이트에서 원하는 아이콘을 클릭하여 선택한 후,
+# 아이콘 페이지의 'Icon font' 속 <i class ="이름"> 에서 이름을 복사하여 입력한다.
+# https://icons.getbootstrap.com/
