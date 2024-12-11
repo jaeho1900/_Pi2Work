@@ -400,3 +400,16 @@ with st.sidebar:
 # 메뉴 아이콘은 아래의 사이트에서 원하는 아이콘을 클릭하여 선택한 후,
 # 아이콘 페이지의 'Icon font' 속 <i class ="이름"> 에서 이름을 복사하여 입력한다.
 # https://icons.getbootstrap.com/
+
+
+
+# 데이터 보여주기
+
+# 앞서 말씀드렸듯이 pandas dataframe을 보여주기 위해 st.write를 사용해도 되지만,
+# 더 많은 옵션들을 사용할 수 있는 pd.dataframe을 더 많이 사용합니다.
+
+# hide_index입니다. (인덱스 행을 없애주면 테이블이 더 깔끔해 보여서요)
+# st.dataframe(df, hide_index = True)
+
+# st.table()을 사용하기도 합니다. 사용하는 방법은 st.dataframe과 완전히 동일한데,
+# 테이블의 디자인이 조금 달라서 table이 더 깔끔해보인다 싶을 때 사용합니다.
