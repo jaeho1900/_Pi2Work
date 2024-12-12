@@ -817,6 +817,356 @@ st.data_editor(
     }
 )
 
+# >>> st.column_config.TimeColumn -----
+
+# label
+# 컬럼에 보여지는 라벨
+# width
+# 컬럼의 Width
+# help
+# 호버했을 때의 툴팁
+# disabled
+# editing이 가능한지 여부
+# required
+# null 값이 가능한지 여부
+# default
+# 컬럼의 기본값
+# format
+# time의 포맷 (HH:mm:ss)
+# min_value
+# 최소 시간
+# max_value
+# 최대 시간
+# step
+# Step의 간격
+
+df = pd.DataFrame(
+    {
+        "name": ["Park", "Lee", "Kim", "Choi"],
+        "access_time": [
+            time(12, 4, 0),
+            time(6, 11, 0),
+            time(21, 6, 0),
+            time(16, 1, 0),
+        ]
+    }
+)
+
+st.data_editor(
+    df,
+    column_config={
+        "access_time": st.column_config.TimeColumn(
+            label="Access Time is",
+            width="medium",
+            required=False,
+            format="HH:mm",
+            step=60
+        )
+    }
+)
+
+# >>> st.column_config.ListColumn -----
+
+# 리스트 유형의 값을 갖는 열을 설정
+
+# label
+# 컬럼에 보여지는 라벨
+# width
+# 컬럼의 Width
+# help
+# 호버했을 때의 툴팁
+
+import random
+df = pd.DataFrame(
+    {
+        "name": ["Park", "Lee", "Kim", "Choi"],
+        "score": [
+            random.sample(range(10, 100), 5),
+            random.sample(range(10, 100), 5),
+            random.sample(range(10, 100), 5),
+            random.sample(range(10, 100), 5),
+        ]
+    }
+)
+
+st.dataframe(
+    df,
+    column_config={
+        "score": st.column_config.ListColumn(
+            label="Scores",
+            width="large",
+            help="These are test scores"
+        )
+    }
+)
+
+# >>> st.column_config.LinkColumn -----
+
+# 하이퍼링크가 적용되는 열을 구성
+# label
+# 컬럼에 보여지는 라벨
+# width
+# 컬럼의 Width
+# help
+# 호버했을 때의 툴팁
+# disabled
+# editing이 가능한지 여부
+# required
+# null 값이 가능한지 여부
+# default
+# 컬럼의 기본값
+# max_chars
+# 컬럼값의 최대 글자수
+# validate
+# 데이터의 유효성 검사
+# e.g. `"^https://.+$"`
+# display_text
+# - None으로 하면 URL을 출력
+# - str으로 입력하면 모두 동일한 str로 출력
+# - 정규식으로도 정의 가능
+# e.g `"https://(.*?)\.streamlit\.app"`
+
+df = pd.DataFrame(
+    {
+        "name": ["Data", "Text", "Column"],
+        "url": ["Data_elements", "Text_elements", "Column_config"]
+    }
+)
+
+st.dataframe(
+    df,
+    column_config={
+        "url": st.column_config.LinkColumn(
+            label="Go to URL",
+            width="large",
+            help="If you click the link, go to the URL",
+            display_text="Go to this section"
+        )
+    }
+)
+
+# >>> st.column_config.ImageColumn -----
+
+# 열에 이미지를 넣는다.
+# label
+# 컬럼에 보여지는 라벨
+# width
+# 컬럼의 Width
+# help
+# 호버했을 때의 툴팁
+
+df = pd.DataFrame(
+    {
+        "name": [
+            "초인의 시대",
+            "킬러 경찰",
+            "인생존망2",
+            "화산귀환"
+        ],
+        "preview": [
+            "https://search.pstatic.net/common?type=f&size=206x268&quality=75&direct=true&src=https%3A%2F%2Fshared-comic.pstatic.net%2Fthumb%2Fwebtoon%2F730694%2Fthumbnail%2Fthumbnail_IMAG21_e6fc219d-e5ea-4d93-b7d6-45b595c2a3cb.jpeg",
+            "https://search.pstatic.net/common?type=f&size=206x268&quality=75&direct=true&src=https%3A%2F%2Fshared-comic.pstatic.net%2Fthumb%2Fwebtoon%2F808439%2Fthumbnail%2Fthumbnail_IMAG21_19387806-c0b0-4669-8fac-90607bbe12d6.jpg",
+            "https://search.pstatic.net/common?type=f&size=206x268&quality=75&direct=true&src=https%3A%2F%2Fshared-comic.pstatic.net%2Fthumb%2Fwebtoon%2F820354%2Fthumbnail%2Fthumbnail_IMAG21_1627d92f-77a9-4720-973d-820bc585df89.jpg",
+            "https://search.pstatic.net/common?type=f&size=206x268&quality=75&direct=true&src=https%3A%2F%2Fshared-comic.pstatic.net%2Fthumb%2Fwebtoon%2F769209%2Fthumbnail%2Fthumbnail_IMAG21_3511dcdd-6e33-4171-8839-598d6d266215.jpg"
+        ]
+    }
+)
+
+st.dataframe(
+    df,
+    column_config={
+        "preview": st.column_config.ImageColumn(
+            label="Thumbnail",
+            width="small",
+            help="A thumbnail of the webcomic"
+        )
+    }
+)
+
+# >>> st.column_config.LineChartColumn -----
+
+# 라인(선형) 차트 열을 설정
+# label
+# 컬럼에 보여지는 라벨
+# width
+# 컬럼의 Width
+# help
+# 호버했을 때의 툴팁
+# y_min
+# y-axis의 최소값
+# y_max
+# y-axis의 최대값
+
+df = pd.DataFrame(
+    {
+        "name": ["Kakao", "Naver", "Samsung", "LG"],
+        "sales": [
+            random.sample(range(0, 10000), 4),
+            random.sample(range(0, 10000), 4),
+            random.sample(range(0, 10000), 4),
+            random.sample(range(0, 10000), 4),
+        ]
+    }
+)
+
+df["sales_chart"] = df["sales"]
+
+st.dataframe(
+    df,
+    column_config={
+        "sales_list": st.column_config.ListColumn(
+            label="Sales Data",
+            width="medium",
+            help="It is sales data"
+        ),
+        "sales_chart": st.column_config.LineChartColumn(
+            label="Sales Chart",
+            width="medium",
+            help="It is a sales chart"
+        )
+    }
+)
+
+# >>> st.column_config.BarChartColumn -----
+
+# label
+# 컬럼에 보여지는 라벨
+# width
+# 컬럼의 Width
+# help
+# 호버했을 때의 툴팁
+# y_min
+# y-axis의 최소값
+# y_max
+# y-axis의 최대값
+
+df = pd.DataFrame(
+    {
+        "name": ["Kakao", "Naver", "Samsung", "LG"],
+        "margin": [
+            random.sample(range(4000, 10000), 4),
+            random.sample(range(4000, 10000), 4),
+            random.sample(range(4000, 10000), 4),
+            random.sample(range(4000, 10000), 4),
+        ]
+    }
+)
+
+df["margin_chart"] = df["margin"]
+
+st.dataframe(
+    df,
+    column_config={
+        "margin": st.column_config.ListColumn(
+            label="Margin Data",
+            width="medium",
+            help="This is margins data"
+        ),
+        "margin_chart" : st.column_config.BarChartColumn(
+            label="Margin Bar Chart",
+            help="This is margins chart",
+            width="medium",
+        )
+    }
+)
+
+# >>> st.column_config.ProgressColumn -----
+
+# label
+# 컬럼에 보여지는 라벨
+# width
+# 컬럼의 Width
+# help
+# 호버했을 때의 툴팁
+# format
+# progress에 표시될 텍스트의 format
+# (%d %e %f %g %i %u.)
+# e.g `"$ %.2f"`
+# min_value
+# progress bar의 최소값
+# max_value
+# progress bar의 최대값
+
+df = pd.DataFrame(
+    {
+        "name": ["Kim", "Park", "Lee", "Choi"],
+        "progress": [
+            random.choice(range(0, 101)),
+            random.choice(range(0, 101)),
+            random.choice(range(0, 101)),
+            random.choice(range(0, 101)),
+        ]
+    }
+)
+
+st.dataframe(
+    df,
+    column_config={
+        "progress": st.column_config.ProgressColumn(
+            label="Currnt progress",
+            format="%d%%",
+            width="medium",
+            help="Displays the current progress status"
+        )
+    }
+)
+
+# >>> 종합 예시 코드 -----
+
+df = pd.DataFrame(
+    {
+        "name": ["Kakao", "Naver", "Samsung", "LG"],
+        "image": [
+            "https://search.pstatic.net/sunny/?src=https%3A%2F%2Fwww.kakaocorp.com%2Fpage%2Ffavicon.ico&type=f30_30_png_expire24",
+            "https://search.pstatic.net/sunny/?src=https%3A%2F%2Fs.pstatic.net%2Fstatic%2Fwww%2Fu%2F2014%2F0328%2Fmma_204243574.png&type=f30_30_png_expire24",
+            "https://search.pstatic.net/sunny?src=https%3A%2F%2Fwww.samsung.com%2Fsec%2Fstatic%2F_images%2Ffavicon.ico&type=f30_30_png_expire24",
+            "https://search.pstatic.net/sunny/?src=https%3A%2F%2Fwww.lg.co.kr%2Ffavicon.ico&type=f30_30_png_expire24"
+        ],
+        "revenue": [
+            random.sample(range(5000, 10000), 4),
+            random.sample(range(5000, 10000), 4),
+            random.sample(range(5000, 10000), 4),
+            random.sample(range(5000, 10000), 4),
+        ]
+    }
+)
+
+df["margin"] = df["revenue"].apply(lambda x : [x[idx]-each for idx, each in enumerate(random.sample(range(0, 5001), 4))])
+df["max_ratio"] = df.apply(lambda x: max([x.margin[idx]/sale for idx, sale in enumerate(x.revenue)])*100, axis=1)
+
+st.dataframe(
+    df,
+    column_config={
+        "image": st.column_config.ImageColumn(
+            "Logo",
+            width="small",
+            help="This is the brand logo"
+        ),
+        "revenue": st.column_config.BarChartColumn(
+            "Bar chart Sales (2023Y)",
+            width="medium",
+            help="This is the company's revenue in 2023",
+            y_min=5000,
+            y_max=10000
+        ),
+        "margin": st.column_config.LineChartColumn(
+            "Margins",
+            width="small",
+            help="This is the company's 2023 margins",
+            y_min=0,
+            y_max=5001,
+        ),
+        "max_ratio": st.column_config.ProgressColumn(
+            "Maximum value for Ratio",
+            width="medium",
+            help="The maximum value of the operating margin",
+            format="%.1f%%",
+            min_value=0,
+            max_value=100
+        )
+    }
+)
+
 
 # =====================
 # 상호작용 도구
@@ -856,11 +1206,104 @@ st.sidebar.button('버튼')
 
 # >>> 버튼 -----
 
-# 버튼을 누를시 정해진 작업 수행
-# .button('버튼이름')
+# label
+# 버튼에 표시될 짧은 라벨로, 굵은 글씨, 기울임꼴, 인라인 코드, 이모지 지원.
+# key
+# 위젯의 고유 식별자
+# help
+# 마우스를 올렸을 때 표시되는 도움말 텍스트
+# on_click
+# 버튼 클릭 시 호출될 콜백 함수
+# args
+# 콜백에 전달할 인자
+# kwargs
+# 콜백에 전달할 키워드 인자
+# type
+# 버튼 타입으로 "secondary", "primary"이 있으며, 기본값은 "secondary"이다.
+# disabled
+# True로 설정하면 버튼이 비활성화됨. 기본값은 False.
+# use_container_width
+# True로 설정하면 버튼 너비가 부모 컨테이너와 동일해짐.
 
 if st.button('대문자') :
     st.write(df['species'].str.upper().head(3))
+
+btn = st.button("Click me", type="primary")
+if btn :
+    st.write("You clicked me!")
+
+# >>> 다운로드 버튼 -----
+
+# 사용자가 애플리케이션에서 직접 파일을 다운로드할 수 있는 버튼
+# label
+# 사용자에게 버튼 용도를 설명하는 짧은 라벨.
+# data
+# 다운로드할 파일의 내용.
+# file_name
+# 다운로드할 파일의 이름. 지정하지 않으면 자동으로 생성된다.
+# mime
+# 데이터의 MIME 타입. 지정하지 않으면 데이터 유형에 따라 자동으로 설정.
+# key
+# 위젯의 고유 키.
+# help
+# 버튼에 마우스를 올렸을 때 표시되는 도움말 툴팁.
+# on_click
+# 버튼 클릭 시 호출될 콜백 함수.
+# args
+# 콜백 함수에 전달할 인수.
+# kwargs
+# 콜백 함수에 전달할 키워드 인수.
+# type
+# 버튼 유형. "primary"는 강조 버튼, "secondary"는 일반 버튼이다.
+# disabled
+# 버튼을 비활성화. 기본값은 False.
+# use_container_width
+# 버튼의 너비를 부모 컨테이너의 너비에 맞춘다.
+
+download = st.download_button(
+    label="Download this file",
+    data=b"Hello, world!",
+    file_name="hello.txt",
+    mime="text/plain",
+)
+
+# >>> 링크 버튼 -----
+
+# 지정한 URL로 사용자를 리디렉션하는 기능
+# label
+# 사용자에게 버튼 용도를 설명하는 라벨. 마크다운을 포함할 수 있으며, 특정 스타일과 이모지 지원.
+# url
+# 클릭 시 열리는 URL
+# help
+# 버튼 위에 마우스를 올렸을 때 표시되는 도움말 툴팁
+# type
+# 버튼 유형 ("primary" 또는 "secondary"), 기본값은 "secondary"
+# disabled
+# 버튼 비활성화 여부, 기본값은 False
+# use_container_width
+# 버튼 너비를 부모 컨테이너의 너비에 맞춤
+
+link = st.link_button("Go to Data elemetns Page", url="Data_elements")
+google_link = st.link_button("Go to Google", url="https://google.com")
+
+# >>> 페이지 링크 -----
+
+# 사용자가 다른 페이지로 이동할 수 있는 하이퍼링크를 생성
+# page
+# 멀티페이지 앱 내 다른 페이지나 외부 페이지로 이동하는 링크의 경로 또는 URL.
+# label
+# 페이지 링크의 라벨. 외부 페이지에는 필수이며 Markdown 지원.
+# icon
+# 링크 아이콘으로 사용될 이모지. 단일 문자 사용 권장.
+# help
+# 링크 위에 마우스를 올렸을 때 표시되는 도움말 툴팁.
+# disabled
+# 페이지 링크 비활성화 여부. 기본값은 False.
+# use_container_width
+# 링크 너비를 부모 컨테이너의 너비에 맞춤.
+
+st.page_link("https://www.google.com", label="Google", icon="🔗")
+st.page_link("pages/Data_elements.py", label="Data Elements", icon="🪪")
 
 # >>> 라디오 버튼 -----
 
@@ -888,13 +1331,56 @@ st.write('<style>div.row-widget.stRadio > div{flex-direction:row;}</style>', uns
 
 # >>> 체크 박스 -----
 
-# 예/아니오 상황 체크만으로 작업 수행
-# .checkbox('보여줄 메시지')
+# 사용자가 선택할 수 있는 체크박스를 생성
+# label
+# 체크박스가 무엇을 위한 것인지 설명하는 라벨.
+# value
+# 체크박스가 처음 렌더링될 때 사전 선택 여부.
+# key
+# 위젯의 고유 키로 사용되는 선택적 문자열 또는 정수.
+# help
+# 체크박스 옆에 표시되는 선택적 도구 설명.
+# on_change
+# 체크박스의 값이 변경될 때 호출되는 콜백.
+# args
+# 콜백에 전달할 선택적 args 튜플.
+# kwargs
+# 콜백에 전달할 선택적 kwargs 딕셔너리.
+# disabled
+# True로 설정하면 체크박스를 비활성화.
+# label_visibility
+# 라벨의 가시성. "visible", "hidden", "collapsed"을 사용할 수 있으며, 기본값은 "visible"이다.
 
-if st.checkbox('헤드 5개 보기'):
-    st.write(df.head())
-else:
-    st.text('헤드를 숨겼습니다.')
+chk = st.checkbox("Check me") #  label_visibility="visible"
+if chk :
+    st.write("You checked me!")
+
+hidden_chk = st.checkbox("Hidden checkbox", label_visibility="hidden")
+
+# >>> 토글 -----
+
+# label
+# 토글의 라벨
+# value
+# 토글이 처음 렌더링될 때의 사전 선택 여부
+# key
+# 위젯의 고유 식별자
+# help
+# 토글 옆에 표시되는 도구 설명
+# on_change
+# 이 토글의 값이 변경될 때 호출되는 콜백 함수
+# args
+# 콜백 함수에 전달할 추가적인 args 튜플
+# kwargs
+# 콜백 함수에 전달할 추가적인 kwargs 딕셔너리
+# disabled
+# 토글을 비활성화하고자 할 때 사용. True로 설정하면 토글을 비활성화
+# label_visibility
+# 라벨의 가시성. "visible", "hidden", "collapsed"을 사용할 수 있으며, 기본값은 "visible"이다.
+
+toggle = st.toggle("Toggle me", key="toggle")
+if toggle :
+    st.write("You toggled me!")
 
 # >>> 셀렉트 박스 -----
 
@@ -1046,33 +1532,100 @@ st.audio( audio_file.read() , format='audio/mp3')
 # Streamlit 자체 제공 그래프
 # --------------------
 
-import streamlit as st
-import pandas as pd
-import seaborn as sns
-
-df = sns.load_dataset('iris')
-
 # >>> 선으로 표현된 그래프 그리기 (line_chart) -----
 
 # .line_chart(데이터) : 그래프를 꺾은 선으로 시각화
-st.line_chart(df)
+df = pd.DataFrame(
+    {
+        "quoter": ["1Q", "2Q", "3Q", "4Q"],
+        "sales": random.sample(range(0, 100), 4), 
+        "margin": random.sample(range(0, 100), 4), 
+    }
+)
+
+st.line_chart(
+    df,
+    x="quoter",
+    y=["sales", "margin"],
+    color=["#1764AB", "#4A98CA"],
+)
 
 # >>> 영역으로 표현된 그래프 그리기 (area_chart) -----
 
 # .area_chart(데이터) : 그래프를 범위형으로 시각화
-st.area_chart(df)
+df = pd.DataFrame(
+    np.random.randn(20, 4),
+    columns=["a", "b", "c", "d"])
+
+st.area_chart(
+    df,
+    x="a",
+    y=["b", "c", "d"],
+    color=["#1764AB", "#4A98CA", "#94C5DF"],
+    use_container_width=True  # 차트 너비를 컬럼 너비에 맞춥니다. 이 설정은 width 인자보다 우선
+)
 
 # >>> 막대으로 표현된 그래프 그리기 (bar_chart) -----
 
 # .bar_chart(데이터) : 그래프를 막대로 시각화
-st.bar_chart(df)
+df = pd.DataFrame(
+    {
+        "a": range(1, 13),
+        "b": np.random.randn(12), 
+        "c": np.random.randn(12), 
+        "d": np.random.randn(12), 
+    }
+)
+
+st.bar_chart(
+    df,
+    x="a",
+    y=["b", "c", "d"],
+    color=["#1764AB", "#4A98CA", "#94C5DF"],
+)
+
+# >>> 산점도 그래프 (scatter_chart) -----
+
+df = pd.DataFrame(np.random.randn(20, 3), columns=["a", "b", "c"])
+df['d'] = np.random.choice(['A','B','C'], 20)
+
+st.scatter_chart(
+    df,
+    x='a',
+    y='b',
+    color='d',
+    size='c',
+)
 
 # >>> 지도로 표현된 맵 그래프 그리기 (map) -----
 
 # .map(데이터) : 경도와 위도를 이용하여 지도의 해당 부분을 표시
-df2 = pd.DataFrame({'lat': [37.5684, 37.5701],'lon':[126.6762, 126.6820]})
-st.map(df2)
+# 랜덤 데이터 생성 (한국 기준)
+lat = np.random.uniform(35, 38, 20)  # 위도: 33도에서 38도 사이의 랜덤 값
+lon = np.random.uniform(126, 129, 20)  # 경도: 126도에서 129도 사이의 랜덤 값
+size = np.random.randint(1, 300, 20)*100  # 사이즈: 1에서 50 사이의 랜덤 정수 값
 
+# 랜덤 HEX Code
+def generate_hex_color(alpha='80'):
+    # RGB 값과 함께 알파(투명도) 값을 포맷 문자열에 추가
+    return '#{0:02X}{1:02X}{2:02X}{3}'.format(random.randint(0, 255), random.randint(0, 255), random.randint(0, 255), alpha)
+
+hex_colors = [generate_hex_color() for _ in range(20)]
+
+
+df = pd.DataFrame({
+    '위도': lat,
+    '경도': lon,
+    'size': size,
+    'color': hex_colors
+})
+
+st.map(
+    df,
+    latitude='위도',
+    longitude='경도',
+    size='size',
+    color='color')
 
 # --------------------
 # altair 라이브러리를 이용
