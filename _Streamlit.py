@@ -188,6 +188,45 @@ def run_home():
 # 레이아웃
 # =====================
 
+# >>> 구성 -----
+
+# 여백 |        이미지           | 여백
+# 여백 | 셀렉트박스| 데이터프레임 | 여백
+# 여백 |     긴셀렉트박스        | 여백
+# 여백 | 동영상   | 동영상설명    | 여백
+
+from tkinter.tix import COLUMN
+from pyparsing import empty
+import streamlit as st
+import numpy as np
+import pandas as pd
+from PIL import Image
+
+# 꽉찬화면 : 라이브러리 불러오는 부분 밑에 추가해 주면 가운데 정렬 영역을 좌정렬 꽉찬 화면으로 바꾼다.
+st.set_page_config(layout="wide")
+
+empty1,con1,empty2 = st.columns([0.3, 1.0, 0.3])
+empyt1,con2,con3,empty2 = st.columns([0.3, 0.5, 0.5, 0.3])
+empyt1,con4,empty2 = st.columns([0.3, 1.0, 0.3])
+empyt1,con5,con6,empty2 = st.columns([0.3, 0.5, 0.5, 0.3])
+
+with empty1 :
+    empty() # 여백부분1    
+with con1 :
+    st.subheader('이미지')
+with con2 :
+    st.subheader('셀렉트박스')
+with con3 :
+    st.subheader('데이터프레임')
+with con4 :
+    st.subheader('긴셀렉트박스')
+with con5 :
+    st.subheader('동영상')
+with con6 :
+    st.subheader('동영상설명')
+with empty2 :
+    empty() # 여백부분2
+
 # >>> column -----
 
 import streamlit as st
@@ -256,9 +295,20 @@ st.text('제 이름은 {}입니다.'.format(name))
 st.help(sum)
 st.help(len)
 
+# >>> 긴 문자열 출력할때 텍스트 영역 -----
+
+content = '''요즘 스트림릿(Streamlit)로 
+프로젝트 진행중인데~
+화면구성이 내맘처럼 쉽게 안되네요^^
+오늘도 여러가지 찾아보느라
+삽질에 삽질을ㅠ'''
+
+st.text(content)
+st.markdown(content)
+
 
 # --------------------
-# 텍스트 필드로 유저와 상호작용하기
+# 텍스트 필드로 유저에게 입력받기
 # --------------------
 
 # >>> 텍스트 필드에 값 입력 받기 (text_input) -----
@@ -266,7 +316,7 @@ st.help(len)
 # .text_input('보여줄 메시지')
 # 입력 받은 데이터를 이용해 상호작용 
 # 옵션 > max_chars 를 사용하여 최대 길이 설정
-# 옵션 > type=password 을 사용하여 별표 처리
+# 옵션 > type='password' 을 사용하여 별표 처리
 
 import streamlit as st
 
@@ -280,7 +330,7 @@ st.write(pwd)
 # >>> 텍스트 필드에 여러줄 입력받기 (text_area) -----
 
 # .text_area('보여줄 메시지') 
-# 옵션 > height 를 사용하여 칸 높이 설정, at least 68 pixels
+# 옵션 > height 를 사용하여 글상자높이 설정, at least 68 pixels
 
 message = st.text_area('메세지를 입력하세요.', height = 68)
 st.text(message)
@@ -295,7 +345,7 @@ st.number_input('숫자 입력', 1, 100)
 # 실수 입력
 st.number_input('실수 입력', 1.0, 100.0)
 
-# >>> 텍스트 필드에 날짜/시간을 입력 받아 데이터 입력받기 (date/time_input) -----
+# >>> 텍스트 필드에 날짜 또는 시간을 입력 받아 데이터 입력받기 (date/time_input) -----
 
 # 날짜 : .date_input('보여줄 메시지')
 # 입력 받은 날짜로 요일을 구할 수 있음
@@ -404,6 +454,10 @@ radio_select =st.sidebar.radio(
     ['sepal length', 'sepal width', 'petal length','petal width'],
     horizontal=True
     )
+
+# 라디오버튼을 수평으로 놓는 방법
+st.radio(label = 'Radio buttons', options = ['5점', '4점', '2점', '1점'])
+st.write('<style>div.row-widget.stRadio > div{flex-direction:row;}</style>', unsafe_allow_html=True)
 
 # >>> 체크 박스 -----
 
@@ -546,6 +600,12 @@ st.video(video_file)
 
 # 비디오 파일의 확장자만 잘 맞으면 format은 생략해도 된다.
 st.video('시연.mp4')
+
+# >>> 오디오 -----
+
+import streamlit as st
+audio_file = open('data2/song.mp3', 'rb')
+st.audio( audio_file.read() , format='audio/mp3')
 
 
 # =====================

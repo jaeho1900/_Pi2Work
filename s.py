@@ -1,21 +1,31 @@
+from tkinter.tix import COLUMN
+from pyparsing import empty
 import streamlit as st
-from streamlit_option_menu import option_menu
-import streamlit.components.v1 as html
-from  PIL import Image
 import numpy as np
 import pandas as pd
-import plotly.express as px
-import io
+from PIL import Image
 
-with st.sidebar:
-    choose = option_menu("App Gallery", ["About", "Photo Editing", "Project Planning"],
-                         menu_icon="bi bi-airplane-engines", # "app-indicator",
-                         icons=['house', 'camera fill', 'kanban'],
-                         default_index=0,  # default_index = 처음에 보여줄 페이지 인덱스 번호
-                         styles={
-                                 "container": {"padding": "5!important", "background-color": "#D5D5D5"},
-                                 "icon": {"color": "orange", "font-size": "25px"}, 
-                                 "nav-link": {"font-size": "16px", "text-align": "left", "margin":"0px", "--hover-color": "#ABF200"},
-                                 "nav-link-selected": {"background-color": "#02ab21"},
-                                }
-                        )
+# 꽉찬화면 : 라이브러리 불러오는 부분 밑에 추가해 주면 가운데 정렬 영역을 좌정렬 꽉찬 화면으로 바꾼다.
+st.set_page_config(layout="wide")
+
+empty1,con1,empty2 = st.columns([0.3, 1.0, 0.3])
+empyt1,con2,con3,empty2 = st.columns([0.3, 0.5, 0.5, 0.3])
+empyt1,con4,empty2 = st.columns([0.3, 1.0, 0.3])
+empyt1,con5,con6,empty2 = st.columns([0.3, 0.5, 0.5, 0.3])
+
+with empty1 :
+    empty() # 여백부분1    
+with con1 :
+    st.subheader('이미지')
+with con2 :
+    st.subheader('셀렉트박스')
+with con3 :
+    st.subheader('데이터프레임')
+with con4 :
+    st.subheader('긴셀렉트박스')
+with con5 :
+    st.subheader('동영상')
+with con6 :
+    st.subheader('동영상설명')
+with empty2 :
+    empty() # 여백부분2
