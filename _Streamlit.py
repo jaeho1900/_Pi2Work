@@ -264,6 +264,10 @@ import streamlit as st
 st.sidebar.title('this is sidebar')
 st.sidebar.checkbox('체크박스에 표시될 문구')
 
+# >>> 수평 구분선 -----
+
+st.divider()
+
 
 # =====================
 # 텍스트
@@ -271,8 +275,43 @@ st.sidebar.checkbox('체크박스에 표시될 문구')
 
 import streamlit as st
 
-st.title('this is title')
-st.header('this is header')
+# >>> markdown으로 CSS 적용 -----
+
+# st.markdown 인자
+# body (str) : 표시할 마크다운 텍스트를 입력한다
+# unsafe_allow_html (bool) : True로 설정하면 HTML 태그를 사용할 수 있다. (기본값은 False)
+# help (str) : 텍스트 옆에 표시되는 선택적 툴팁.
+
+# Example
+# 기본 마크다운 사용
+st.markdown("# 대제목")
+st.markdown("## 부제목")
+st.markdown("*이탤릭체 텍스트*")
+st.markdown("**볼드 텍스트**")
+st.markdown("`인라인 코드`")
+
+# 리스트와 링크를 포함하는 마크다운
+st.markdown("""
+- 목록 항목 1
+- 목록 항목 2 [Google 링크](https://www.google.com)
+""")
+
+# HTML 태그 사용 (unsafe_allow_html=True일 때만 작동)
+st.markdown("<span style='color:red'>빨간색 텍스트</span>", unsafe_allow_html=True)
+
+# st.markdown으로 <style> 태그를 직접 입력해주어야합니다.
+# unsafe_allow_html 옵션을 True로 설정해줍니다.
+
+# 브라우저의 개발자 도구를 이용해서 스타일을 적용하고 싶은 태그를 확인하고,
+# <style> 태그 안 쪽에 CSS 코드를 작성해주어 스타일을 적용할 수 있습니다.
+st.markdown("""
+<style>
+	
+</style>
+""", unsafe_allow_html=True)
+
+st.title('this is title', help='Title')
+st.header('this is header', help=None, divider=False)
 st.subheader('this is subheader')
 
 # 일반 텍스트
@@ -378,17 +417,405 @@ import seaborn as sns
 df = sns.load_dataset('iris')
 species = df['species'].unique()
 
+# >>> write -----
+
 # pandas dataframe을 보여주기 위해 st.write를 사용해도 되지만,
 st.write(df.head())
 
+# >>> dataframe -----
+
 # 더 많은 옵션들을 사용할 수 있는 pd.dataframe을 더 많이 사용합니다.
-# hide_index입니다. (인덱스 행을 없애주면 테이블이 더 깔끔해 보여서요)
-# st.dataframe(df, hide_index = True)
-st.dataframe(df.head(), hide_index = True)
+# use_container_width : True로 설정 시, 부모 컨테이너의 폭에 맞춤.
+st.dataframe(
+       data=df.head(),
+       width=None,
+       height=None,       
+       use_container_width=False, 
+       hide_index=None, 
+       column_order=None, 
+       column_config=None
+)
+
+df1 = pd.DataFrame(np.random.randn(50, 20), columns=("col %d" % i for i in range(20)))
+st.dataframe(df1)  # Same as st.write(df)
+
+df2 = pd.DataFrame(
+    {
+        "name": ["Roadmap", "Extras", "Issues"],
+        "url": ["https://roadmap.streamlit.app", "https://extras.streamlit.app", "https://issues.streamlit.app"],
+        "stars": [random.randint(0, 1000) for _ in range(3)],
+        "views_history": [[random.randint(0, 5000) for _ in range(30)] for _ in range(3)],
+    }
+)
+st.dataframe(
+    df2,
+    column_config={
+        "name": "App name",
+        "stars": st.column_config.NumberColumn(
+            "Github Stars",
+            help="Number of stars on GitHub",
+            format="%d ⭐",
+        ),
+        "url": st.column_config.LinkColumn("App URL"),
+        "views_history": st.column_config.LineChartColumn(
+            "Views (past 30 days)", y_min=0, y_max=5000
+        ),
+    },
+    hide_index=True,
+)
+
+# >>> table -----
 
 # st.table()을 사용하기도 합니다. 사용하는 방법은 st.dataframe과 완전히 동일한데,
 # 테이블의 디자인이 조금 달라서 table이 더 깔끔해보인다 싶을 때 사용합니다.
 st.table(df.head())
+
+# >>> data_editor -----
+
+# 테이블 형태의 UI에서 편집할 수 있게 하는 위젯을 표시
+st.data_editor(
+       data=None, 
+       width=None,
+       height=None,
+       use_container_width=False,
+       hide_index=None,
+       column_order=None,
+       column_config=None,
+       num_rows="fixed",  # 사용자가 행을 추가하거나 삭제할 수 있는지 여부를 지정
+       disabled=False,    # 열의 편집 가능 여부를 제어
+       key=None,
+       on_change=None,
+       args=None,
+       kwargs=None
+)
+
+df = pd.DataFrame(
+    [
+       {"command": "st.selectbox", "rating": 4, "is_widget": True},
+       {"command": "st.balloons", "rating": 5, "is_widget": False},
+       {"command": "st.time_input", "rating": 3, "is_widget": True},
+   ]
+)
+edited_df = st.data_editor(df)
+favorite_command = edited_df.loc[edited_df["rating"].idxmax()]["command"]
+
+# >>> metric -----
+
+# 주요 지표를 크고 굵은 글꼴로 표시하는 위젯
+# label
+# 지표의 헤더 또는 제목.
+# Markdown 요소를 포함할 수 있다.
+
+# value
+# 지표의 값. int, float, str, None 중 하나를 사용할 수 있다.
+
+# delta
+# 지표가 어떻게 변화했는지 나타내는 지표.
+# 양수 또는 음수일 수 있으며, None일 경우 표시되지 않는다.
+
+# delta_color
+# 변화량의 색상을 지정합니다.
+# "normal", "inverse", "off" 중 하나를 선택할 수 있다.
+
+# help
+# 지표 레이블 옆에 표시되는 선택적 툴팁.
+
+# label_visibility
+# 레이블의 가시성을 지정. "visible", "hidden", "collapsed" 중 하나를 선택할 수 있다.
+
+st.metric(label, value, delta=None, delta_color="normal", help=None, label_visibility="visible")
+
+col1, col2, col3 = st.columns(3)
+col1.metric("Temperature", "70 °F", "1.2 °F")
+col2.metric("Wind", "9 mph", "-8%")
+col3.metric("Humidity", "86%", "4%")
+
+# >>> st.column_config.Column -----
+
+# st.column_config.Column은 st.dataframe 또는 st.data_editor의 열을 구성할 때 사용
+# label
+# 열의 상단에 표시되는 레이블
+# width
+# 열의 표시 너비 ("small", "medium", "large" 중 하나).
+# help
+# 열 레이블 위로 마우스를 가져갔을 때 표시되는 도움말 툴팁.
+# disabled
+# 이 열의 편집을 비활성화할지 여부를 지정.
+# required
+# 편집된 셀이 None이 아닌 값을 가져야 하는지 여부를 지정.
+
+df = pd.DataFrame(
+    {
+        "name": ["Park", "Lee", "Kim", "Choi"],
+        "age": [24, 31, 40, 19],
+    }
+)
+
+st.dataframe(
+    df,
+    column_config={
+        "name": st.column_config.Column(
+            label="Name Column",
+            width="large",
+            help="Please enter a name",
+            required=True
+        )
+    }
+)
+
+# >>> st.column_config.TextColumn -----
+
+# st.data_editor 사용 시 텍스트 입력 위젯을 통해 편집을 활성화할 수 있다.
+
+# label
+# 열의 상단에 표시되는 레이블
+# width
+# 열의 표시 너비 ("small", "medium", "large" 중 하나).
+# help
+# 열 레이블 위로 마우스를 가져갔을 때 표시되는 도움말 툴팁.
+# disabled
+# 이 열의 편집을 비활성화할지 여부.
+# required
+# 편집된 셀이 None이 아닌 값을 가져야 하는지 여부를 지정.
+# max_chart
+# 셀이 입력할 수 있는 최대 글자 수
+# validate
+# 셀의 값이 특정 조건을 충족하는지 확인. 정규식을 통해 작성 가능.
+
+st.header("📌 TextColumn")
+st.data_editor(
+    df,
+    column_config={
+        "name": st.column_config.TextColumn(
+            label="Name Column",
+            width="medium",
+            help="You can modify the name (max 5)",
+            max_chars=5,
+        )
+    }
+)
+
+# >>> st.column_config.NumberColumn -----
+
+# label
+# 열의 상단에 표시되는 레이블.
+# width
+# 열의 표시 너비 ("small", "medium", "large" 중 하나).
+# help
+# 열 레이블 위로 마우스를 가져갔을 때 표시되는 도움말 툴팁.
+# disabled
+# 이 열의 편집을 비활성화할지 여부.
+# required
+# 편집된 셀이 None이 아닌 값을 가져야 하는지 여부.
+# default
+# 사용자가 새 행을 추가할 때 이 열의 기본값을 지정.
+# format
+# 셀 값의 표시 형식을 지정. 예를 들어, 소수점 이하 자릿수나 통화 형식 등을 설정할 수 있다. ("$ %.2f")
+# min_value
+# 셀이 가질 수 있는 최소값.
+# max_value
+# 셀이 가질 수 있는 최대값.
+# step
+# 셀 값이 증가 또는 감소할 수 있는 단계 크기를 지정.
+
+st.data_editor(
+    df,
+    column_config={
+        "age": st.column_config.NumberColumn(
+            label="Age Column",
+            width="medium",
+            help="You can only enter numbers",
+            required=True,
+            min_value=10,
+            max_value=99,
+            format="%d세"
+        )
+    }
+)
+
+# >>> st.column_config.CheckboxColumn -----
+
+# label
+# 열 상단에 표시되는 레이블.
+# width
+# 열의 표시 너비. ("small", "medium", "large" 또는 None)
+# help
+# 열 레이블 위로 마우스를 가져갔을 때 표시되는 도움말 툴팁.
+# disabled
+# 이 열의 편집을 비활성화할지 여부를 지정
+# required
+# 편집된 셀이 None이 아닌 값을 가져야 하는지 여부를 지정
+# default
+# 사용자가 새 행을 추가할 때 이 열의 기본값을 지정.
+
+df = pd.DataFrame(
+    {
+        "name": ["Park", "Lee", "Kim", "Choi"],
+        "age": [24, 31, 40, 19],
+        "flag": [True, False, True, False]
+    }
+)
+
+st.data_editor(
+    df,
+    column_config={
+        "flag": st.column_config.CheckboxColumn(
+            label="Attendance status",
+            help="Check if you are present",
+            default=False
+        )
+    }
+)
+
+# >>> st.column_config.SelectboxColumn -----
+
+# label
+# 열 상단에 표시되는 레이블.
+# width
+# 열의 표시 너비. ("small", "medium", "large" 또는 None)
+# help
+# 열 레이블 위로 마우스를 가져갔을 때 표시되는 도움말 툴팁.
+# disabled
+# 이 열의 편집을 비활성화할지 여부를 지정
+# required
+# 편집된 셀이 None이 아닌 값을 가져야 하는지 여부를 지정
+# default
+# 사용자가 새 행을 추가할 때 이 열의 기본값을 지정
+# options
+# 사용자가 선택할 수 있는 옵션 목록
+
+df = pd.DataFrame(
+    {
+        "name": ["Park", "Lee", "Kim", "Choi"],
+        "age": [24, 31, 40, 19],
+        "flag": [True, False, True, False],
+        "lang": [None, "JavaScript", "Python", "C"]
+    }
+)
+
+st.data_editor(
+    df,
+    column_config={
+        "lang": st.column_config.SelectboxColumn(
+            label="Main Language",
+            help="What is your the main language?",
+            options=[
+                "JavaScript", 
+                "Python",
+                "C",
+                "Rust"
+            ]
+        )
+    }
+)
+
+# >>> st.column_config.DatetimeColumn -----
+
+# label
+# 열 상단에 표시되는 레이블
+# width
+# 열의 표시 너비 ("small", "medium", "large" 또는 None)
+# help
+# 열 레이블 위로 마우스를 가져갔을 때 표시되는 도움말 툴팁
+# disabled
+# 이 열의 편집을 비활성화할지 여부.
+# required
+# 편집된 셀이 값을 가져야 하는지 여부.
+# default
+# 새 행이 추가될 때 이 열의 기본값을 지정.
+# format
+# 날짜 및 시간이 표시되는 형식을 지정.
+# min_value
+# 입력할 수 있는 최소 날짜 및 시간을 지정.
+# max_value
+# 입력할 수 있는 최대 날짜 및 시간을 지정.
+# step
+# 시간 증가 또는 감소의 단계 크기를 지정 (초단위).
+# timezone
+# 이 열의 시간대를 지정.
+
+from datetime import datetime
+
+df = pd.DataFrame(
+    {
+        "name": ["Park", "Lee", "Kim", "Choi"],
+        "age": [24, 31, 40, 19],
+        "flag": [True, False, True, False],
+        "lang": [None, "JavaScript", "Python", "C"],
+        "join": [
+            datetime(2024, 4, 22, 12, 30),
+            datetime(1992, 11, 26, 18, 0),
+            datetime(2021, 6, 6, 12, 00),
+            datetime(2024, 1, 1, 1, 0),
+        ]
+    }
+)
+
+st.data_editor(
+    df,
+    column_config={
+        "join": st.column_config.DatetimeColumn(
+            label="Join Date",
+            help="Enter the date and time you signed up",
+            min_value=datetime(1992, 1, 1),
+            max_value=datetime(2024, 1, 20),
+            step=60
+        )
+    }
+)
+
+# >>> st.column_config.DateColumn -----
+
+# label
+# 열 상단에 표시되는 레이블
+# width
+# 열의 표시 너비 ("small", "medium", "large" 또는 None)
+# help
+# 열 레이블 위로 마우스를 가져갔을 때 표시되는 도움말 툴팁
+# disabled
+# 이 열의 편집을 비활성화할지 여부.
+# required
+# 편집된 셀이 값을 가져야 하는지 여부.
+# default
+# 새 행이 추가될 때 이 열의 기본값.
+# format
+# 날짜가 표시되는 형식.
+# min_value
+# 입력할 수 있는 최소 날짜.
+# max_value
+# 입력할 수 있는 최대 날짜.
+# step
+# 날짜 증가 또는 감소의 단계 크기.
+
+from datetime import date
+df = pd.DataFrame(
+    {
+        "name": ["Park", "Lee", "Kim", "Choi"],
+        "age": [24, 31, 40, 19],
+        "flag": [True, False, True, False],
+        "lang": [None, "JavaScript", "Python", "C"],
+        "birthday": [
+            date(2024, 4, 22),
+            date(1992, 11, 26),
+            date(2021, 6, 6),
+            date(2024, 1, 1),
+        ]
+    }
+)
+
+st.data_editor(
+    df,
+    column_config={
+        "birthday": st.column_config.DateColumn(
+            label="Birth Day 😍",
+            help="Enter your birthday",
+            min_value=date(1992, 1, 1),
+            max_value=date(2024, 1, 20),
+            format="DD.MM.YYYY",
+            step=1
+        )
+    }
+)
 
 
 # =====================
