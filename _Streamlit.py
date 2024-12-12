@@ -282,13 +282,28 @@ import streamlit as st
 # unsafe_allow_html (bool) : True로 설정하면 HTML 태그를 사용할 수 있다. (기본값은 False)
 # help (str) : 텍스트 옆에 표시되는 선택적 툴팁.
 
-# Example
 # 기본 마크다운 사용
 st.markdown("# 대제목")
 st.markdown("## 부제목")
 st.markdown("*이탤릭체 텍스트*")
 st.markdown("**볼드 텍스트**")
 st.markdown("`인라인 코드`")
+
+# 맞춤 정렬
+st.markdown('<div style="text-align: center;">Hello World!</div>', unsafe_allow_html=True)
+st.markdown('<div style="text-align: left;">Hello World!</div>', unsafe_allow_html=True)
+st.markdown('<div style="text-align: right;">Hello World!</div>', unsafe_allow_html=True)
+st.markdown('<div style="text-align: justify;">Hello World!</div>', unsafe_allow_html=True) # 균등맞춤
+
+# 가운데 맞춤(1)
+st.markdown("<h1 style='text-align: center; color: grey;'>Big headline</h1>", unsafe_allow_html=True)
+
+# 가운데 맞춤(2)
+title_writing = "Test Title"
+title_format = f'<p style="text-align: center; font-family: ' \
+               f'Arial; color: #808080; font-size: 40px; ' \
+               f'font-weight: bold;">{title_writing}</p>'
+st.markdown(title_format, unsafe_allow_html=True)
 
 # 리스트와 링크를 포함하는 마크다운
 st.markdown("""
@@ -344,6 +359,27 @@ content = '''요즘 스트림릿(Streamlit)로
 
 st.text(content)
 st.markdown(content)
+
+# >>> 데이터프레임 적용 -----
+
+import streamlit as st
+import pandas as pd
+
+df = pd.DataFrame({
+    'A':[1,2,3,4],
+    'B':[1111,2,33,44444],
+    'C':[1,2,3,4]
+})
+
+styled_df = df.style.set_properties(**{
+    "background-color": "white", 
+    "color": "black", 
+    "border-color": "black", 
+    'text-align': 'center'
+})
+
+st.dataframe(styled_df)
+st.write(styled_df.to_html(), unsafe_allow_html=True)
 
 
 # --------------------
