@@ -21,3 +21,13 @@ st.dataframe(df, use_container_width=True, hide_index=True)
 df2 = st.data_editor(df, use_container_width=True, hide_index=True,num_rows="dynamic")
 st.table(df2)
 
+st.sidebar.markdown('<h4 style="text-align: left;">① 전기차 진화 시스템 약정 기간 선택</h4>', unsafe_allow_html=True)
+step1 = st.sidebar.radio(label = '① 전기차 진화 시스템 약정 기간 선택', options = ["무약정", "36개월(3년) 약정", "60개월(5년) 약정"])
+st.write(step1)
+
+st.sidebar.markdown('<h4 style="text-align: left;">② 원격 관제 시스템 약정 기간 선택</h4>', unsafe_allow_html=True)
+step2 = st.sidebar.radio(label = '', options = ["미선택", "무(일시납) 약정", "24개월(2년) 약정", "36개월(3년) 약정", "60개월(5년) 약정"])
+st.write(step2)
+
+st.sidebar.markdown('<h4 style="text-align: left;">③ 설치장소 및 필요수량(연속공간 기준) 입력</h4>', unsafe_allow_html=True)
+
