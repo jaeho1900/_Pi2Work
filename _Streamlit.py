@@ -416,7 +416,7 @@ st.text(message)
 # 숫자 데이터는 정수와 실수로 받아서 처리 할 수 있다.
 
 # 정수 입력
-st.number_input('숫자 입력', 1, 100)
+st.number_input('숫자 입력', min_value=1, max_value=100, value=50)
 # 실수 입력
 st.number_input('실수 입력', 1.0, 100.0)
 
