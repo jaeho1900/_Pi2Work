@@ -48,4 +48,7 @@ st.write(step1)
 st.write(step2)
 st.divider()
 
-st.write(st.session_state["추출"])
+df2 = st.session_state["추출"]
+st.write(df2)
+
+# click event 대체
