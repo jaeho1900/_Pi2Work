@@ -110,4 +110,7 @@ if not df_order.empty:
 else:
     st.warning("주차 정보를 입력해주세요.")
 
-print(df_order.iloc[0,1])
+if not df_order.empty:
+    for index, row in df_order.iterrows():        
+        new_row = pd.Series({"지하 층위치": row["지하 층위치"], "주차 가능 여부": row["주차 가능 여부"]}, name=index)
+st.write(new_row)
