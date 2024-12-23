@@ -10,10 +10,7 @@ df = pd.DataFrame(data)
 
 # iterrows() 함수를 사용하여 각 행 반복하기
 for index, row in df.iterrows():
-    # print(index)
+    print(index)
     # print(row['이름'])#, row['나이'], row['성별'])
     print(row['나이'])
-
-df.iloc[2, 2]
-
-
+    print('------')
