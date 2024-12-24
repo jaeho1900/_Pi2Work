@@ -1,16 +1,20 @@
 import streamlit as st
 
 import pandas as pd
+import numpy as np
 
-# 예제 DataFrame 생성
-data = {'이름': ['홍길동', '김철수', '이영희'],
-        '나이': [30, 25, 35],
-        '성별': ['남', '남', '여']}
-df = pd.DataFrame(data)
+np.arange(12).reshape(3, 4)
+aa = [['one', 'two'], [1, 2, 3], ['방가'],[],[],[]]
+bb = [500, 1000, 600]
 
-# iterrows() 함수를 사용하여 각 행 반복하기
-for index, row in df.iterrows():
-    print(index)
-    # print(row['이름'])#, row['나이'], row['성별'])
-    print(row['나이'])
-    print('------')
+k = 10
+df_01 = pd.DataFrame(index=range(k), columns=['구분', '약정개월/층위치', '주차면 수', '단가', '금액', '비고'])
+
+df_01.iloc[5,2] = "80,000"
+df_01.iloc[5,1] = ""
+df_01.loc[len(df_01)]=  [['one', 'two'], [1, 2, 3], ['방가'],[],[],[]]
+
+df_01.drop([5])
+
+print(df_01)
+
