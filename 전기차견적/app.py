@@ -73,18 +73,29 @@ def rms_system_sales(step2, num_parking):
         else:
             return "주차면수가 2~30면이 아닌 경우는 별도 문의 주세요"
     else:
-        return ""
+        return 0
 
 # RMS 월 운영비
-def rms_operation_monthly_sales(num_parking):
+def rms_operation_monthly_sales(step2, num_parking):
+    basic_k = 0
     if 7 <= num_parking <= 30:
-        return num_parking * 25000
+        basic_k = 25000
     elif 4 <= num_parking < 7:
-        return num_parking * 50000    
+        basic_k = 50000    
     elif 2 <= num_parking < 4:
-        return num_parking * 100000
+        basic_k = 100000
     else:
-        return ""
+        basic_k = 0
+
+    if step2 == "24개월(2년) 약정":
+        return basic_k * num_parking * 24
+    elif step2 == "36개월(3년) 약정":
+        return basic_k * num_parking * 36
+    elif step2 == "60개월(5년) 약정":
+        return basic_k * num_parking * 60
+    else:
+        return 0
+
 
 # form ----------------
 
@@ -133,7 +144,7 @@ st.write("step1 choice is amount? --> {:,}".format(int(putout_fire_system_sales(
 st.divider()
 st.write("step2 choice is --> {}".format(step2))
 st.write("step2 choice is amount? --> {:,}".format(int(rms_system_sales(step2, num_parking))))
-st.write("step3 choice is amount? --> {:,}".format(int(rms_operation_monthly_sales(num_parking))))
+st.write("step3 choice is amount? --> {:,}".format(int(rms_operation_monthly_sales(step2, num_parking))))
 
 
 # df2 = st.session_state["추출"]
