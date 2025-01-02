@@ -47,21 +47,17 @@ if __name__ == '__main__' :
 
 # 상태가 자꾸 변하는 것들을 세션스테이트에 관리해두면 바뀌는 값에 따라 내용이 바뀌는 것들을 기록할 수 있다.
 
-# 세션스테이트에 초기값이 없으면, if문을 통해 초기값을 생성합니다.
-# 세션스테이트에 사용자가 입력한 인풋에 따라서 dataframe이 재가공 되는데 이 값이 interactive하게 지정되게 하기 위해 st.session_state값으로 사용합니다.
+# 세션스테이트에 초기값이 없으면, if문을 통해 초기값을 생성한다.
+# 세션스테이트에 사용자가 입력한 인풋에 따라서 dataframe이 재가공 되는데 이 값이 interactive하게 지정되게
+# 하기 위해 st.session_state값으로 사용합니다.
 
 # 예시코드 
 # import streamlit as st
 
 # if 'final_dataframe' not in st.session_state:
-#   # session state 에 final 이라는 값이 없으면, 초기값 데이터를 집어넣습니다.
 #   st.session_state['final_dataframe']= df
 
-# # 아래 코드는 df의 테이블 값이 바뀌더라도 interactive하게 연동되서 바뀌지 않습니다.
-# st.table(df)
-
-# #  아래 코드는  dataframe이 조작될 때 마다 session_state객체 안에 final_dataframe값을 변경하면,
-# #  수정 될 때  계속 바뀌어서 보여줍니다. 
+# dataframe이 조작될 때 마다 session_state 객체 안의 final_dataframe이 interactive하게 변경된다.
 # st.table(st.session_state.final_dataframe)
 
 
@@ -69,8 +65,7 @@ if __name__ == '__main__' :
 # 캐쉬
 # --------------------
 
-# 시간이 오래걸리는 결과물을 미리 만들어두고, 보이지 않는 곳에 캐싱하여 필요할때 꺼내는 것을 cache기능이라고 할 수 있다.
-# 큰 데이터를 로드하거나, 실행이 오래걸리는 복잡한 연산을 해야할 때 cache기능을 이용
+# 시간이 오래걸리는 결과물을 미리 만들어두고, 필요할때 꺼내는 것이 cache기능이다.
 
 import streamlit as st
 import pandas as pd 

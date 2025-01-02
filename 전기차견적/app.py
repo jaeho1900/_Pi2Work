@@ -103,89 +103,55 @@ def rms_operation_monthly_sales(step2, num_parking):
 
 # st.image('상호.png')
 
-# tab1, tab2, tab3= st.sidebar.tabs(['Step 1 ▷▷', 'Step 2 ▷▷', 'Step 3'])
-
-# with tab1:
 step1 = st.sidebar.radio(label = '① 전기차 진화 시스템 약정 기간 선택', options = ["무약정", "36개월(3년) 약정", "60개월(5년) 약정"])
+st.sidebar.divider()
 
-# with tab2:
 step2 = st.sidebar.radio(label = '② 원격 관제 시스템 약정 기간 선택', options = ["미선택", "무(일시납) 약정", "24개월(2년) 약정", "36개월(3년) 약정", "60개월(5년) 약정"])
+st.sidebar.divider()
 
-# with tab3:
-st.sidebar.markdown('<h5 style="text-align: left;">③ 설치장소 및 필요수량(연속공간 기준) 입력</h5>', unsafe_allow_html=True)
-df_order = pd.DataFrame({"지하 층위치": [], "연속된 주차면수": []})
+st.sidebar.markdown('<h5 style="text-align: left;">③ 설치대수(연속공간 기준)</h5>', unsafe_allow_html=True)
+df = pd.DataFrame({"지하층위치": ["B1F"], "연속된주차면수": [2]})
 df_new = st.sidebar.data_editor(
-                        df_order, hide_index=True, num_rows="dynamic", use_container_width=True, key="추출", # 키값을 부여하여 세션스테이트와 연결
+                        df, num_rows="dynamic",
                         column_config={
-                                       "지하 층위치": st.column_config.SelectboxColumn(
-                                                        label="지하 층위치",
+                                       "지하층위치": st.column_config.SelectboxColumn(
                                                         help="지하 층위치를 선택하세요",
                                                         options=["B1F", "B2F", "B3F", "B4F", "B5F", "B6F", "B7F", "B8F", "기타"],
-                                                        required=True,
-                                                        default= "B1F"
+                                                        default="B1F"
                                                         ),
-                                       "연속된 주차면수": st.column_config.NumberColumn(
-                                                            label="연속된 주차면수",
-                                                            help="주차면수 1~30사이의 숫자를 입력하세요",
-                                                            min_value=1,
+                                       "연속된주차면수": st.column_config.NumberColumn(
+                                                            help="주차면수 2~30사이의 숫자를 입력하세요",
+                                                            min_value=2,
                                                             max_value=30,
                                                             format="%d 면",
-                                                            required=True,
-                                                            default= 1
+                                                            default=2
                                                             )
                        })
 
-num_parking = df_new.iloc[0,1]
+st.write("shape: ", df_new.shape)
+st.write(df_new)
+st.write(df_new.loc[:,"지하층위치"])
+st.write(df_new.loc[:,"연속된주차면수"])
+st.write(df_new.loc[:,"연속된주차면수"].sum())  # 총 주차면수
+st.write(df_new.iloc[0,0])
 
-st.divider()
-st.write("step1 choice is --> {}".format(step1))
-st.write("step1 choice is amount? --> {:,}".format(int(putout_fire_system_sales(step1, num_parking))))
+# num_parking = df_new.iloc[0,1]
 
-st.divider()
-st.write("step2 choice is --> {}".format(step2))
-st.write("step2 choice is amount? --> {:,}".format(int(rms_system_sales(step2, num_parking))))
-st.write("step3 choice is amount? --> {:,}".format(int(rms_operation_monthly_sales(step2, num_parking))))
+# if not df_new.empty:
+#     for index, row in df_new.iterrows():
+#         for column, value in row.items():            
+#             st.divider()
+#             st.write(f"인덱스: {index}, 열: {column}, 값: {value}")
 
+# selected_options = df_new["연속된 주차면수"].tolist()
+# st.write(selected_options)
 
-# df2 = st.session_state["추출"]
+# st.divider()
+# st.write("step1 choice is --> {}".format(step1))
+# st.write("step1 choice is amount? --> {:,}".format(int(putout_fire_system_sales(step1, num_parking))))
 
-# for i in range(0, len(st.session_state["추출"])):
-#   row_col = st.session_state["추출"]
-#   st.write(row_col)
+# st.divider()
+# st.write("step2 choice is --> {}".format(step2))
+# st.write("step2 choice is amount? --> {:,}".format(int(rms_system_sales(step2, num_parking))))
+# st.write("step3 choice is amount? --> {:,}".format(int(rms_operation_monthly_sales(step2, num_parking))))
 
-
-# (대안) click event 대체
-
-
-
-# ==========================================
-
-# import streamlit as st
-# import pandas as pd
-
-# # 데이터프레임 초기화
-# df_order = pd.DataFrame({"지하 층위치": [], "연속된 주차면수": []})
-
-# # 데이터 에디터로 사용자 입력 받기
-# df_order = st.data_editor(df_order, height=200, num_rows="dynamic")
-
-# # 입력된 데이터 확인 및 주차 가능 여부 표시
-# if not df_order.empty:
-#     for index, row in df_order.iterrows():
-#         if 1 < row["연속된 주차면수"] < 10:
-#             status = "주차 가능"
-#         else:
-#             status = "주차 불가"
-        
-#         # 지하 층위치와 주차 가능 여부를 새로운 행으로 추가
-#         new_row = pd.Series({"지하 층위치": row["지하 층위치"], "주차 가능 여부": status}, name=index)
-#         st.write(new_row)
-# ==========================================
-
-# # 입력된 데이터에서 '연속된 주차면수'에 대해 주차 가능 여부 표시
-# if not df_order.empty:
-#     # '연속된 주차면수'에 대해 계산
-#     df_order['주차 가능 여부'] = df_order['연속된 주차면수'].apply(check_parking_availability)
-# # 조건에 맞지 않는 입력이 있을 경우 경고 메시지
-# else:
-#     st.warning("주차 정보를 입력해주세요.")
