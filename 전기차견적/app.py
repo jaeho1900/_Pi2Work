@@ -1,34 +1,35 @@
 import streamlit as st
 import pandas as pd
+import numpy as np
 # from PIL import Image
 
 # 전기차 진화 시스템 구축비
 def putout_fire_system_sales(step1, num_parking):
     if step1 == "무약정":
         if 7 <= num_parking <= 30:
-            return num_parking * 9000000
+            return 9000000
         elif 4 <= num_parking < 7:
-            return num_parking * 10000000    
+            return 10000000    
         elif 2 <= num_parking < 4:
-            return num_parking * 13500000
+            return 13500000
         else:
             return "주차면수가 2~30면이 아닌 경우는 별도 문의 주세요"
     elif step1 == "36개월(3년) 약정":
         if 7 <= num_parking <= 30:
-            return num_parking * 11000000
+            return 11000000
         elif 4 <= num_parking < 7:
-            return num_parking * 11500000    
+            return 11500000    
         elif 2 <= num_parking < 4:
-            return num_parking * 16000000
+            return 16000000
         else:
             return "주차면수가 2~30면이 아닌 경우는 별도 문의 주세요"   
     elif step1 == "60개월(5년) 약정":
         if 7 <= num_parking <= 30:
-            return num_parking * 12000000
+            return 12000000
         elif 4 <= num_parking < 7:
-            return num_parking * 13500000    
+            return 13500000    
         elif 2 <= num_parking < 4:
-            return num_parking * 19500000
+            return 19500000
         else:
             return "주차면수가 2~30면이 아닌 경우는 별도 문의 주세요"
     else:
@@ -38,38 +39,38 @@ def putout_fire_system_sales(step1, num_parking):
 def rms_system_sales(step2, num_parking):
     if step2 == "무(일시납) 약정":
         if 7 <= num_parking <= 30:
-            return num_parking * 1100000
+            return 1100000
         elif 4 <= num_parking < 7:
-            return num_parking * 1400000    
+            return 1400000    
         elif 2 <= num_parking < 4:
-            return num_parking * 2000000
+            return 2000000
         else:
             return "주차면수가 2~30면이 아닌 경우는 별도 문의 주세요"
     elif step2 == "24개월(2년) 약정":
         if 7 <= num_parking <= 30:
-            return num_parking * 1180000
+            return 1180000
         elif 4 <= num_parking < 7:
-            return num_parking * 1500000    
+            return 1500000    
         elif 2 <= num_parking < 4:
-            return num_parking * 2140000
+            return 2140000
         else:
             return "주차면수가 2~30면이 아닌 경우는 별도 문의 주세요"   
     elif step2 == "36개월(3년) 약정":
         if 7 <= num_parking <= 30:
-            return num_parking * 1220000
+            return 1220000
         elif 4 <= num_parking < 7:
-            return num_parking * 1550000    
+            return 1550000    
         elif 2 <= num_parking < 4:
-            return num_parking * 2220000
+            return 2220000
         else:
             return "주차면수가 2~30면이 아닌 경우는 별도 문의 주세요"   
     elif step2 == "60개월(5년) 약정":
         if 7 <= num_parking <= 30:
-            return num_parking * 1400000
+            return 1400000
         elif 4 <= num_parking < 7:
-            return num_parking * 1780000    
+            return 1780000    
         elif 2 <= num_parking < 4:
-            return num_parking * 2540000
+            return 2540000
         else:
             return "주차면수가 2~30면이 아닌 경우는 별도 문의 주세요"
     else:
@@ -99,7 +100,7 @@ def rms_operation_monthly_sales(step2, num_parking):
 
 # form ----------------
 
-# st.markdown('<h1 style="text-align: center;">견 적 서</h1>', unsafe_allow_html=True)
+st.markdown('<h1 style="text-align: center;">견 적 서</h1>', unsafe_allow_html=True)
 
 # st.image('상호.png')
 
@@ -111,7 +112,7 @@ st.sidebar.divider()
 
 st.sidebar.markdown('<h5 style="text-align: left;">③ 설치대수(연속공간 기준)</h5>', unsafe_allow_html=True)
 df = pd.DataFrame({"지하층위치": ["B1F"], "연속된주차면수": [2]})
-df_new = st.sidebar.data_editor(
+edited_df = st.sidebar.data_editor(
                         df, num_rows="dynamic",
                         column_config={
                                        "지하층위치": st.column_config.SelectboxColumn(
@@ -128,30 +129,28 @@ df_new = st.sidebar.data_editor(
                                                             )
                        })
 
-st.write("shape: ", df_new.shape)
+i = edited_df.shape[0]
+j = edited_df.shape[1]
+
+st.write(edited_df.shape)
+st.divider()
+
+df_new = pd.DataFrame(np.random.rand(i+1, 5), columns=['구분','약정개월/층위치','주차면수','단가','금액'])
+# st.write(df_new)
+
+total = 0
+for m, n in edited_df.iterrows():   
+   df_new.iloc[m+1, 0] = ''
+   df_new.iloc[m+1, 1] = edited_df.iloc[m,0]
+   df_new.iloc[m+1, 2] = edited_df.iloc[m,1]
+   df_new.iloc[m+1, 3] = '{:,}'.format(putout_fire_system_sales(step1, edited_df.iloc[m,1]))
+   df_new.iloc[m+1, 4] = edited_df.iloc[m,1] * putout_fire_system_sales(step1, edited_df.iloc[m,1])
+   total += edited_df.iloc[m,1] * putout_fire_system_sales(step1, edited_df.iloc[m,1])
+
+df_new.iloc[0, 0] = '1.전기차 진화 시스템 구축비'
+df_new.iloc[0, 1] = step1
+df_new.iloc[0, 2] = edited_df.loc[:,"연속된주차면수"].sum()
+df_new.iloc[0, 3] = ''
+df_new.iloc[0, 4] = total
+
 st.write(df_new)
-st.write(df_new.loc[:,"지하층위치"])
-st.write(df_new.loc[:,"연속된주차면수"])
-st.write(df_new.loc[:,"연속된주차면수"].sum())  # 총 주차면수
-st.write(df_new.iloc[0,0])
-
-# num_parking = df_new.iloc[0,1]
-
-# if not df_new.empty:
-#     for index, row in df_new.iterrows():
-#         for column, value in row.items():            
-#             st.divider()
-#             st.write(f"인덱스: {index}, 열: {column}, 값: {value}")
-
-# selected_options = df_new["연속된 주차면수"].tolist()
-# st.write(selected_options)
-
-# st.divider()
-# st.write("step1 choice is --> {}".format(step1))
-# st.write("step1 choice is amount? --> {:,}".format(int(putout_fire_system_sales(step1, num_parking))))
-
-# st.divider()
-# st.write("step2 choice is --> {}".format(step2))
-# st.write("step2 choice is amount? --> {:,}".format(int(rms_system_sales(step2, num_parking))))
-# st.write("step3 choice is amount? --> {:,}".format(int(rms_operation_monthly_sales(step2, num_parking))))
-
