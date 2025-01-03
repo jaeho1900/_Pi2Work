@@ -132,11 +132,8 @@ edited_df = st.sidebar.data_editor(
 i = edited_df.shape[0]
 j = edited_df.shape[1]
 
-st.write(edited_df.shape)
-st.divider()
-
+# 전기차 진화 시스템 구축비 -----
 df_new = pd.DataFrame(np.random.rand(i+1, 5), columns=['구분','약정개월/층위치','주차면수','단가','금액'])
-# st.write(df_new)
 
 total = 0
 for m, n in edited_df.iterrows():   
@@ -153,4 +150,35 @@ df_new.iloc[0, 2] = edited_df.loc[:,"연속된주차면수"].sum()
 df_new.iloc[0, 3] = ''
 df_new.iloc[0, 4] = total
 
-st.write(df_new)
+
+# 원격관제 시스템 구축비 -----
+df_new2 = pd.DataFrame(np.random.rand(i+1, 5), columns=['구분','약정개월/층위치','주차면수','단가','금액'])
+
+total2 = 0
+for m, n in edited_df.iterrows():   
+   df_new2.iloc[m+1, 0] = ''
+   df_new2.iloc[m+1, 1] = edited_df.iloc[m,0]
+   df_new2.iloc[m+1, 2] = edited_df.iloc[m,1]
+   df_new2.iloc[m+1, 3] = '{:,}'.format(rms_system_sales(step2, edited_df.iloc[m,1]))
+   df_new2.iloc[m+1, 4] = edited_df.iloc[m,1] * rms_system_sales(step2, edited_df.iloc[m,1])
+   total2 += edited_df.iloc[m,1] * rms_system_sales(step2, edited_df.iloc[m,1])
+
+df_new2.iloc[0, 0] = '2.원격 관제 시스템 구축비'
+df_new2.iloc[0, 1] = step2
+df_new2.iloc[0, 2] = edited_df.loc[:,"연속된주차면수"].sum()
+df_new2.iloc[0, 3] = ''
+df_new2.iloc[0, 4] = total2
+
+
+# 월 운영 서비스료 -----
+df_new3 = pd.DataFrame(np.random.rand(1, 5), columns=['구분','약정개월/층위치','주차면수','단가','금액'])
+
+df_new3.iloc[0, 0] = '3.원격관제시스템 월 운영서비스료'
+df_new3.iloc[0, 1] = step2
+df_new3.iloc[0, 2] = edited_df.loc[:,"연속된주차면수"].sum()
+df_new3.iloc[0, 3] = ''
+df_new3.iloc[0, 4] = rms_operation_monthly_sales(step2, edited_df.loc[:,"연속된주차면수"].sum())
+
+# 합본 -----
+tot_df = pd.concat([df_new, df_new2, df_new3], ignore_index=True)
+st.dataframe(tot_df,  hide_index=True, use_container_width=True)
