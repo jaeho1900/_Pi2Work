@@ -161,6 +161,16 @@ st.table(df_new.style.format(decimal=".", precision=1, subset=['주차면수']) 
     ], overwrite=False)
 )
 
+import pandas as pd
+df = pd.DataFrame({'A': [1, 2, 3]})
+type(df)
+print(df)
+df.style
+type(df.style)
+print(help(df.style))
+
+
+
 # # 원격관제 시스템 구축비 -----
 # df_new2 = pd.DataFrame(np.random.rand(i+1, 5), columns=['구분','약정개월/층위치','주차면수','단가','금액'])
 
