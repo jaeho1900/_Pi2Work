@@ -1,3 +1,142 @@
+# =====================
+# HTML의 <table>태그 Style
+# =====================
+
+# --------------------
+# <table> 관련 태그
+# --------------------
+
+# <table>: Table element
+# <thead>: Table Head element
+# <tbody>: Table Body element
+# <tfoot>: Table Foot element
+
+# <tr>: Table Row element
+# <th>: Table Header element
+# <td>: Table Data Cell element
+
+
+# --------------------
+# table 속성
+# --------------------
+
+# colspan : 가로칸을 넓히는 개수를 지정 
+# rowspan : 세로칸을 넔히는 개수를 지정
+# border : 테이블 경계선 굵기를 지정(예: border="10")
+# width : 너비를 지정(픽셀이나, %)
+# height : 높이를 지정(픽셀이나, %)
+# cellpadding : 셀과 경계선 사이의 여백
+# cellspacing : 셀과 셀 사이의 여백
+# align : 셀의 가로줄을   오른쪽(right), 왼쪽(left), 중앙(center) 등으로 정렬
+# valign : 셀의 세로줄의 위(top), 중앙(middle), 아래(bottom)를 정렬
+# bgcolor : 배경색 지정
+# bgcolor 속성값으로는 색상명(green), 색상코드(#ff0000), rgb(0,0,255) 등으로 사용
+# bordercolor: 경계선 색깔 지정
+# text-align : 테이블 요소(th, td) 내부에서 텍스트의 수평 방향 정렬(<th>은 가운데 정렬, <td>태그는 왼쪽 정렬이 기본)
+# vertical-align : 테이블 요소(th, td) 내부에서 텍스트의 수직 방향 정렬(<th>태그 및 <td>태그 모두 가운데 정렬이 기본)
+
+# >>> CSS -----
+
+# CSS 적용 방법: 인라인 방식(태그에 직접 적용), 내부 스타일시트 방식(head 영역에 <style>태그로 적용), 외부 파일 방식(*.css)
+# CSS 형식: HTML요소{속성명:속성값; 속성명:속성값;} 또는 상위태그 하위태그{속성명:속성값; 속성명:속성값;}
+
+# HTML 요소의 style 속성(attribute)을 이용하면 CSS 스타일을 HTML 요소에 직접 설정할 수 있다.
+# <태그이름 style="속성이름:속성값; 속성이름:속성값;">
+
+# HTML 구문 -----
+# <table>
+#   <caption>
+#     Front-end web developer course 2021
+#   </caption>
+#   <thead>
+#     <tr>
+#       <th scope="col">Person</th>
+#       <th scope="col">Most interest in</th>
+#       <th scope="col">Age</th>
+#     </tr>
+#   </thead>
+#   <tbody>
+#     <tr>
+#       <th scope="row">Chris</th>
+#       <td>HTML tables</td>
+#       <td>22</td>
+#     </tr>
+#     <tr>
+#       <th scope="row">Dennis</th>
+#       <td>Web accessibility</td>
+#       <td>45</td>
+#     </tr>
+#     <tr>
+#       <th scope="row">Sarah</th>
+#       <td>JavaScript frameworks</td>
+#       <td>29</td>
+#     </tr>
+#     <tr>
+#       <th scope="row">Karen</th>
+#       <td>Web performance</td>
+#       <td>36</td>
+#     </tr>
+#   </tbody>
+#   <tfoot>
+#     <tr>
+#       <th scope="row" colspan="2">Average age</th>
+#       <td>33</td>
+#     </tr>
+#   </tfoot>
+# </table>
+
+# CSS 구문 -----
+# table {
+#   border-collapse: collapse;                # 테이블의 tr 공백 제거(한개의 선으로 표현)
+#   border: 2px solid rgb(140 140 140);
+#   font-family: sans-serif;
+#   font-size: 0.8rem;
+#   letter-spacing: 1px;
+# }
+
+# caption {
+#   caption-side: bottom;
+#   padding: 10px;
+#   font-weight: bold;
+# }
+
+# thead,                                        # head와 foot에 같이 적용
+# tfoot {
+#   background-color: rgb(228 240 245);
+# }
+
+# th,                                           # th와 td에 같이 적용
+# td {
+#   border: 1px solid rgb(160 160 160);
+#   padding: 8px 10px;
+# }
+
+# td:last-of-type {                             # td에만 적용
+#   text-align: center;
+# }
+
+# tbody {
+#   background-color: #e4f0f5;
+# }
+
+# tbody > tr:nth-of-type(even) {                # 한줄띄면서 적용 
+#   background-color: rgb(237 238 242);
+# }
+
+# tfoot th {
+#   text-align: right;
+# }
+
+# tfoot td {
+#   font-weight: bold;
+# }
+
+
+
+# =====================
+# Pandas DataFrame Style
+# =====================
+
 import pandas as pd
 import numpy as np
 
@@ -239,3 +378,6 @@ print(L[slice(3)])
 print(L[slice(-1)])
 print(L[slice(2, 9, 3)])
 print(L[2:9:3])
+
+
+df.style.set_properties(**{'text-align': 'right'})  # 테스트필요
