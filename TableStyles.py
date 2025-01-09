@@ -2,7 +2,6 @@
 # HTML의 <table>태그 Style
 # =====================
 
-
 # --------------------
 # CSS 
 # --------------------
@@ -51,102 +50,102 @@
 # --------------------
 
 #<html>
-#<head>
-#<style>
-# table {
-#   border-collapse: collapse;                # 테이블의 tr 공백 제거(한개의 선으로 표현)
-#   border: 2px solid rgb(140 140 140);
-#   font-family: sans-serif;
-#   font-size: 0.8rem;
-#   letter-spacing: 1px;
-# }
+# <head>
+#  <style>
+#   table {
+#     border-collapse: collapse;                # 테이블의 tr 공백 제거(한개의 선으로 표현)
+#     border: 2px solid rgb(140 140 140);
+#     font-family: sans-serif;
+#     font-size: 0.8rem;
+#     letter-spacing: 1px;
+#   }
+  
+#   caption {
+#     caption-side: bottom;
+#     padding: 10px;
+#     font-weight: bold;
+#   }
+  
+#   thead,                                        # head와 foot에 같이 적용
+#   tfoot {
+#     background-color: rgb(228 240 245);
+#   }
+  
+#   th,                                           # th와 td에 같이 적용
+#   td {
+#     border: 1px solid rgb(160 160 160);
+#     padding: 8px 10px;
+#   }
+  
+#   td {                                          # td에만 적용
+#        text-align: right;
+#    }
+  
+#   td:last-of-type {                             # 행의 마지막 요소(td)에만 적용
+#     text-align: center;
+#   }
+  
+#   tbody {
+#     background-color: #e4f0f5;
+#   }
+  
+#   tbody > tr:nth-of-type(even) {                # 한줄띄면서 적용 
+#     background-color: rgb(237 238 242);
+#   }
+  
+#   tfoot th {
+#     text-align: right;
+#   }
+  
+#   tfoot td {
+#     font-weight: bold;
+#   }
+#   </style>
+#  </head>
 
-# caption {
-#   caption-side: bottom;
-#   padding: 10px;
-#   font-weight: bold;
-# }
+#  <body>  
+#   <table>
+#     <caption>
+#       Front-end web developer course 2021
+#     </caption>
+#     <thead>
+#       <tr>
+#         <th scope="col">Person</th>
+#         <th scope="col">Most interest in</th>
+#         <th scope="col">Age</th>
+#       </tr>
+#     </thead>
+#     <tbody>
+#       <tr>
+#         <th scope="row">Chris</th>
+#         <td>HTML tables</td>
+#         <td>22</td>
+#       </tr>
+#       <tr>
+#         <th scope="row">Dennis</th>
+#         <td>Web accessibility</td>
+#         <td>45</td>
+#       </tr>
+#       <tr>
+#         <th scope="row">Sarah</th>
+#         <td>JavaScript frameworks</td>
+#         <td>29</td>
+#       </tr>
+#       <tr>
+#         <th scope="row">Karen</th>
+#         <td>Web performance</td>
+#         <td>36</td>
+#       </tr>
+#     </tbody>
+#     <tfoot>
+#       <tr>
+#         <th scope="row" colspan="2">Average age</th>
+#         <td>33</td>
+#       </tr>
+#     </tfoot>
+#   </table>
 
-# thead,                                        # head와 foot에 같이 적용
-# tfoot {
-#   background-color: rgb(228 240 245);
-# }
-
-# th,                                           # th와 td에 같이 적용
-# td {
-#   border: 1px solid rgb(160 160 160);
-#   padding: 8px 10px;
-# }
-
-# td {                                          # td에만 적용
-#      text-align: right;
-#  }
-
-# td:last-of-type {                             # 행의 마지막 요소(td)에만 적용
-#   text-align: center;
-# }
-
-# tbody {
-#   background-color: #e4f0f5;
-# }
-
-# tbody > tr:nth-of-type(even) {                # 한줄띄면서 적용 
-#   background-color: rgb(237 238 242);
-# }
-
-# tfoot th {
-#   text-align: right;
-# }
-
-# tfoot td {
-#   font-weight: bold;
-# }
-# </style>
-# </head>
-
-# <body>  
-# <table>
-#   <caption>
-#     Front-end web developer course 2021
-#   </caption>
-#   <thead>
-#     <tr>
-#       <th scope="col">Person</th>
-#       <th scope="col">Most interest in</th>
-#       <th scope="col">Age</th>
-#     </tr>
-#   </thead>
-#   <tbody>
-#     <tr>
-#       <th scope="row">Chris</th>
-#       <td>HTML tables</td>
-#       <td>22</td>
-#     </tr>
-#     <tr>
-#       <th scope="row">Dennis</th>
-#       <td>Web accessibility</td>
-#       <td>45</td>
-#     </tr>
-#     <tr>
-#       <th scope="row">Sarah</th>
-#       <td>JavaScript frameworks</td>
-#       <td>29</td>
-#     </tr>
-#     <tr>
-#       <th scope="row">Karen</th>
-#       <td>Web performance</td>
-#       <td>36</td>
-#     </tr>
-#   </tbody>
-#   <tfoot>
-#     <tr>
-#       <th scope="row" colspan="2">Average age</th>
-#       <td>33</td>
-#     </tr>
-#   </tfoot>
-# </table>
-
-# </body>
+#  </body>
 # </html>
 
 
@@ -158,20 +157,21 @@ import pandas as pd
 import numpy as np
 
 # >>> Helps style a DataFrame or Series according to the data with HTML and CSS -----
+
 # pandas.io.formats.style.Styler(
 #     data: DataFrame | Series,
-#     precision: int | None = None,
-#     table_styles: CSSStyles | None = None,
-#     uuid: str | None = None,
-#     caption: str | tuple | list | None = None,
-#     table_attributes: str | None = None,
-#     cell_ids: bool = True,
+#     formatter: ExtFormatter | None = None,
 #     na_rep: str | None = None,
-#     uuid_len: int = 5,
+#     precision: int | None = None,
 #     decimal: str | None = None,
 #     thousands: str | None = None,
+#     table_styles: CSSStyles | None = None,
+#     table_attributes: str | None = None,
+#     caption: str | tuple | list | None = None,
+#     cell_ids: bool = True,
+#     uuid: str | None = None,
+#     uuid_len: int = 5,
 #     escape: str | None = None,
-#     formatter: ExtFormatter | None = None,
 #     )
 
 df = pd.DataFrame([[1.0, 2.0, 3.0], [4, 5, 6]], index=['a', 'b'],
@@ -179,8 +179,8 @@ df = pd.DataFrame([[1.0, 2.0, 3.0], [4, 5, 6]], index=['a', 'b'],
 
 pd.io.formats.style.Styler(df, precision=2, caption="My table")
 
-
 # >>> Format the text display value of cells -----
+
 # Styler.format(formatter=None, subset=None, na_rep=None, precision=None, \
 #               decimal='.', thousands=None, escape=None, hyperlinks=None)
 #        formatter: str, callable, dict or None
@@ -206,8 +206,8 @@ df.style.format({0: '{:,.1f}', 1: '£ {:.2f}'}, na_rep='MISS', precision=2)
 func = lambda s: 'STRING' if isinstance(s, str) else 'FLOAT'
 df.style.format({0: '{:.1f}', 2: func}, precision=4, na_rep='MISS')
 
-
 # >>> Format the text display value of index labels or column headers -----
+
 # Styler.format_index(formatter=None, axis=0, level=None, na_rep=None, \
 #                     precision=None, decimal='.', thousands=None, escape=None, \
 #                     hyperlinks=None)
@@ -215,8 +215,8 @@ df.style.format({0: '{:.1f}', 2: func}, precision=4, na_rep='MISS')
 df = pd.DataFrame([[1, 2, 3]], columns=[2.0, np.nan, 4.0])
 df.style.format_index(axis=1, na_rep='MISS', precision=3)  
 
-
 # >>> Apply a CSS-styling function column-wise, row-wise, or table-wise -----
+
 # Styler.apply(func, axis=0, subset=None, **kwargs)
 #        func: function
 #        axis: {0 or 'index', 1 or 'columns', None}, default 0
@@ -238,8 +238,8 @@ df = pd.DataFrame(np.random.randn(5, 2), columns=["A", "B"])
 total_style = pd.Series("color:red; font-weight: bold; font-size:20px;", index=[4])
 pd.io.formats.style.Styler(df, precision=2, caption="My table").apply(lambda s: total_style, subset=(slice(None), "B"))
 
-
 # >>> Apply a CSS-styling function to the index or column headers, level-wise -----
+
 # Styler.apply_index(func, axis=0, level=None, **kwargs)
 #        func: function
 #        axis: {0, 1, “index”, “columns”}
@@ -263,8 +263,8 @@ for v in pd.DataFrame([np.arange(8)]):
     else:
         ""
 
-
 # >>> Hide the entire index / column headers, or specific rows / columns from display -----
+
 # Styler.hide(subset=None, axis=0, level=None, names=False)
 #        names: bool
 
@@ -284,17 +284,18 @@ df.style.format("{:,.1f}").hide(level=1)
 df.index.names = ["lev0", "lev1"]
 df.style.format("{:,.1f}").hide(names=True, axis=1) 
 
-
 # >>> Set defined CSS-properties to each <td> HTML element for the given subset -----
+
 # Styler.set_properties(subset=None, **kwargs)
 
 df = pd.DataFrame([[1.0, 2.0, 3.0, 4.0], [4, 5, 6, 7], ['top', 'soribada', 'copy', 'sound']],
                   columns=['Aa', 'Bbb', 'C', 'Dddd'])
 df.style.set_properties(color="lightblue", align="left", subset=['Aa','Dddd'])
+df.style.set_properties(**{'color':'lightblue', 'text-align': 'right'}, subset=['Aa','Dddd'])
 df.style.set_properties(**{'background-color': 'yellow', 'color': 'black'})
 
-
 # >>> Set the table styles included within the <style> HTML element -----
+
 # Styler.set_table_styles(table_styles=None, axis=0, overwrite=True, css_class_names=None)
 #        table_styles: list or dict
 #        axis: {0 or ‘index’, 1 or ‘columns’, None}, default 0
@@ -320,8 +321,8 @@ df.style.set_table_styles({
                                 'props': [('font-size', '25px')]}]
                           }, axis=1, overwrite=False)
 
-
 # >>> Reset the Styler, removing any previously applied styles -----
+
 # Styler.clear()
 
 df = pd.DataFrame({'A': [1, 2], 'B': [3, np.nan]})
@@ -329,10 +330,9 @@ df.style.highlight_null(color='yellow')
 df.style.clear()  
 
 
-
-# ============================
-# >>> tip: List, Set, Dict Comprehension -----
-# ============================
+# =====================
+# List, Set, Dict Comprehension
+# =====================
 
 # 1-1. 반복문
 [i**2 for i in range(10)]
@@ -365,7 +365,10 @@ for i in range(10):
 print(lst)
 
 
-# >>> tip: Generator Expression -----
+# =====================
+# Generator Expression
+# =====================
+
 # Comprehension 구문을 소괄호로 묶어주면 파이썬이 generator expression으로 인식하여
 # generator 객체로 생성한다.
 # 이를 사용하기 위해서는 해당 객체를 next()로 감싸서 호출하면 순서대로 하나씩 출력되고
@@ -377,7 +380,10 @@ print(a)
 print(next(a))
 
 
-# >>> tip: slice()함수 -----
+# =====================
+# slice()함수
+# =====================
+
 # index 기준으로 슬라이싱
 # slice(stop)
 # slice(start, stop[, step])
@@ -395,6 +401,3 @@ print(L[slice(3)])
 print(L[slice(-1)])
 print(L[slice(2, 9, 3)])
 print(L[2:9:3])
-
-
-df.style.set_properties(**{'text-align': 'right'})  # 테스트필요
