@@ -177,7 +177,7 @@ import numpy as np
 df = pd.DataFrame([[1.0, 2.0, 3.0], [4, 5, 6]], index=['a', 'b'],
                   columns=['A', 'B', 'C'])
 
-pd.io.formats.style.Styler(df, precision=2, caption="My table")
+pd.io.formats.style.Styler(df[['A', 'B']], formatter='{:,.2f}', caption="My table")
 
 # >>> Format the text display value of cells -----
 
@@ -194,11 +194,11 @@ pd.io.formats.style.Styler(df, precision=2, caption="My table")
 
 df = pd.DataFrame([[np.nan, 1988.0, 'A'], [2025.0, np.nan, 3.0]])
 
-df.style.format(na_rep='MISS', precision=2)
+df[[0,1]].style.format(formatter='{:,.2f}', na_rep='MISS')
 
 df.style.format('{:,.2f}', na_rep='MISS', subset=[0,1])
 
-df.style.format({0: '{:,.1f}', 1: '£ {:.2f}'}, na_rep='MISS', precision=2)
+df.style.format({0: '{:,.1f}', 1: '£ {:.2f}'}, na_rep='MISS', precision=3)
 
 (df.style.format(na_rep='MISS', precision=1, subset=[0])
          .format(na_rep='PASS', precision=2, subset=[1, 2])) 
@@ -232,7 +232,7 @@ df.style.format_index(axis=1, na_rep='MISS', precision=3)
 #        func: function
 #        axis: {0 or 'index', 1 or 'columns', None}, default 0
 #        subset: label, array-like, IndexSlice, optional
-#        **kwargs: dict
+#        **kwargs: dict(갯수의 제한이 없는 키워드=값 형식을 사용)
 
 def highlight_max(x, color):
     return np.where(x == np.nanmax(x.to_numpy()), f"color: {color};", None)
@@ -246,7 +246,7 @@ total_style = pd.Series("color:red; font-weight: bold; font-size:20px;", index=[
 df.style.apply(lambda s: total_style, subset=(slice(None), ["A", "B"]))
 
 df = pd.DataFrame(np.random.randn(5, 2), columns=["A", "B"])
-total_style = pd.Series("color:red; font-weight: bold; font-size:20px;", index=[4])
+total_style = pd.Series("color:red; font-weight:bold; font-size:20px;", index=[4])
 pd.io.formats.style.Styler(df, precision=2, caption="My table").apply(lambda s: total_style, subset=(slice(None), "B"))
 
 # >>> Apply a CSS-styling function to the index or column headers, level-wise -----
@@ -262,7 +262,6 @@ def color_b(s):
     return np.where(s == 1, "background-color: yellow;", "")
 df.style.apply_index(color_b, axis=1) \
         .relabel_index(["row 1", "row 2"], axis=0) 
-
 
 midx = pd.MultiIndex.from_product([['ix', 'jy'], [0, 1], ['x3', 'z4']])
 df = pd.DataFrame([np.arange(8)], columns=midx)
