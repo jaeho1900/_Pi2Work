@@ -126,7 +126,10 @@ edited_df = st.sidebar.data_editor(
 
 # form_main ----------------
 
+# 제목 -----
 st.markdown('<h1 style="text-align: center;">견 적 서</h1>', unsafe_allow_html=True)
+
+# 상호 -----
 # st.image('상호.png')
 
 # 전기차 진화 시스템 구축비 -----
@@ -152,23 +155,19 @@ df_new.iloc[0, 4] = total
 idx = pd.IndexSlice
 slice_ = idx[0, :]
 
-st.table(df_new.style.format(decimal=".", precision=1, subset=['주차면수']) \
- .format(na_rep='', thousands=",", precision=0, subset=['단가', '금액'])\
- .set_properties(**{'background-color': '#D5D5D5', 'color': 'black'}, subset=slice_)\
- .set_table_styles([
-    {'selector': 'th.col_heading', 'props': 'text-align-last: center; font-size: 1.0em; font-weight: bold;'},
-    {'selector': 'td', 'props': 'text-align-last: right'},
-    ], overwrite=False)
-)
+st.table(df_new.style \
+    .format_index({'props': 'text-align-last: center;'}) \
+    .format(na_rep='', precision=0, thousands=",", subset=['단가', '금액']) \
+    .format(decimal=".", precision=1, subset=['주차면수']) \
+    .hide(level=0))
 
-import pandas as pd
-df = pd.DataFrame({'A': [1, 2, 3]})
-type(df)
-print(df)
-df.style
-type(df.style)
-print(help(df.style))
 
+df.style.set_table_styles({
+                           'A': [{'selector': '',                  # columnLable에도 영향
+                                  'props': [('color', 'red')]}],
+                           'B': [{'selector': 'td',                # 데이터에만 영향
+                                  'props': 'color: blue;'}]
+                          }, overwrite=False)
 
 
 # # 원격관제 시스템 구축비 -----

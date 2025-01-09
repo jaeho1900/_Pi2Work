@@ -206,6 +206,17 @@ df.style.format({0: '{:,.1f}', 1: '£ {:.2f}'}, na_rep='MISS', precision=2)
 func = lambda s: 'STRING' if isinstance(s, str) else 'FLOAT'
 df.style.format({0: '{:.1f}', 2: func}, precision=4, na_rep='MISS')
 
+def rain_condition(v):
+    if v < 1.75:
+        return "Dry"
+    elif v < 2.75:
+        return "Rain"
+    return "Heavy Rain"
+weather_df = pd.DataFrame(np.random.rand(10,2)*5,
+                          index=pd.date_range(start="2021-01-01", periods=10),
+                          columns=["Tokyo", "Beijing"])
+weather_df.style.format(rain_condition)
+
 # >>> Format the text display value of index labels or column headers -----
 
 # Styler.format_index(formatter=None, axis=0, level=None, na_rep=None, \
@@ -249,7 +260,9 @@ pd.io.formats.style.Styler(df, precision=2, caption="My table").apply(lambda s: 
 df = pd.DataFrame([[1,2], [3,4]], index=["A", "B"])
 def color_b(s):
     return np.where(s == 1, "background-color: yellow;", "")
-df.style.apply_index(color_b, axis=1)
+df.style.apply_index(color_b, axis=1) \
+        .relabel_index(["row 1", "row 2"], axis=0) 
+
 
 midx = pd.MultiIndex.from_product([['ix', 'jy'], [0, 1], ['x3', 'z4']])
 df = pd.DataFrame([np.arange(8)], columns=midx)
@@ -284,16 +297,6 @@ df.style.format("{:,.1f}").hide(level=1)
 df.index.names = ["lev0", "lev1"]
 df.style.format("{:,.1f}").hide(names=True, axis=1) 
 
-# >>> Set defined CSS-properties to each <td> HTML element for the given subset -----
-
-# Styler.set_properties(subset=None, **kwargs)
-
-df = pd.DataFrame([[1.0, 2.0, 3.0, 4.0], [4, 5, 6, 7], ['top', 'soribada', 'copy', 'sound']],
-                  columns=['Aa', 'Bbb', 'C', 'Dddd'])
-df.style.set_properties(color="lightblue", align="left", subset=['Aa','Dddd'])
-df.style.set_properties(**{'color':'lightblue', 'text-align': 'right'}, subset=['Aa','Dddd'])
-df.style.set_properties(**{'background-color': 'yellow', 'color': 'black'})
-
 # >>> Set the table styles included within the <style> HTML element -----
 
 # Styler.set_table_styles(table_styles=None, axis=0, overwrite=True, css_class_names=None)
@@ -304,22 +307,57 @@ df.style.set_properties(**{'background-color': 'yellow', 'color': 'black'})
 
 df = pd.DataFrame(np.random.randn(10, 4), columns=['A', 'B', 'C', 'D'])
 
+df.style.set_table_styles({
+                           'A': [{'selector': '',                  # columnLable에도 영향
+                                  'props': [('color', 'red')]}],
+                           'B': [{'selector': 'td',                # 데이터에만 영향
+                                  'props': 'color: blue;'}]
+                          }, overwrite=False)
 df.style.set_table_styles([{'selector': 'tr:hover',
-                            'props': [('background-color', 'yellow')]
+                            'props': [('background-color', 'yellow'), ('font-size', '2em')]
                            }])
 df.style.set_table_styles([{'selector': 'tr:hover',
                             'props': 'background-color: yellow; font-size: 2em;' # CSS strings
                            }])
 df.style.set_table_styles({
-                           'A': [{'selector': '',                  # columnindex에도 영향
-                                  'props': [('color', 'red')]}],
-                           'B': [{'selector': 'td',                # 데이터에만 영향
-                                  'props': 'color: blue;'}]
-                          }, overwrite=False)
-df.style.set_table_styles({
                            0: [{'selector': 'td:hover',
                                 'props': [('font-size', '25px')]}]
                           }, axis=1, overwrite=False)
+
+# >>> Set defined CSS-properties to each <td> HTML element for the given subset -----
+
+# Styler.set_properties(subset=None, **kwargs)
+
+df = pd.DataFrame([[1.0, 2.0, 3.0, 4.0], [4, 5, 6, 7], ['top', 'soribada', 'copy', 'sound']],
+                  columns=['Aa', 'Bbb', 'C', 'Dddd'])
+
+df.style.set_properties(**{'color':'lightblue', 'text-align':'left'}, subset=['Aa','Dddd'])
+df.style.set_properties(**{'background-color': 'yellow', 'color': 'black'}, subset=['Aa','Dddd'])
+
+# >>> Append another Styler to combine the output into a single table -----
+
+# Styler.concat(other)
+
+df = pd.DataFrame(np.random.randn(5, 5))
+summary_styler = df.agg(["sum", "mean"]).style \
+                   .relabel_index(["Sum", "Average"])
+df.style.concat(summary_styler)
+
+df = pd.DataFrame([[4, 6], [1, 9], [3, 4], [5, 5], [9, 6]],
+                  columns=["Mike", "Jim"],
+                  index=["Mon", "Tue", "Wed", "Thurs", "Fri"])
+
+descriptors = df.agg(["sum", "mean"])
+descriptors.index = ["Total", "Average"]
+other = (descriptors.style
+         .highlight_max(axis=1, subset=(["Total", "Average"], slice(None)))
+         .format(subset=("Average", slice(None)), precision=2, decimal=",")
+         .map(lambda v: "font-weight: bold;"))
+styler = (df.style
+            .highlight_max(color="salmon")
+            .set_table_styles([{"selector": ".foot_row0",
+                                "props": "border-top: 1px solid black;"}]))
+styler.concat(other)  
 
 # >>> Reset the Styler, removing any previously applied styles -----
 
