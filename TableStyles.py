@@ -153,34 +153,10 @@
 # Pandas DataFrame Style
 # =====================
 
-import pandas as pd
-import numpy as np
-
-# >>> Helps style a DataFrame or Series according to the data with HTML and CSS -----
-
-# pandas.io.formats.style.Styler(
-#     data: DataFrame | Series,
-#     formatter: ExtFormatter | None = None,
-#     na_rep: str | None = None,
-#     precision: int | None = None,
-#     decimal: str | None = None,
-#     thousands: str | None = None,
-#     table_styles: CSSStyles | None = None,
-#     table_attributes: str | None = None,
-#     caption: str | tuple | list | None = None,
-#     cell_ids: bool = True,
-#     uuid: str | None = None,
-#     uuid_len: int = 5,
-#     escape: str | None = None,
-#     )
-
-df = pd.DataFrame([[1.0, 2.0, 3.0], [4, 5, 6]], index=['a', 'b'],
-                  columns=['A', 'B', 'C'])
-
-pd.io.formats.style.Styler(df[['A', 'B']], formatter='{:,.2f}', caption="My table")
-
-# >>> Format the text display value of cells -----
-
+# --------------------
+# Format the text display value of cells
+# 데이터값의 형태를 변경하거나 대체
+# --------------------
 # Styler.format(formatter=None, subset=None, na_rep=None, precision=None, \
 #               decimal='.', thousands=None, escape=None, hyperlinks=None)
 #        formatter: str, callable, dict or None
@@ -192,20 +168,27 @@ pd.io.formats.style.Styler(df[['A', 'B']], formatter='{:,.2f}', caption="My tabl
 #        escape: str, optional
 #        hyperlinks: {"html", "latex"}, optional
 
+import pandas as pd; import numpy as np
+
+# 행별 리스트로 데이터프레임 구성한다.
 df = pd.DataFrame([[np.nan, 1988.0, 'A'], [2025.0, np.nan, 3.0]])
 
 df[[0,1]].style.format(formatter='{:,.2f}', na_rep='MISS')
 
-df.style.format('{:,.2f}', na_rep='MISS', subset=[0,1])
+df.style.format(formatter='{:,.2f}', na_rep='MISS', subset=[0,1])
 
+# 개별 열에 적용된 formatter 가 선순위이다.
 df.style.format({0: '{:,.1f}', 1: '£ {:.2f}'}, na_rep='MISS', precision=3)
 
+# 파라미터를 개별 행에 적용하기 위한 중복 format 사용이다.
 (df.style.format(na_rep='MISS', precision=1, subset=[0])
          .format(na_rep='PASS', precision=2, subset=[1, 2])) 
 
+# formatter에 함수를 사용하였다.
 func = lambda s: 'STRING' if isinstance(s, str) else 'FLOAT'
 df.style.format({0: '{:.1f}', 2: func}, precision=4, na_rep='MISS')
 
+# formatter에 함수를 사용하여 원본데이터를 치환하였다.
 def rain_condition(v):
     if v < 1.75:
         return "Dry"
@@ -217,40 +200,59 @@ weather_df = pd.DataFrame(np.random.rand(10,2)*5,
                           columns=["Tokyo", "Beijing"])
 weather_df.style.format(rain_condition)
 
-# >>> Format the text display value of index labels or column headers -----
 
+# --------------------
+# Format the text display value of index labels or column headers
+# 테이블라벨의 값을 변경하거나 대체
+# --------------------
 # Styler.format_index(formatter=None, axis=0, level=None, na_rep=None, \
 #                     precision=None, decimal='.', thousands=None, escape=None, \
 #                     hyperlinks=None)
 
 df = pd.DataFrame([[1, 2, 3]], columns=[2.0, np.nan, 4.0])
-df.style.format_index(axis=1, na_rep='MISS', precision=3)  
+df.style.format_index(axis=1, na_rep='MISS', precision=2)
 
-# >>> Apply a CSS-styling function column-wise, row-wise, or table-wise -----
 
+# --------------------
+# Apply a CSS-styling function column-wise, row-wise, or table-wise
+# 테이블, 행, 열 단위로 CSS스타일 함수를 적용
+# --------------------
 # Styler.apply(func, axis=0, subset=None, **kwargs)
 #        func: function
 #        axis: {0 or 'index', 1 or 'columns', None}, default 0
-#        subset: label, array-like, IndexSlice, optional
+#        subset: 2d(행이름,열이름) input to DF.loc[<subset>] or 1d(열이름) input to DataFrame.loc[:, <subset>]
 #        **kwargs: dict(갯수의 제한이 없는 키워드=값 형식을 사용)
+
+import pandas as pd; import numpy as np
 
 def highlight_max(x, color):
     return np.where(x == np.nanmax(x.to_numpy()), f"color: {color};", None)
 df = pd.DataFrame(np.random.randn(5, 2), columns=["A", "B"])
-
+# 열별 함수 적용(디폴트axis=0)
+df.style.apply(highlight_max, color='red')
+# 테이블 전체를 대상으로 함수 적용(to_numpy()함수는 DF를 하나의 배열로 변환)
+df.style.apply(highlight_max, color='red', axis=None)
+# 열을 지정 범위에서 함수 적용
+df.style.apply(highlight_max, color='red', subset="A")
 df.style.apply(highlight_max, color='red', subset=["A", "B"])
-df.style.apply(highlight_max, color='red', subset=([0, 1, 2], slice(None)))
-df.style.apply(highlight_max, color='red', subset=(slice(0, 5, 2), "B"))
+# 행과 열을 지정 범위에서 함수 적용
+df.style.apply(highlight_max, color='red', subset=([2, 3, 4], ['A','B']), axis=None)
+df.style.apply(highlight_max, color='red', subset=([2, 3, 4], slice(None)), axis=None)
+df.style.apply(highlight_max, color='red', subset=(slice(1, 4, 3), 'B'))
 
-total_style = pd.Series("color:red; font-weight: bold; font-size:20px;", index=[4])
-df.style.apply(lambda s: total_style, subset=(slice(None), ["A", "B"]))
+midx = pd.MultiIndex.from_product([["a", "b"], ["1", "2", "3"]])
+midy = pd.MultiIndex.from_product([["x", "y"], ["x", "y", "z"]])
+df = pd.DataFrame(np.random.randn(6,6), index=midy, columns=midx)
+# 멀티헤드에 적용
+df.style.apply(highlight_max, color='red', subset=((slice(None), 'y'),slice(None)), axis=1)
+df.style.apply(highlight_max, color='red', subset=(('x', slice(None)),slice(None)), axis=None) \
+        .apply(highlight_max, color='red', subset=(('y', slice(None)),slice(None)), axis=None)
 
-df = pd.DataFrame(np.random.randn(5, 2), columns=["A", "B"])
-total_style = pd.Series("color:red; font-weight:bold; font-size:20px;", index=[4])
-pd.io.formats.style.Styler(df, precision=2, caption="My table").apply(lambda s: total_style, subset=(slice(None), "B"))
 
-# >>> Apply a CSS-styling function to the index or column headers, level-wise -----
-
+# --------------------
+# Apply a CSS-styling function to the index or column headers, level-wise
+# 테이블라벨에 CSS스타일을 적용
+# --------------------
 # Styler.apply_index(func, axis=0, level=None, **kwargs)
 #        func: function
 #        axis: {0, 1, “index”, “columns”}
@@ -275,71 +277,97 @@ for v in pd.DataFrame([np.arange(8)]):
     else:
         ""
 
-# >>> Hide the entire index / column headers, or specific rows / columns from display -----
 
+# --------------------
+# Hide the entire index / column headers, or specific rows / columns from display
+# 테이블라벨 또는 지정 행, 열을 감춤
+# --------------------
 # Styler.hide(subset=None, axis=0, level=None, names=False)
-#        names: bool
+#        subset : 1d(행이름 또는 열이름) input along the axis within DF.loc[<subset>, :] or DF.loc[:, <subset>]
+#        names: bool, name(s) of the index / columns headers
+
 
 df = pd.DataFrame([[1,2], [3,4], [5,6]], index=["a", "b", "c"])
+# 인덱스라벨을 감춘다.
+df.style.hide()
+# 지정 행, 열을 감춘다.
 df.style.hide(["a", "b"]) 
+df.style.hide(0, axis=1) 
 
-midx = pd.MultiIndex.from_product([["x", "y"], ["a", "b", "c"]])
-df = pd.DataFrame(np.random.randn(6,6), index=midx, columns=midx)
-df.style.format("{:.1f}").hide()   # Hide the index 
+midx = pd.MultiIndex.from_product([["a", "b"], ["1", "2", "3"]])
+midy = pd.MultiIndex.from_product([["x", "y"], ["x", "y", "z"]])
+df = pd.DataFrame(np.random.randn(6,6), index=midy, columns=midx)
+# 멀티헤드에서 인덱스라벨을 감춘다.
+df.style.format("{:.1f}").hide()
+df.style.format("{:.1f}").hide(level=1, axis=1)
+# 멀티헤드에서 지정 행, 열을 감춘다.
+df.style.format("{:.1f}").hide(subset=(slice(None), "y"))   # subset=(레벨0, 레벨1)
+df.style.format("{:.1f}").hide(subset=("a", ["1", "3"]), axis=1)
+df.style.format("{:.1f}").hide(subset=(slice(None), ["1", "3"]), axis=1)
+df.style.format("{:.1f}").hide(subset=(slice(None), ["1", "3"]), axis=1).hide()
+df.style.hide(subset=(slice(None), "y")).hide(subset=(slice(None), "2"), axis=1)
+# 멀티헤드에 이름이 부여된 경우에 이름을 감춘다.
+df.index.names = ["lv0", "lv1"]
+df.style.format("{:,.1f}").hide(names=True)
 
-df.style.format("{:.1f}").hide(subset=(slice(None), ["a", "c"]))
 
-df.style.format("{:.1f}").hide(subset=(slice(None), ["a", "c"])).hide()
-
-df.style.format("{:,.1f}").hide(level=1) 
-
-df.index.names = ["lev0", "lev1"]
-df.style.format("{:,.1f}").hide(names=True, axis=1) 
-
-# >>> Set the table styles included within the <style> HTML element -----
-
-# Styler.set_table_styles(table_styles=None, axis=0, overwrite=True, css_class_names=None)
+# --------------------
+# Set the table styles included within the <style> HTML element
+# 테이블 디자인에 <style>요소 활용
+# --------------------
+# Styler.set_table_styles(table_styles=None, axis=0, overwrite=True)
 #        table_styles: list or dict
 #        axis: {0 or ‘index’, 1 or ‘columns’, None}, default 0
 #        overwrite: bool, default True
-#        css_class_names: dict, optional
 
 df = pd.DataFrame(np.random.randn(10, 4), columns=['A', 'B', 'C', 'D'])
-
 df.style.set_table_styles({
-                           'A': [{'selector': '',                  # columnLable에도 영향
-                                  'props': [('color', 'red')]}],
-                           'B': [{'selector': 'td',                # 데이터에만 영향
-                                  'props': 'color: blue;'}]
+                           'A': [{'selector': '',                  # 테이블헤드에도 영향
+                                  'props': [('color', 'red'), ('text-align','left')]}],
+                           'B': [{'selector': 'td',                # 값에만 영향
+                                  'props': 'color: blue; text-align: left'}]
                           }, overwrite=False)
-df.style.set_table_styles([{'selector': 'tr:hover',
-                            'props': [('background-color', 'yellow'), ('font-size', '2em')]
+df.style.set_table_styles([{'selector': 'tr:hover',                # 툴팁 효과
+                            'props': [('background-color', 'yellow'), ('font-size', '1.0em')]
                            }])
 df.style.set_table_styles([{'selector': 'tr:hover',
-                            'props': 'background-color: yellow; font-size: 2em;' # CSS strings
-                           }])
-df.style.set_table_styles({
+                            'props': 'background-color: yellow; font-size: 1.0em;' # CSS strings
+                           }]) \
+        .set_table_styles({
                            0: [{'selector': 'td:hover',
-                                'props': [('font-size', '25px')]}]
+                                'props': [('font-size', '20px'), ('background-color', 'blue')]}]
                           }, axis=1, overwrite=False)
+df.style.set_table_styles([{'selector':'tr:nth-of-type(even)',
+                          'props': [('background-color', 'yellow'), ('font-size', '1.0em')]}])
+df.style.set_table_styles([{'selector':'td:last-of-type',
+                          'props': [('background-color', 'yellow'), ('font-size', '1.0em')]}])
+df.style.set_table_styles([{"selector": ".row8",                             # border, border-block, border-top/bottom/left/right/radius
+                            "props": "border-bottom: 1mm double white;"}])   # solid, dashed, double
+print(df.style.to_html())  # class 확인 후 selector에 적용 가능
 
-# >>> Set defined CSS-properties to each <td> HTML element for the given subset -----
 
+# --------------------
+# Set defined CSS-properties to each <td> HTML element for the given subset
+# 개별 <td>요소에 CSS스타일 적용
+# --------------------
 # Styler.set_properties(subset=None, **kwargs)
+# subset : 2d input to DF.loc[<subset>], or, 1d input to DF.loc[:, <subset>], to limit data to before applying the function.
 
 df = pd.DataFrame([[1.0, 2.0, 3.0, 4.0], [4, 5, 6, 7], ['top', 'soribada', 'copy', 'sound']],
                   columns=['Aa', 'Bbb', 'C', 'Dddd'])
 
 df.style.set_properties(**{'color':'lightblue', 'text-align':'left'}, subset=['Aa','Dddd'])
-df.style.set_properties(**{'background-color': 'yellow', 'color': 'black'}, subset=['Aa','Dddd'])
+df.style.set_properties(**{'background-color': 'yellow', 'color': 'black'}, subset=([0, 2], ['Aa','Dddd']))
 
-# >>> Append another Styler to combine the output into a single table -----
 
+# --------------------
+# Append another Styler to combine the output into a single table
+# 스타일된 DF 합치기
+# --------------------
 # Styler.concat(other)
 
 df = pd.DataFrame(np.random.randn(5, 5))
-summary_styler = df.agg(["sum", "mean"]).style \
-                   .relabel_index(["Sum", "Average"])
+summary_styler = df.agg(["sum", "mean"]).style.relabel_index(["Total", "Average"])
 df.style.concat(summary_styler)
 
 df = pd.DataFrame([[4, 6], [1, 9], [3, 4], [5, 5], [9, 6]],
@@ -350,21 +378,28 @@ descriptors = df.agg(["sum", "mean"])
 descriptors.index = ["Total", "Average"]
 other = (descriptors.style
          .highlight_max(axis=1, subset=(["Total", "Average"], slice(None)))
-         .format(subset=("Average", slice(None)), precision=2, decimal=",")
+         .format(subset=("Average", slice(None)), precision=2, decimal=".")
          .map(lambda v: "font-weight: bold;"))
 styler = (df.style
             .highlight_max(color="salmon")
-            .set_table_styles([{"selector": ".foot_row0",
-                                "props": "border-top: 1px solid black;"}]))
-styler.concat(other)  
+            .set_table_styles([{"selector": ".foot0_row0",
+                                "props": "border-top: 1mm double white;"}]))   # solid, dashed, double
+styler.concat(other)
+print(styler.concat(other).to_html())
 
-# >>> Reset the Styler, removing any previously applied styles -----
 
+# --------------------
+# Reset the Styler, removing any previously applied styles
+# 이전 스타일 제거
+# --------------------
 # Styler.clear()
 
 df = pd.DataFrame({'A': [1, 2], 'B': [3, np.nan]})
-df.style.highlight_null(color='yellow')
-df.style.clear()  
+styled = df.style.highlight_null(color='yellow')
+print(styled.to_html())
+
+styled.clear()  
+print(styled.to_html())
 
 
 # =====================
@@ -426,10 +461,10 @@ print(next(a))
 # slice(start, stop[, step])
 
 # String slicing
-String = 'GeeksforGeeks'
-print(String[slice(None)])
-print(String[slice(3)])
-print(String[slice(1, 5, 2)])
+String = '0123456789'
+print(String[slice(None)])       # 모두 선택
+print(String[slice(3)])          # 0~2까지의 인덱스 선택
+print(String[slice(1, 10, 3)])   # 1~10까지의 인덱스 중 1부터 3step씩 떨어진 값들 선택
 
 # List, Array slicing
 L = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
