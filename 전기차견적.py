@@ -155,19 +155,57 @@ df_new.iloc[0, 4] = total
 idx = pd.IndexSlice
 slice_ = idx[0, :]
 
-st.table(df_new.style \
-    .format_index({'props': 'text-align-last: center;'}) \
-    .format(na_rep='', precision=0, thousands=",", subset=['단가', '금액']) \
-    .format(decimal=".", precision=1, subset=['주차면수']) \
-    .hide(level=0))
+# st.table(df_new.style \
+#     .format_index({'props': 'text-align-last: center;'}) \
+#     .format(na_rep='', precision=0, thousands=",", subset=['단가', '금액']) \
+#     .format(decimal=".", precision=1, subset=['주차면수']) \
+#     .hide(level=0))
 
 
-df.style.set_table_styles({
-                           'A': [{'selector': '',                  # columnLable에도 영향
-                                  'props': [('color', 'red')]}],
-                           'B': [{'selector': 'td',                # 데이터에만 영향
-                                  'props': 'color: blue;'}]
-                          }, overwrite=False)
+k = df_new.style.format(na_rep='', precision=0, thousands=",") \
+         .set_table_styles({'단가': [{'selector': '.data',
+                                     'props': [('text-align-last', 'right')]}]
+                           }, overwrite=False)
+
+css = """
+<style>
+  table#T_ac398 td:nth-child(4), table#T_ac398 th:nth-child(4) {
+    text-align: right;
+  }
+</style>
+"""
+st.markdown(css, unsafe_allow_html=True)
+
+
+st.dataframe(df_new.style.format(na_rep='', precision=0, thousands=",") \
+         .set_table_styles({'단가': [{'selector': '.data',
+                                     'props': [('text-align-last', 'right')]}]
+                           }, overwrite=False))
+
+st.table(k.to_html())
+
+
+# --------------
+# 스타일링 함수
+def style_specific_column(column):
+    return ['text-align: right' if col == '단가' else '' for col in column]
+# 테이블 출력 및 스타일 적용
+st.dataframe(df.style.apply(style_specific_column))
+
+# --------------
+st.dataframe(df.style.format({'단가': '{:,.0f}'}).set_properties(**{'text-align': 'right'}, subset=['단가']))
+
+# --------------
+# 스타일 함수 정의
+def style_df(df):
+    return df.style.set_properties(**{
+        'text-align': 'left'
+    }).set_properties(subset=['단가'], **{
+        'text-align': 'right'
+    })
+
+# --------------
+
 
 
 # # 원격관제 시스템 구축비 -----
