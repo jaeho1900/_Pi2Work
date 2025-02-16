@@ -70,7 +70,7 @@ plt.show()
 # count() : 각 그룹의 각 열에서 NaN이 아닌 데이터의 수
 # nunique() : 행의 유니크한 개수
 # sum : 합
-# mean() : 평균
+# mean() : 평균 
 # max() : 최댓값
 # min() : 최솟값
 # std() : 표준편차
