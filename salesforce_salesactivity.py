@@ -64,17 +64,17 @@ plt.show()
 # >> 기본 구조
 # df.groupby(컬럼명, as_index = True).함수
 # >> parameter
-# as_index: 그룹으로 묶을 컬럼을 인덱스로 해서 시리즈형태로 출력(True), 데이터프레임으로 출력(False)
+# as_index: 그룹으로 묶을 컬럼을 인덱스로 해서 시리즈로 출력(True), 데이터프레임으로 출력(False)
 # >> 함수
-# size() : 각 그룹의 전체 행의 개수
-# count() : 각 그룹의 각 열에서 NaN이 아닌 데이터의 수
-# nunique() : 행의 유니크한 개수
-# sum : 합
-# mean() : 평균 
-# max() : 최댓값
-# min() : 최솟값
-# std() : 표준편차
-# var() : 분산
+# size()    : 각 그룹의 전체 행의 갯수
+# count()   : 각 그룹의 각 열에서 NaN이 아닌 데이터의 수
+# nunique() : 행의 유니크한 갯수
+# sum       : 합
+# mean()    : 평균 
+# max()     : 최댓값
+# min()     : 최솟값
+# std()     : 표준편차
+# var()     : 분산
 # apply(list) : 값들을 리스트 형태로 변환
 
 # line plot -----
@@ -97,4 +97,3 @@ plt.ylabel('발생량')
 plt.xticks(rotation=45)
 plt.grid(True)
 plt.show()
-
