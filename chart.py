@@ -4,7 +4,6 @@ import matplotlib.pyplot as plt
 plt.rc('font', family='Malgun Gothic')
 plt.rcParams['axes.unicode_minus'] = False
 
-# 데이터 입력
 data = {
     '상품': ['A', 'B', 'C', 'D', 'A', 'B', 'C', 'D', 'A', 'B', 'C', 'D', 
              'A', 'B', 'C', 'D', 'A', 'B', 'C', 'D', 'A', 'B', 'C', 'D'],             
@@ -15,26 +14,24 @@ data = {
     '평가월': [1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 
              4, 4, 4, 4, 5, 5, 5, 5, 6, 6, 6, 6]
 }
-
-# 데이터프레임 생성  
 df = pd.DataFrame(data)
 
-# 차트 그리기
+# >>> 차트 그리기 -----
+
 plt.figure(figsize=(10, 6))
 
-# 각 상품에 대해 분산형 차트 추가
+# 분산형 차트
 for product in df['상품'].unique():
     subset = df[df['상품'] == product]
     plt.scatter(subset['정량'], subset['정성'], label=product)
 
 # 레이블 추가
-for i in range(len(df)): # 행 개수만큼 순회
-    row = df.iloc[i] # 한 행씩 꺼내기
-    name = row['평가월'] # 이름이 저장된 열
-    x = row['정량'] # x좌표가 저장된 열
-    y = row['정성'] # y좌표가 저장된 열
+for i in range(len(df)):
+    row = df.iloc[i]
+    name = row['평가월']
+    x = row['정량']
+    y = row['정성']
     plt.text(x, y, name, size=20, va='center', ha='center')
-
 
 # 차트 제목 및 축 레이블 설정
 plt.title('정량 vs 정성')
