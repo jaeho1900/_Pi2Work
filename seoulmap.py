@@ -45,4 +45,4 @@ legend_html = '''
 m.get_root().html.add_child(folium.Element(legend_html))
 
 # 지도를 HTML 파일로 저장
-m.save('map.html')
+m.save('seoulmap.html')
