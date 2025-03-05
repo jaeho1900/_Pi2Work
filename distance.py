@@ -1,24 +1,22 @@
 import pandas as pd
 from geopy.distance import geodesic
 
-# 엑셀 파일에서 데이터 읽기
-file_path = 'data.xlsx'  # 엑셀 파일 경로
-data = pd.read_excel(file_path)
+# 엑셀 파일 읽기
+df = pd.read_excel('서울시건축물대장표제부.xlsx')
 
 # 데이터프레임의 구조를 확인합니다.
-# print(data.head())
+print(df.head())
 
 # 위도와 경도 열의 이름을 확인하고, 필요에 따라 수정하세요.
-# 예를 들어, 'Latitude'와 'Longitude'라는 열이 있다고 가정합니다.
-latitude_col = 'Latitude'
-longitude_col = 'Longitude'
+latitude_col = '위도'
+longitude_col = '경도'
 
-# 4개의 서로 다른 지점의 위도와 경도 및 이름 (예시)
+# 4개의 서로 다른 지점의 위도와 경도 및 이름
 reference_points = {
-    '서울': (37.5665, 126.978),
-    '부산': (35.1796, 129.0756),
-    '대전': (35.9078, 127.7669),
-    '인천': (37.4563, 126.7052)
+    '마포강북': (37.548358618, 126.953655998),
+    '광화문': (37.5693, 126.9715),
+    '강서인천': (37.482151377, 126.879704646),
+    '강남강동': (37.503654600, 127.035923489)
 }
 
 # 각 지점에서 가장 가까운 지점까지의 거리와 이름 계산
@@ -30,11 +28,10 @@ def find_nearest_distance_and_name(row):
     return pd.Series([nearest_name, nearest_distance])
 
 # 거리와 지점명을 새로운 열에 추가
-data[['Nearest Point', 'Nearest Distance (Km)']] = data.apply(find_nearest_distance_and_name, axis=1)
+df[['Nearest Point', 'Nearest Distance (Km)']] = df.apply(find_nearest_distance_and_name, axis=1)
 
 # 결과 출력
-print(data)
+print(df.head())
 
 # 결과를 새로운 엑셀 파일로 저장
-output_file_path = 'output_data.xlsx'
-data.to_excel(output_file_path, index=False)
+df.to_excel('서울시건축물대장표제부_distance.xlsx', index=False)
