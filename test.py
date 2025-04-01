@@ -1,7 +1,28 @@
 # _건축물대장 DB생성
 
+
 # --------------------
-# 데이터구조 파일에서 DB.columns 추출
+# 데이터프레임 생성
+# --------------------
+
+import pandas as pd
+
+df = pd.read_csv("C:/Users/Administrator/Desktop/mart_djy_03.txt",
+                 sep="|",
+                 header=0)
+
+xlcol = pd.read_excel("C:/Users/Administrator/Desktop/데이터구조.xlsx",
+                      header=0,
+                      usecols=[0, 1])
+
+print(df.shape)
+
+df.columns = xlcol["컬럼한글명"]
+df.head(1)
+
+
+# --------------------
+# 데이터구조 파일로 부터 columns 추출
 # --------------------
 
 import pandas as pd
@@ -18,6 +39,11 @@ for a in xlcolumns.values :
     str_temp = str_temp + column_name + " " + a[1] + ", "
     sub_sql = str_temp[:-2]
 
+
+# --------------------
+# DB에 테이블 생성
+# --------------------
+
 conn = pg2.connect (database="postgres",
                     user="postgres",
                     password="cyberuser",
@@ -32,14 +58,38 @@ conn.close ()
 
 
 # --------------------
-# DB에서 데이터 생성
+# DB에 데이터프레임 업로드 (I)
+# --------------------
+
+import pandas as pd
+from sqlalchemy import create_engine
+
+# PostgreSQL 연결 설정
+user = 'postgres'
+password = 'cyberuser'
+host = 'localhost'
+port = '5432'
+dbname = 'postgres'
+
+# SQLAlchemy를 사용해 PostgreSQL 연결 엔진 생성
+engine = create_engine(f"postgresql+psycopg2://{user}:{password}@{host}:{port}/{dbname}")
+
+# 데이터프레임을 PostgreSQL 테이블로 저장
+table_name = 'building'
+df.to_sql(table_name, engine, index=False, if_exists='replace')  # 테이블이 존재하면 덮어씌움, 추가하려면 'append'  
+
+print(f"DataFrame이 PostgreSQL의 '{table_name}' 테이블로 성공적으로 저장되었습니다.")
+
+
+# --------------------
+# dbeaver 에서 직접 업로드(II)
 # --------------------
 
 # 데이터가져오기 > 옵션: column delimiter=|, header position=None, encoding=cp949
 
 
 # --------------------
-# DB에서 SQL문으로 레코드 조회
+# SQL문으로 레코드 조회
 # --------------------
 
 query = '''
