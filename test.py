@@ -1,3 +1,47 @@
+# 1. 라이브러리 import
+import pandas as pd
+import sqlalchemy
+
+# 2. connector 설정
+engine = sqlalchemy.create_engine("postgresql://{user}:{password}@{host}:{port}/{databasename}")
+
+# 3. pandas.read_sql() 사용하여 데이터베이스 조회하기
+# 1번째 인자는 쿼리, 2번째 인자는 커넥터
+# 참고로, read_sql으로는 commit이나 grant 등을 시도하면 에러가 나므로 알아주시면 좋을 것 같습니다.
+to_sql_test = pd.read_sql('select * from skma.table_name', engine)
+
+# 4. pandas.to_sql 사용하여 데이터프레임을 DB 테이블로 만들기
+# 1번째 인자는 생성할 테이블명, 2번째는 커넥터, 3번째는 테이블을 생성할 스케마명 (미지정시 디폴트스케마)
+# if_exists = 'replace' or 'append'
+to_sql_test.to_sql('tb_copied',con = engine, schema='skma', if_exists='replace', index=False)
+
+
+
+
+
+
+# sqlalchemy로 postgresql접근
+from sqlalchemy import create_engine
+
+# engine = create_engine(f"postgresql+psycopg2://{user}:{password}@{host}:{port}/{dbname}")
+db = create_engine('postgresql://user:password@localhost:port/database')
+for i in range(1,2000):
+    conn = db.connect()
+    #some simple data operations
+    conn.close()
+db.dispose()
+
+# sqlalchemy로 postgresql 쓰기/읽기
+import pandas as pd
+from sqlalchemy import create_engine
+
+engine = create_engine('postgresql://id:password@localhost:port/database')
+df.to_sql('table_name', engine)
+pd.read_sql("select * from users limit 1", engine)
+
+
+
+
 # _건축물대장 DB생성
 
 
@@ -11,16 +55,19 @@ from sqlalchemy import create_engine
 # 데이터프레임 생성
 df = pd.read_csv("C:/Users/Administrator/Desktop/mart_djy_03.txt",
                  sep="|",
-                 header=0)
+                 header=0,
+                 nrows=10
+                 )
 
-xlcol = pd.read_excel("C:/Users/Administrator/Desktop/데이터구조.xlsx",
-                      header=0,
-                      usecols=[0, 1])
+# xlcol = pd.read_excel("C:/Users/Administrator/Desktop/데이터구조.xlsx",
+#                       header=0,
+#                       usecols=[0, 1])
 
-df.columns = xlcol["컬럼한글명"]
+# df.columns = xlcol["컬럼한글명"]
 
 print(df.columns)
 print(df.shape)
+print(df.head(1))
 
 # PostgreSQL 연결
 user = 'postgres'
@@ -32,8 +79,8 @@ dbname = 'postgres'
 engine = create_engine(f"postgresql+psycopg2://{user}:{password}@{host}:{port}/{dbname}")
 
 # 데이터프레임을 PostgreSQL 테이블로 저장
-table_name = 'newbuild'
-df.to_sql(table_name, engine, index=False, if_exists='replace')  # 테이블이 존재하면 덮어씌움, 추가하려면 'append'  
+table_name = 'building'
+df.to_sql(table_name, engine, index=False, if_exists='append')  # 테이블이 존재하면 덮어씌움 'replace', 추가하려면 'append'  
 
 print(f"DataFrame이 PostgreSQL의 '{table_name}' 테이블로 성공적으로 저장되었습니다.")
 
@@ -49,6 +96,7 @@ import psycopg2 as pg2
 xlcolumns = pd.read_excel("C:/Users/Administrator/Desktop/데이터구조.xlsx",
                           header=0,
                           usecols=[0, 1])
+print(xlcolumns.values)
 
 str_temp = ""
 sub_sql = ""
