@@ -1,0 +1,24 @@
+[GitHub - Delete commits history with git commands]
+
+### First Method
+
+# Clone the project, e.g. `myproject` is my project repository:
+git clone https://github/heiswayi/myproject.git
+
+# And delete the `.git` folder:
+git rm -rf .git  # 탐색기에서 삭제
+
+# Now, re-initialize the repository:
+git init
+git remote add origin https://github.com/heiswayi/myproject.git
+git remote -v
+
+# Add all the files and commit the changes:
+git add --all
+git commit -am "Initial commit"
+
+# Force push update to the master branch of our project repository:
+git push -f origin master
+
+
+
