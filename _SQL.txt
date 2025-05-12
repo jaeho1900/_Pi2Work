@@ -1,0 +1,644 @@
+# =====================
+# sqlalchemy 활용
+# =====================
+
+
+# --------------------
+# DB 연결
+# --------------------
+
+from sqlalchemy import create_engine
+
+# 보안 문제가 있는 코드는 ENV(환경변수)로 저장을 해줘야한다(별도학습필요)
+username = 'postgres'
+password = 'cyberuser'
+host = 'localhost'
+port = '5432'
+dbname = 'postgres'
+ 
+db_url = f'postgresql://{username}:{password}@{host}:{port}/{dbname}'
+
+engine = create_engine(db_url, echo=False)
+
+
+# --------------------
+# 세션 설정 : DB와 상호작용
+# --------------------
+
+from sqlalchemy.orm import sessionmaker
+
+# 여러 쿼리를 한 번에 반영하기 위해서는 autoCommit, autoflush 를 비활성화
+SessionLocal = sessionmaker(bind=engine, autocommit=False, autoflush=False)
+session = SessionLocal()
+
+
+# --------------------
+# CRUD : declarative_base 활용
+# --------------------
+
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy import Column, String, Text, Boolean, Integer 
+
+# declarative_base()를 사용해 기본 클래스를 생성하고, 이를 상속 받아서 테이블을 정의
+Base = declarative_base()
+
+# 테이블 클래스 정의
+class User(Base):
+    __tablename__ = 'db_table_name'
+    id = Column(String(120), primary_key=True)
+    name = Column(Text, nullable=False, default='No name')
+    age = Column(Integer, nullable=True)
+    is_favorite = Column(Boolean, nullable=False, default=False)
+
+# 데이터베이스에 테이블 생성
+Base.metadata.create_all(bind=engine)
+
+# >>> 데이터 삽입 -----
+
+# 새 사용자 인스턴스 생성
+new_user = User(name='Bob', age=25)
+session.add(new_user)
+session.commit()
+
+# >>> 데이터 조회 -----
+
+# 모든 사용자 조회
+users = session.query(User).all()
+for user in users:
+    print(user)
+
+# 특정 사용자 조회
+user = session.query(User).filter_by(name='Bob').first()
+print(user)
+
+# >>> 데이터 수정 -----
+
+user = session.query(User).filter_by(name='Bob').first()
+user.age = 26
+session.commit()
+
+# >>> 데이터 삭제 -----
+
+user = session.query(User).filter_by(name='Bob').first()
+session.delete(user)
+session.commit()
+
+# >>> 세션 닫기 -----
+
+session.close()
+engine.dispose()
+
+
+# --------------------
+# CRUD : MetaData 활용
+# --------------------
+
+# >>> 테이블 불러오기 -----
+
+from sqlalchemy import MetaData, Table, desc
+
+metadata = MetaData()  # MetaData()는 구성된 테이블, 열, 제약조건 등의 객체 정보를 담고 있다. 
+table = Table('db_table_name', metadata, autoload_with=engine)
+
+# >>> read -----
+
+query = session.query(table)  
+# query = query.order_by(desc(table.columns.id))  # 테이블의 id 컬럼으로 순서를 정렬해주는 부분
+rows = query.all()
+result = [row._asdict() for row in rows]  # _asdict()를 이용하여 OrderedDict로 변환
+df = pd.DataFrame(result)
+
+# >>> insert -----
+
+new_entry = data.dict()  # 데이터를 딕셔너리로 변환
+session.execute(table.insert(), new_entry)
+session.commit()
+
+# >>> update -----
+
+update_data = data.dict(exclude_unset=True)  # exclude_unset는 값이 설정되지 않은 필드들은 딕셔너리에서 제외하는 옵션
+session.execute(table.update().where(table.c.id == id).values(**update_data))
+session.commit()
+    
+# >>> delete -----
+
+session.execute(table.delete().where(table.c.id == id))
+session.commit()
+
+# >>> close -----
+
+session.close()
+engine.dispose()
+
+
+# --------------------
+# CRUD : SQL 구문 활용
+# --------------------
+
+from sqlalchemy import text
+
+engine.connect().execute(text("SELECT datname FROM pg_database"))
+engine.connect().execute(text("SELECT table_name FROM information_schema.tables WHERE table_schema = 'public'"))
+engine.connect().execute(text("SELECT column_name FROM information_schema.columns WHERE table_name = 'old_table';"))
+query = "SELECT column_name FROM information_schema.columns WHERE table_name = 'old_table';"
+pd.read_sql(query, engine)
+
+# >>> data 튜플 반환 -----
+
+query1 = engine.connect().execute(text("select * from old_table"))
+
+# >>> 컬럼명과 함께 딕셔너리 반환 -----
+
+query2 = engine.connect().execute(text("select * from old_table")).mappings()
+
+print(query1.fetchone())
+print(query2.fetchone())
+
+print(query1.fetchmany(size=7))
+print(query2.fetchmany(size=7))
+
+print(query1.fetchall())
+print(query2.fetchall())
+
+# >>> 데이터프레임으로 가져오기 -----
+
+df = pd.DataFrame(query1)
+print(df)
+
+# >>> 파일 내보내기 -----
+
+copy_sql1 = "Copy old_table To 'D:/kim.csv' With CSV DELIMITER '|'"
+copy_sql2 = "Copy (SELECT * FROM old_table WHERE firstname='Moyna') To 'D:/kim.csv' With CSV DELIMITER '|'"
+
+engine.connect().execute(text(copy_sql))
+
+# >>> 파일 가져오기(테이블 구조가 일치되어야 함) -----
+
+drop_sql = "DROP TABLE IF EXISTS sale_data"
+copy_sql = "COPY public.sales_data(id, day, airline, destination) FROM 'D:\\DeskTop\\Dropbox\\Goodjob\\3PyCode\\airlines_final.csv' With DELIMITER ',' CSV HEADER"
+# CSV HEADER : 파일에 헤드 포함
+
+engine.connect().execute(text(drop_sql))
+engine.connect().execute(text(copy_sql))
+
+
+# =====================
+# pandas 활용
+# =====================
+
+from sqlalchemy import create_engine
+import pandas as pd
+
+username = 'postgres'
+password = 'cyberuser'
+host = 'localhost'
+port = '5432'
+dbname = 'postgres'
+db_url = f'postgresql://{username}:{password}@{host}:{port}/{dbname}'
+
+engine = create_engine(db_url, echo=False)
+
+# >>> 데이터프레임 호출 및 가공 -----
+
+df1 = pd.read_excel("d:/데이터구조.xlsx", header=0, usecols=[0, 1])
+df2 = pd.read_csv("d:/mart_shtreg_03.txt", sep="|", header=None, dtype='string', nrows=10)
+df2.columns = df1['컬럼명']
+
+# >>> DB 저장 -----
+
+df2.to_sql('new_table', engine, index=False, if_exists='replace')  # 테이블이 존재하면 덮어씌움 'replace', 추가하려면 'append'
+
+# >>> DB 조회(SQL 구문 활용) -----
+
+query = "SELECT * FROM new_table;"
+pd.read_sql(query, engine)
+
+# >>> 종료 -----
+
+engine.dispose()
+
+
+# =====================
+# SQL 구문
+# =====================
+
+# # SQL은 "관계형 데이터베이스" 를 조작할 때 사용하는 언어
+
+# # RDBMS: 행과 열을 가지는 표 형식 데이터(2차원 데이터)를 저장하는 형태의 DB
+#   - 행(레코드), 열(컬럼|필드), 셀(행과 열이 만나는 부분, 하나의 데이터 값)
+#   - 수치형, 문자열형, 날짜시간형, NULL(값이 없는 데이터) 등 자료형 존재
+
+SELECT *
+FROM building
+WHERE 대지_위치 like '서울%'
+  AND (옥내_자주식_대수_대 + 옥외_자주식_대수_대) >=1;
+
+SELECT 주_용도_코드_명, count(to_number("연면적_㎡", '999.99'))
+FROM building
+WHERE "주_용도_코드_명" = '숙박시설' or "주_용도_코드_명" = '노유자시설'
+group by 주_용도_코드_명 ;
+
+SELECT distinct 시군구_코드, left(대지_위치,5)
+FROM building
+WHERE "주_용도_코드_명" = '숙박시설' or "주_용도_코드_명" = '노유자시설'
+order by 시군구_코드;
+
+SELECT
+COUNT(case when 연면적_㎡ < 33058 then 1 end) as "1만평미만_동수",
+COUNT(case when 33058 <= 연면적_㎡ and 연면적_㎡ <= 66116 then 1 end) as "1만평이상2만평이하_동수",
+COUNT(case when 66116 < 연면적_㎡ then 1 end) as "2만평초과_동수",
+sum(case when 연면적_㎡ < 33058 then 연면적_㎡ end) as "1만평미만_연면적합계",
+sum(case when 33058 <= 연면적_㎡ and 연면적_㎡ <= 66116 then 연면적_㎡ end) as "1만평이상2만평이하_연면적합계",
+sum(case when 66116 < 연면적_㎡ then 연면적_㎡ end) as "2만평초과_연면적합계"
+FROM building
+WHERE "주_용도_코드_명" = '업무시설';
+
+SELECT building.*, codetable."short_지명"
+FROM building
+LEFT JOIN codetable
+ON building."시군구_코드" = codetable."시군구_코드"
+
+SELECT 
+    LEFT(시군구_코드, 2) AS 지역코드,
+    LEFT(사용승인_일, 4) AS 연도,
+    SUM(CAST("옥내_기계식_대수(대)" AS float)) AS 옥내_기계식_합계,
+    SUM(CAST("옥내_자주식_대수(대)" AS float)) AS 옥내_자주식_합계,
+    SUM(CAST("옥외_기계식_대수(대)" AS float)) AS 옥외_기계식_합계,
+    SUM(CAST("옥외_자주식_대수(대)" AS float)) AS 옥외_자주식_합계
+from
+    public.건축물대장_yymm_2502
+WHERE 
+    "옥내_기계식_대수(대)" <> '신축허가'
+GROUP BY 
+    LEFT(시군구_코드, 2),
+    LEFT(사용승인_일, 4);
+
+select *
+from public.건축물대장_yymm_2502
+WHERE 
+    LEFT(시군구_코드, 2) = '41'
+    and LEFT(사용승인_일, 4)  = '2023'
+
+
+# --------------------
+# 2. DML : Data Manipulation Language (데이터 조회)
+# --------------------
+
+SELECT catagory AS 구분, SUM(price * quantity) AS 합계
+FROM  sales                       -- 데이터 가져오기
+WHERE price > 100                 -- 개별 행에 필터링
+GROUP BY catagory                 -- 데이터별 그룹화 (집계함수[avg, max, min, sum, count]와 사용)
+HAVING total_sales > 1000         -- 그룹화된 데이터 필터링(조건넣기)
+ORDER BY total_sales DESC         -- 정렬(ASC, DESC)
+LIMIT 10;                         -- 처음 10개의 데이터 조회
+LIMIT 40, 10;                     -- 40번째 데이터부터 10개의 데이터 조회
+
+# >>> 중복 제거 -----
+
+DISTINCT : 중복을 제거하여 조회(SELECT문에 사용), 그룹 함수 사용 불가(MAX, MIN, COUNT, SUM, AVG)
+
+SELECT distinct(필드명)
+
+# >>> 숫자 함수 -----
+
+ROUND	        반올림
+CEIL	        올림
+FLOOR	        내림
+ABS	            절댓값
+TRUNCATE(N, n)	N을 소숫점 n자리까지 선택  TRUNCATE(1234.5678, -1),	-- 1230
+
+SELECT ROUND(필드명); 
+
+# >>> 집계 함수 -----
+
+avg, max, min, sum, count : Null값 무시
+
+SELECT count(필드명)
+SELECT count(distinct(필드명))
+
+# >>> 문자열 함수 -----
+
+UCASE, UPPER	                  모두 대문자로
+LCASE, LOWER	                  모두 소문자로
+CONCAT(...)	                      문자열 이어붙이기
+CONCAT_WS(S, ...)	              문자열 사이에 S를 넣어서 이어붙이기
+SUBSTR, SUBSTRING(str, idx, ofs)  idx부터 ofs만큼 문자열을 자름
+LEFT	                          왼쪽부터 N글자
+RIGHT	                          오른쪽부터 N글자
+LENGTH	                          문자열의 문자 바이트 길이
+CHAR_LENGTH, CHARACTER_LENGTH	  문자열의 문자 길이
+TRIM	                          양쪽 공백 제거
+LTRIM	                          왼쪽 공백 제거
+RTRIM	                          오른쪽 공백 제거
+LPAD(S,N,P)	                      S가 N글자가 될 때까지 왼쪽에 P를 이어붙임
+RPAD(S,N,P)	                      S가 N글자가 될 때까지 오른쪽에 P를 이어붙임
+REPLACE(S,A,B)	                  S에 있는 A를 B로 치환
+INSTR(S,s)	                      S중 s의 첫번째 위치 반환, 없으면 0
+CONVERT	                          자료형 변환
+
+SELECT CONCAT_WS('-', 2021, 8, 15, 'AM');	             -- 2021-8-15-AM
+SELECT LEFT(필드명, 길이) AS str
+SELECT RIGHT(필드명, 길이) AS str
+SELECT SPLIT_PART('010-1234-5678', '-', 2)               -- 필드값에서 구분 '문자'(-)로 자르고 해당 위치(1부터시작)값 반환 : 1234
+SELECT SUBSTRING('abc_def_01', 5, 3) AS str              -- 필드값에서 시작위치 '인덱스값'(1부터시작)으로부터 지정길이만큼 반환 : def
+SELECT SUBSTRING('THIS IS TEST SENTENCE', 1, 7);
+SELECT SUBSTRING('THIS IS TEST SENTENCE' FROM 1 FOR 7);  -- -> 'THIS IS' 출력
+
+# [POSITION 함수 결합]
+SELECT SUBSTR(필드명, POSITION('찾는문자' in 필드명), 길이)
+
+# [첫번째 동까지 문자열 추출]
+SELECT SUBSTRING(대지_위치, 1, position('동' in 대지_위치))
+
+# [두번째 동까지 문자열 추출]
+SELECT SUBSTRING(대지_위치 FROM 1 FOR POSITION('동' IN 대지_위치) + POSITION('동' IN SUBSTRING(대지_위치 FROM POSITION('동' IN 대지_위치) + 1)))
+
+# [CASE문 결합]
+SELECT SUBSTRING(대지_위치 , 1, CASE WHEN position('시' in 대지_위치)=0 THEN position('군' in 대지_위치) ELSE position('시' in 대지_위치) END)
+
+# >>> 날짜 함수 -----
+
+CURRENT_DATE, CURDATE	현재 날짜
+CURRENT_TIME, CURTIME	현재 시간
+CURRENT_TIMESTAMP, NOW	현재 시간과 날짜
+DATE	                문자열을 받아 날짜생성
+TIME	                문자열을 받아 시간 생성
+YEAR	                년도
+MONTHNAME	            월(영문)
+MONTH	                월(숫자)
+WEEKDAY	                요일(숫자)
+DAYNAME	                요일명
+DAYOFMONTH, DAY	        날짜
+HOUR	                시
+MINUTE	                분
+SECOND	                초
+ADDDATE, DATE_ADD	    시간, 날짜 더하기
+SUBDATE, DATE_SUB	    시간, 날짜 빼기
+DATEDIFF                두 날짜 사이 일 수
+TIMEDIFF                두 시간 사이 시간차
+LAST_DAY                그 달의 마지막 날짜
+
+# >>> 날짜 포맷 함수 -----
+
+%Y	    년도 4자리
+%y	    년도 2자리
+%M	    월(영문)
+%m	    월(숫자)
+%D	    일(영문)
+%d, %e	일(숫자)
+%T	    hh:mm:ss
+%r	    hh:mm:ss AM/PM
+%H, %k	시(~23)
+%h, %l	시(~12)
+%i	    분
+%S, %s	초
+%p	    AM/PM
+
+DATE_FORMAT(NOW(), '%y-%m-%d %h:%i:%s %p'),		-- 23-01-05 01:31:10 PM
+
+# >>> WHERE 구문 -----
+
+# # 두 값 사이
+WHERE 필드명 BETWEEN 1000 AND 5000;
+WHERE 필드명 BETWEEN '2020-7-1' AND '2023-6-30';
+
+# # 데이터 존재 유무
+WHERE 필드명 IN ('seoul', 'suwon');
+WHERE 필드명 NOT IN ('seoul', 'suwon');
+
+# # 논리 조건 (=, >, < , >=, <=, !=, AND, OR, NOT), AND가 OR보다 우선 순위가 높다
+WHERE 필드명 = '조건'
+WHERE NOT(a<>0 OR b<>0)
+
+# # Like 조건 문자 검색
+#  %       : 0개 이상의 문자를 가진 문자열과 매치, 빈 물자열에도 매치
+#  _ (밑줄) : 임의의 문자 하나
+#  [ ]     : 지정된 범위([a-f]) 또는 집합([abcdef])에 있는 단일 문자
+#  [^]     : 지정된 범위([^a-f]) 또는 집합([^abcdef])에 없는 단일 문자
+
+WHERE 필드명 like '조건';        -- 포함하는 경우 검색
+WHERE not 필드명 like '조건';    -- 포함하지 않는 경우 검색
+
+'A%'  '%A'  '%A%'   # A로 시작하는, 끝나는, 포함하는 조건
+'A__' '_A__' '__an' # A로 시작하는 3자리 문자, 두번째가 A인 4자리 문자, an로 끝나는 3자리 문자
+'%\%%'              # 메타문자([, %, _))를 포함하는 경우 \ESCAPE 사용
+'It''s'             # 'It's'를 검색하려면 '2개를 연속 표기
+'[C-P]arsen'        # arsen으로 끝나고 C와 P 사이의 1개 글자로 시작하는 단어(Carsen, Larsen, Karsen 등)
+'de[^l]%'           # de로 시작하고 이어지는 문자가 l이 아닌 모든 단어
+
+WHERE 필드명 ~ and 필드명 ~    -- and를 이용해 각 필드별 조건을 연결 가능
+
+# # LIKE 다수 조건 문자 검색
+이름이 John, Jake, 또는 Jane으로 시작하는 데이터를 검색하려면
+
+방법 1: OR 연산자 사용 (가장 기본적인 방법)
+SELECT * FROM users
+WHERE name LIKE 'John%' 
+   OR name LIKE 'Jake%' 
+   OR name LIKE 'Jane%';
+
+방법 2: REGEXP 사용 (정규 표현식 활용)
+SELECT * FROM users
+WHERE name REGEXP '^John|^Jake|^Jane';
+
+(PostgreSQL) 배열 비교 ANY 사용
+SELECT * FROM users
+WHERE name LIKE ANY (ARRAY['John%', 'Jake%', 'Jane%']);
+
+# >>> 범주화 및 정렬 -----
+
+SELECT name, count(*) FROM users  -- name 필드 나오고, name으로 범주화된 값의 개수세기
+GROUP BY name                     -- name으로 범주화
+ORDER BY name desc                -- 데이터 정렬, desc는 오름차순 옵션
+ORDER BY 대지_위치 COLLATE 'C'     -- 한글정렬
+
+# >>> SELECT subquery 문 -----
+
+#  <checkin_id와 user_id 필드 옆에 avg_likes_user 라는 필드를 하나 더 추가하려는 상황> +avg_likes_user는 한 user_id의 평균 like 수를 의미
+SELECT c.checkin_id, c.user_id, (
+    SELECT avg(likes) FROM checkins WHERE user_id=c.user_id) as avg_likes_user
+FROM checkins c
+
+# >>> FROM subquery 문 -----
+
+#  SELECT 필드명 FROM subquery inner join subquery
+#  각각의 SELECT 문을 만든 후 이를 원래 있던 테이블처럼 사용 + subquery에는 반드시 key 필드가 있어야 함
+#  <orders 테이블에서 course_id와 cnt_total을, checkins 테이블에서 course_id와 cnt_checkins를 select한 후 course_id를 key로 하여 하나의 테이블로 만드려는 상황>
+SELECT a.course_id, b.cnt_checkins, a.cnt_total
+FROM (
+    SELECT course_id, count(*) as cnt_total
+    FROM orders
+    GROUP BY course_id) a
+inner join (
+    SELECT course_id, count(distinct(user_id)) as cnt_checkins
+    FROM checkins
+    GROUP BY course_id) b
+on a.course_id=b.course_id
+
+# >>> WHERE subquery​ 문 -----
+
+#  WHERE 필드명 in subquery​
+#  하나의 쿼리문에는 WHERE이 한 번만 들어갈 수 있으므로, 여러 개 사용하고 싶다면 and 또는 or을 이용해서 조건을 연결해주어야 함
+#  <orders 테이블에서 kakaopay로 결제한 유저의 정보를 users 테이블에서 출력하려는 상황>
+#  1.users 테이블과 orders 테이블을 inner join한 후 payment_method가 kakaopay인 유저의 정보를 select함
+#  2.WHERE subquery를 사용하여 orders 테이블에서 payment_method가 kakaopay인 user_id와 users 테이블의 user_id가 같은 경우 그 유저의 정보를 select하도록 함
+SELECT u.mail, u.user_id, u.name
+FROM users u
+WHERE user_id in (
+    SELECT user_id FROM orders o
+    WHERE payment_method='kakaopay')
+
+# >>> WITH 구문 -----
+
+#  테이블에 대한 일종의 alias처럼 사용
+with table1 as (
+    SELECT course_id, count(*) as cnt_total
+    FROM orders
+    GROUP BY course_id
+), table2 as (
+    SELECT course_id, count(distinct(user_id)) as cnt_checkins
+    FROM checkins
+    GROUP BY course_id
+)
+
+SELECT a.course_id, b.cnt_checkins, a.cnt_total
+FROM table1 a
+inner join table2 b on a.course_id=b.course_id
+
+# >>> IF(조건, T, F) 조건이 참이면 T, 거짓이면 F -----
+
+# >>> CASE 조건문 -----
+
+# CASE WHEN 조건1 THEN 반환1
+# 	   WHEN 조건2 THEN 반환2
+# [ELSE 반환3]
+# END [AS alias]
+
+SELECT
+  Price,
+  IF (Price > 30, 'Expensive', 'Cheap'),		-- Price가 30보다 크면 Expensive, 작으면 Cheap
+  CASE
+    WHEN Price < 20 THEN '저가'					-- Price가 20보다 작으면 저가
+    WHEN Price BETWEEN 20 AND 30 THEN '일반'	-- Price가 20 ~ 30사이면 일반
+    ELSE '고가'									-- Price가 30보다 크면 고가
+  END
+FROM Products;
+
+# 예제1.일반 구문 형식
+SELECT pu.user_id, pu_point, (
+    CASE WHEN pu.point >10000 THEN 'Goodjob'
+    ELSE 'KeepGoing'
+    END) AS msg
+FROM mine
+
+# 예제2.CASE WHEN 다중 구문
+SELECT
+    CASE WHEN score > 90 THEN 'A'
+        WHEN score > 70 THEN 'B'
+        WHEN score > 50 THEN 'C'
+        WHEN score > 30 THEN 'D'
+        ELSE 'F'
+    END AS code_score
+FROM mine
+
+# 예제3.CASE WHEN 중첩 구문
+SELECT
+    CASE WHEN score > 90 THEN
+        CASE WHEN score >= 95 THEN 'A+'
+            ELSE 'A'
+        END
+        WHEN score > 70 THEN
+            CASE WHEN score >= 80 THEN 'B+'
+            ELSE 'B'
+        END
+        WHEN score > 50 THEN
+            CASE WHEN score >= 60 THEN 'C+'
+            ELSE 'C'
+        END
+        WHEN score > 30 THEN 'D'
+        ELSE 'F'
+    END AS code_score
+FROM mine
+
+SELECT
+    COUNT(case when 연면적_㎡ < 33058 then 1 end) as "1만평미만_동수",
+    COUNT(case when 33058 <= 연면적_㎡ and 연면적_㎡ <= 66116 then 1 end) as "1만평이상2만평이하_동수",
+    COUNT(case when 66116 < 연면적_㎡ then 1 end) as "2만평초과_동수",
+    sum(case when 연면적_㎡ < 33058 then 연면적_㎡ end) as "1만평미만_연면적합계",
+    sum(case when 33058 <= 연면적_㎡ and 연면적_㎡ <= 66116 then 연면적_㎡ end) as "1만평이상2만평이하_연면적합계",
+    sum(case when 66116 < 연면적_㎡ then 연면적_㎡ end) as "2만평초과_연면적합계"
+FROM building
+WHERE "주_용도_코드_명" = '업무시설'
+
+# 테이블 조인
+SELECT * FROM 기준테이블명 a   -- a는 기준테이블명의 별칭
+left join 조인테이블 b         -- b는 조인테이블명의 별칭
+on a.key값 = b.key값          -- 공통 키값으로 하나의 테이블처럼 사용(조인), 조인테이블에 필드가 없으면 NULL 반환
+WHERE 필드명 in NULL          -- NULL 반환된 데이터 찾기 또는 정상 데이터만 찾기(in not NULL)
+
+# 테이블 교집합 조인
+SELECT * FROM 기준테이블명 a   -- a는 기준테이블명의 별칭
+inner join 조인테이블 b        -- b는 조인테이블명의 별칭
+on a.key값 = b.key값          -- 공통 키값으로 하나의 테이블처럼 사용(조인), 공통부분만 반환하므로 NULL 미발생
+
+# 테이블 합치기: 동일 필드조건으로 세로 합치기
+SELECT '7월' as month, c.title, c2.week, count(*) as cnt  -- '넣고싶은필드값' as 새필드명 : 새로운 필드 생성
+FROM checkins c2
+inner join cources c on c2.course_id=c.course_id
+inner join order o on o.user_id=c2.user_id
+WHERE o.created_at < '2023-8-1'
+GROUP BY c2.course_id, c2.week                            -- 두가지 이상으로 순차적 범주화
+order by c2.course_id, c2.week                            -- 두가지 이상으로 순차적 정렬
+union                            -- 중복된 데이터는 제거됨
+SELECT * FROM black
+
+SELECT * FROM
+union all                        -- 중복된 데이터도 모두 출력
+SELECT * FROM
+
+
+# --------------------
+# 3. DML : Data Manipulation Language (데이터를 삽입, 삭제, 수정)
+# --------------------
+
+# INSERT INTO [테이블명] (컬럼1, 컬럼2, ...)
+# VALUES (값1, 값2, ...);
+
+# DELETE FROM [테이블명]
+# WHERE 조건;
+
+# UPDATE [테이블명]
+# SET [필드명] = '값', [필드명2] = '값2', ...
+# WHERE 조건;
+
+
+# --------------------
+# 4. DDL : Data Definition Language (테이블을 생성, 변경, 삭제, 초기화)
+# --------------------
+
+# CREATE TABLE [테이블명] (
+#    필드명1 데이터타입1,
+#    필드명2 데이터타입2,
+#    ...
+# )
+
+# ALTER TABLE [테이블명] ADD 필드명 테이터타입;
+# ALTER TABLE [테이블명] DROP COLUMN 필드명;
+# ALTER TABLE [테이블명] RENAME COLUMN 이전필드명 to 신규필드명;
+# ALTER TABLE [테이블명] MODIFY 필드명 데이터타입;
+# ALTER TABLE [테이블명] DROP COLUMN 필드명;
+
+# DROP TABLE [테이블명];
+
+# TRUNCATE TABLE [테이블명];
+
+
+# --------------------
+# 5. TCL : Transaction Control Language
+# --------------------
+
+# DB 데이터 상태를 변화시키기 위해 수행하는 작업의 단위 제어와 관련된 명령어
+
+# COMMIT - 작업을 정상적으로 처리 후 DB에 반영
+# ROLLBACK - 작업을 되돌림
+# SAVEPOINT - COMMIT 전 특정 시점까지만 COMMIT 또는 ROLLBACK
